@@ -40,12 +40,7 @@ const EditarPacientes = () => {
 
   useEffect(() => {
     fetch(`http://localhost:8085/pacientes/${pacienteSeleccionado}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Error en la solicitud de datos del paciente')
-        }
-        return response.json()
-      })
+      .then((response) => response.json())
       .then((data) => {
         setNombres(data.nombres)
         setApellidos(data.apellidos)
@@ -54,14 +49,10 @@ const EditarPacientes = () => {
         setEmail(data.email)
         setFechaNacimiento(data.fechaNacimiento)
         setGenero(data.genero)
-      })
-      .catch((error) => {
-        if (error.name === 'Error' && error.message === 'Error en la solicitud de datos del paciente') {
-          console.error('No se encontró el paciente')
-        } else {
-          console.error('Error:', error)
-        }
-      })
+    })
+    .catch((error) => {
+      console.error(error)
+    })
   }, [pacienteSeleccionado])
 
   const handlePacienteSeleccionado = (event) => {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import ModalAlert from "./ModalAlert"
+import ModalAlert from './ModalAlert'
 
 const ListarPacientes = () => {
   const [pacientes, setPacientes] = useState([])
@@ -80,6 +80,19 @@ const ListarPacientes = () => {
     }
   }
 
+  const mapaTipoDocumento = {
+    CEDULA_DE_CIUDADANIA: 'Cédula de Ciudadanía',
+    CEDULA_DE_EXTRANJERIA: 'Cédula de Extranjeria',
+    PASAPORTE: 'Pasaporte',
+    REGISTRO_CIVIL: 'Registro Civil',
+    TARJETA_DE_IDENTIDAD: 'Tarjeta de Identidad'
+  }
+  const mapaGenero = {
+    MASCULINO: 'Masculino',
+    FEMENINO: 'Femenino',
+    OTRO: 'Otro',
+  }
+
   return (
     <div>
       {!submitted && (
@@ -127,12 +140,12 @@ const ListarPacientes = () => {
               <div>
                 <p>Nombres: {infoPaciente.nombres}</p>
                 <p>Apellidos: {infoPaciente.apellidos}</p>
-                <p>Tipo de documento: {infoPaciente.tipoDocumento}</p>
-                <p>Número del documento: {infoPaciente.documento}</p>
+                <p>Tipo de documento: {mapaTipoDocumento[infoPaciente.tipoDocumento]}</p>
+                <p>Documento: {infoPaciente.documento}</p>
                 <p>Fecha de nacimiento: {infoPaciente.fechaNacimiento}</p>
                 <p>Edad: {edad}</p>
                 <p>Email: {infoPaciente.email}</p>
-                <p>Género: {infoPaciente.genero}</p>
+                <p>Género: {mapaGenero[infoPaciente.genero]}</p>
               </div>
             <br />
             <button onClick={handleReload}>Volver</button>
