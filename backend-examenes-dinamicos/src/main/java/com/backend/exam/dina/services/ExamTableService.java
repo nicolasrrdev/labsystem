@@ -54,7 +54,9 @@ public class ExamTableService {
 
             i++;
         }
-        queryBuilder.append(", fecha_registro timestamp default date_trunc('second', now()));");
+        // queryBuilder.append(", fecha_registro timestamp default date_trunc('second', now()));");
+        queryBuilder.append(", fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP)mvn spring-boot:run" +
+                ";");
 
         queryBuilder.append(" INSERT INTO " + examName2 + " (nombre_examen, ");
         int j = 1;

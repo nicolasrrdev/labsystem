@@ -12,8 +12,8 @@ public class TablaExamenCampo {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tabla_examen_id")
     private TablaExamen tablaExamen;
-
-    @Column(name = "campo")
+    
+    @Column(name = "campo", columnDefinition = "TEXT")
     private String campo;
 
     public Integer getId() {

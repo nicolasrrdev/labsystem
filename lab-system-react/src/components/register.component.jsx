@@ -33,29 +33,32 @@ const Register = () => {
 
   const handleRegister = (e) => {
     e.preventDefault()
-
     setIsSubmitted(true)
     setMessage('')
     setSuccessful(false)
-
     const usernameError = usernameValidation(username)
     const emailError = emailValidation(email)
     const passwordError = passwordValidation(password)
-
     if (usernameError || emailError || passwordError) {
       return
     }
-
     AuthService.register(username, email, password)
-      .then((response) => {
-        setMessage(response.data.message)
+    .then((response) => {
+      if (response.status === 200) {
         setSuccessful(true)
-      })
-      .catch((error) => {
-        const resMessage = error.response?.data?.message || error.message || error.toString()
+        setMessage(response.message)
+      } if (response.message === 'Registro realizado con éxito. Ya puedes iniciar sesión') {
+        setSuccessful(true)
+        setMessage(response.message)
+      } else {
         setSuccessful(false)
-        setMessage(resMessage)
-      })
+        setMessage(response.message)
+      }
+    })
+    .catch(() => {
+      setSuccessful(false)
+      setMessage('No se pudo establecer conexión con el servidor.')
+    })
   }
 
   return (
@@ -73,7 +76,7 @@ const Register = () => {
               name='username'
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              autoComplete='username'
+              autoComplete='off'
             />
             {isSubmitted && usernameValidation(username) && (
               <div className='alert alert-danger'>{usernameValidation(username)}</div>
@@ -89,7 +92,7 @@ const Register = () => {
               name='email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              autoComplete='email'
+              autoComplete='off'
             />
             {isSubmitted && emailValidation(email) && <div className='alert alert-danger'>{emailValidation(email)}</div>}
           </div>
@@ -103,6 +106,7 @@ const Register = () => {
               name='password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete='off'
             />
             {isSubmitted && passwordValidation(password) && (
               <div className='alert alert-danger'>{passwordValidation(password)}</div>

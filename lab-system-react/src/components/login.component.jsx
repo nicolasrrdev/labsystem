@@ -13,17 +13,18 @@ const Login = () => {
     e.preventDefault()
     setMessage('')
     setLoading(true)
-
     AuthService.login(username, password)
       .then(() => {
         navigate('/profile')
         window.location.reload()
       })
       .catch((error) => {
-        const resMessage = (error.response && error.response.data && error.response.data.message) ||
+        let resMessage = (error.response && error.response.data && error.response.data.message) ||
           error.message ||
           error.toString()
-
+        if (resMessage === 'Failed to fetch') {
+          resMessage = 'No se pudo establecer conexión con el servidor.'
+        }
         setLoading(false)
         setMessage(resMessage)
       })
@@ -48,7 +49,7 @@ const Login = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              autoComplete='username'
+              autoComplete='off'
             />
           </div>
 
@@ -61,6 +62,7 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete='off'
             />
           </div>
           {message && (

@@ -248,6 +248,8 @@ public class ExamTableController {
             i++;
         }
 
+        updateQuery += ", fecha_registro = NOW()";
+
         updateQuery += " WHERE id = ?";
 
         int updatedRows = jdbcTemplate.update(updateQuery, id);

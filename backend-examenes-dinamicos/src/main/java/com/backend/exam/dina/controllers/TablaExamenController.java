@@ -30,9 +30,9 @@ public class TablaExamenController {
 
     @PostMapping("/insertar/{pacienteId}")
     public ResponseEntity<String> insertarTablaExamen(@RequestBody List<String> valores, @PathVariable Integer pacienteId) {
-        if (valores.size() != 3) {
+        if (valores.size() != 124) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Debe proporcionar 3 valores");
+                    .body("Debe proporcionar 124 valores");
         }
 
         Paciente paciente = pacienteService.obtenerPacientePorId(pacienteId);
