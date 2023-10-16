@@ -49,14 +49,21 @@ const RevisarPaciente = () => {
     e.preventDefault()
     setIsSubmitting(true)
     fetch(`${BASE_URL}/pacientes`)
-      .then(() => {        
+      .then((response) => {
+        if (response.status === 404) {
+          throw new Error("Cannot read properties of undefined (reading 'split')")
+        }
         const partesFecha = infoPaciente.fechaNacimiento.split('-')
         const fechaFormateada2 = `${partesFecha[2]}-${partesFecha[1]}-${partesFecha[0]}`
         setFechaFormateada(fechaFormateada2)
         setSubmitted(true)
       })
       .catch((error) => {
-        setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+        if (error.message === "Cannot read properties of undefined (reading 'split')") {
+          setModalAMessage('Hubo en error al obtener la información de este paciente')
+        } else {
+          setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+        }
         setIsModalOpen(true)
         console.error(error)
       })

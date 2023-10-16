@@ -35,7 +35,7 @@ function App() {
           <title>{formattedLocationPathname} - Lab System</title>
         </Helmet>
         <div className={`menu-ham ${isMenuOpen ? 'abierto' : ''}`} onClick={toggleMenu}>
-          <div className="FaBars-container">
+          <div className='FaBars-container'>
             <img className='menuSvg' src={Menu} alt='menu' />
           </div>
           <li>

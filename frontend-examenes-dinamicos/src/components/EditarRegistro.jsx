@@ -162,12 +162,12 @@ const EditarRegistro = () => {
       })
       .catch((error) => {
         if (error.message === 'Hubo en error al obtener este registro') {
-          setModalAMessage('Hubo en error al obtener este registro');
+          setModalAMessage('Hubo en error al obtener este registro')
         } else {
-          setModalAMessage('Error: No se pudo establecer conexión con el servidor.');
+          setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
         }
-        setIsModalOpen(true);
-        console.error(error);
+        setIsModalOpen(true)
+        console.error(error)
       })
       .finally(() => {
         setIsSubmitting(false)
