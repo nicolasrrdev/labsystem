@@ -1,20 +1,23 @@
 import { useState, useEffect } from 'react'
 import ModalAlert from './ModalAlert'
 
-const ListarPacientes = () => {
+const RevisarPaciente = () => {
+  const BASE_URL = import.meta.env.VITE_BASE_URL
   const [pacientes, setPacientes] = useState([])
   const [pacienteSeleccionado, setPacienteSeleccionado] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [infoPaciente, setInfoPaciente] = useState([])
+  const [fechaFormateada, setFechaFormateada] = useState('')
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalAMessage, setModalAMessage] = useState('')
   const closeAModal = () => {
     setIsModalOpen(false)
   }
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
-    fetch('http://localhost:8085/pacientes')
+    fetch(`${BASE_URL}/pacientes`)
       .then((response) => response.json())
       .then((data) => {
         setPacientes(data)
@@ -25,24 +28,41 @@ const ListarPacientes = () => {
         setIsModalOpen(true)
         console.error(error)
       })
-  }, [])
+  }, [BASE_URL])
 
   useEffect(() => {
-    fetch(`http://localhost:8085/pacientes/${pacienteSeleccionado}`)
+    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`)
       .then((response) => response.json())
-      .then((data) => setInfoPaciente(data))
+      .then((data) => {
+        setInfoPaciente(data)
+      })
       .catch((error) => {
         console.error(error)
       })
-  }, [pacienteSeleccionado])
+  }, [BASE_URL, pacienteSeleccionado])
 
   const handlePacienteSeleccionado = (event) => {
     setPacienteSeleccionado(event.target.value)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit1 = (e) => {
     e.preventDefault()
-    setSubmitted(true)
+    setIsSubmitting(true)
+    fetch(`${BASE_URL}/pacientes`)
+      .then(() => {        
+        const partesFecha = infoPaciente.fechaNacimiento.split('-')
+        const fechaFormateada2 = `${partesFecha[2]}-${partesFecha[1]}-${partesFecha[0]}`
+        setFechaFormateada(fechaFormateada2)
+        setSubmitted(true)
+      })
+      .catch((error) => {
+        setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+        setIsModalOpen(true)
+        console.error(error)
+      })
+      .finally(() => {
+        setIsSubmitting(false)
+      })
   }
 
   const isButtonDisabled = pacienteSeleccionado === ''
@@ -92,18 +112,18 @@ const ListarPacientes = () => {
     FEMENINO: 'Femenino',
     OTRO: 'Otro',
   }
-
+  
   return (
     <div>
       {!submitted && (
         <center>
           <div>
             <br />
-            <h2>Listar Pacientes</h2><br />
+            <h2>Revisar Paciente</h2><br />
             {isModalOpen && (
               <ModalAlert message={modalAMessage} onClose={closeAModal} />
             )}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit1}>
               <div>
                 <input
                   type='text'
@@ -124,7 +144,7 @@ const ListarPacientes = () => {
                 </select>
               </div>
               <br />
-              <button type='submit' disabled={isButtonDisabled}>
+              <button type='submit' disabled={isButtonDisabled || isSubmitting}>
                 Continuar
               </button>
             </form>
@@ -136,19 +156,18 @@ const ListarPacientes = () => {
           <center>
             <br />
             <h2>Información del Paciente</h2>
-            <br />
-              <div>
+              <div className='infoPacient'>
                 <p>Nombres: {infoPaciente.nombres}</p>
                 <p>Apellidos: {infoPaciente.apellidos}</p>
                 <p>Tipo de documento: {mapaTipoDocumento[infoPaciente.tipoDocumento]}</p>
                 <p>Documento: {infoPaciente.documento}</p>
-                <p>Fecha de nacimiento: {infoPaciente.fechaNacimiento}</p>
+                <p>Fecha de nacimiento: {fechaFormateada}</p>
                 <p>Edad: {edad}</p>
                 <p>Email: {infoPaciente.email}</p>
-                <p>Género: {mapaGenero[infoPaciente.genero]}</p>
+                <p>Género: {mapaGenero[infoPaciente.genero]}</p> 
               </div>
-            <br />
-            <button onClick={handleReload}>Volver</button>
+              <br />
+            <button className='btnVolv' onClick={handleReload}>Volver</button> <br /> <br />
           </center>
         </div>
       )}
@@ -156,4 +175,4 @@ const ListarPacientes = () => {
   )
 }
 
-export default ListarPacientes
+export default RevisarPaciente

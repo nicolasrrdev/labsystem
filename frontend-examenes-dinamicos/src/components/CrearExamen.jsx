@@ -2,7 +2,7 @@ import { useState } from 'react'
 import ModalAlert from './ModalAlert'
 
 const CrearExamen = () => {
-
+  const BASE_URL = import.meta.env.VITE_BASE_URL
   const [nombre, setNombre] = useState('')
   const [numero, setNumero] = useState('')
   const [submitted, setSubmitted] = useState(false)
@@ -15,10 +15,9 @@ const CrearExamen = () => {
   const closeAModal = () => {
     setIsModalOpen(false)
   }
-
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = (event) => {
+  const handleSubmit1 = (event) => {
     event.preventDefault()
     const parsedNumero = parseInt(numero)
     setInputs(new Array(parsedNumero).fill({value: '', type: 'Texto'}))
@@ -49,7 +48,7 @@ const CrearExamen = () => {
       data[`tipoCampo${index + 1}`] = options[index]
     })
     // console.log(data)
-    fetch('http://localhost:8085/api/generateTable', {
+    fetch(`${BASE_URL}/api/generateTable`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -93,8 +92,8 @@ if (registroExitoso) {
       )}
       {!submitted &&
         <center><br/>
-        <h2>Crear Nuevo Examen</h2><br/>
-          <form onSubmit={handleSubmit}>
+        <h2>Crear Examen</h2><br/>
+          <form onSubmit={handleSubmit1}>
             Nombre del Examen:ㅤ<input type='text' name='nombreExamen' value={nombre} onChange={(event) => setNombre(event.target.value)} 
             // pattern = '^[a-zA-ZñÑáéíóúÁÉÍÓÚ 0-9#]{2,20}$'
             // title='Ingrese un Nombre válido.'
@@ -127,9 +126,9 @@ if (registroExitoso) {
                   </select>
                 </div>
               ))}
-              <br/><button type='submit' disabled={isSubmitting}>Guardar Examen</button><br/>
+              <br /> <button type='submit' disabled={isSubmitting}>Guardar Examen</button><br/>
             </form>
-            <br /> <button onClick={handleReload}>Volver</button>
+            <br /> <button className='btnVolv' onClick={handleReload}>Volver</button> <br /> <br />
         </center>
       }
     </div>

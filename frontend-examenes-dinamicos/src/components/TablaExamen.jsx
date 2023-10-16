@@ -1,85 +1,75 @@
 import { useState, useEffect } from 'react'
-import '../styles/TablaExamen.css'
-import axios from 'axios'
+import ModalAlert from './ModalAlert'
+import * as ExamData from '../data/ExamData'
 
 const TablaExamen = () => {
-
+  const BASE_URL = import.meta.env.VITE_BASE_URL
   const [pacientes, setPacientes] = useState([])
   const [pacienteSeleccionado, setPacienteSeleccionado] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [infoPaciente, setInfoPaciente] = useState([])
   const [registroExitoso, setRegistroExitoso] = useState(false)
 
-  const titlesArray = [
-    'FCRST Recuerdo libre ensayo 1',
-    'FCRST Recuerdo facilitado ensayo 1',
-    'FCRST Recuerdo libre ensayo 2'
-  ]
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalAMessage, setModalAMessage] = useState('')
+  const closeAModal = () => {
+    setIsModalOpen(false)
+  }
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const defaultInputValues = titlesArray.reduce((acc, title, index) => {
+  // ¡El title no se debe eliminar!
+  const defaultInputValues = ExamData.titlesArray1.reduce((acc, title, index) => {
     acc[`campo${index + 1}`] = ''
     return acc
   }, {})
-
   const [inputValues, setInputValues] = useState(defaultInputValues)
-
-  const handleChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target
     setInputValues({
       ...inputValues,
-      [name]: value,
+      [name]: value
     })
   }
-
-  const enviarDatos = () => {
-    const dataArray = Object.values(inputValues)
-    axios
-    .post(`http://localhost:8085/api/tabla-examen/insertar/${pacienteSeleccionado}`, dataArray)
-    .then((response) => {
-      // console.log(response.data)
-      setRegistroExitoso(true)
-    })
-    .catch((error) => {
-      window.alert('Ha ocurrido un error')
-      console.error(error)
-    })
-  }
-
+  
   useEffect(() => {
-    fetch('http://localhost:8085/pacientes')
+    fetch(`${BASE_URL}/pacientes`)
       .then((response) => response.json())
       .then((data) => {
         setPacientes(data)
         setFilteredPacientes(data)
       })
       .catch((error) => {
-        window.alert('Ha ocurrido un error')
+        setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+        setIsModalOpen(true)
         console.error(error)
       })
-  }, [])
-
-  useEffect(() => {
-    fetch(`http://localhost:8085/pacientes/${pacienteSeleccionado}`)
-      .then((response) => response.json())
-      .then((data) => setInfoPaciente(data))
-      .catch((error) => {
-        window.alert('Ha ocurrido un error')
-        console.error(error)
-      })
-  }, [pacienteSeleccionado])
+  }, [BASE_URL])
 
   const handlePacienteSeleccionado = (event) => {
     setPacienteSeleccionado(event.target.value)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit1 = (e) => {
     e.preventDefault()
-    setSubmitted(true)
+    setIsSubmitting(true)
+    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`)
+      .then((response) => response.json())
+      .then((response) => {
+        setInfoPaciente(response)
+        setSubmitted(true)
+      })
+      .catch((error) => {
+        setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+        setIsModalOpen(true)
+        console.error(error)
+      })
+      .finally(() => {
+        setIsSubmitting(false)
+      })
   }
 
   const isButtonDisabled = pacienteSeleccionado === ''
-
-  const handleReload = () => {
+  const handleReloadPage = () => {
     window.location.reload()
   }
 
@@ -88,7 +78,6 @@ const TablaExamen = () => {
   const handleSearchChange = (event) => {
     const newSearchTerm = event.target.value
     setSearchTerm(newSearchTerm)
-
     if (newSearchTerm === '') {
       setFilteredPacientes(pacientes)
     } else {
@@ -99,6 +88,46 @@ const TablaExamen = () => {
     }
   }
 
+  const scrollToBottom = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth'
+    })
+  }
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+  }
+
+  const handleSubmit2 = () => {
+    const dataArray = Object.values(inputValues)
+    fetch(`${BASE_URL}/api/tabla-examen/insertar/${pacienteSeleccionado}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataArray)
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Hubo un error al enviar los datos')
+        }
+        setRegistroExitoso(true)
+      })
+      .catch((error) => {
+        if (error.message === 'Hubo un error al enviar los datos') {
+          setModalAMessage('Hubo un error al enviar los datos')
+          setIsModalOpen(true)
+        } else {
+          setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+          setIsModalOpen(true)
+          console.error(error)
+        }
+      })
+  }
+
   if (registroExitoso) {
     return (
       <div>
@@ -106,7 +135,7 @@ const TablaExamen = () => {
           <br />
           <h2>Registro realizado con éxito</h2>
           <br />
-          <button onClick={handleReload}>Realizar un Nuevo Registro</button>
+          <button onClick={handleReloadPage}>Realizar un Nuevo Registro</button>
         </center>
       </div>
     )
@@ -114,20 +143,24 @@ const TablaExamen = () => {
 
   return (
     <div>
+      {isModalOpen && (
+        <ModalAlert message={modalAMessage} onClose={closeAModal} />
+      )}
       {!submitted && (
         <center>
           <div>
             <br />
-            <h2>Tabla Examen</h2><br />
-            <form onSubmit={handleSubmit}>
+            <h2>{ExamData.examName1}</h2><br />
+            <form onSubmit={handleSubmit1}>
               <div>
                 <input
+                  name='buscarPaciente'
                   type='text'
                   placeholder='Buscar paciente'
                   value={searchTerm}
                   onChange={handleSearchChange}
                 />
-                <select value={pacienteSeleccionado} onChange={handlePacienteSeleccionado}>
+                <select name='seleccionarPaciente' value={pacienteSeleccionado} onChange={handlePacienteSeleccionado}>
                   <option value=''>Seleccione un paciente</option>
                   {filteredPacientes
                     .sort((a, b) => a.nombres.localeCompare(b.nombres))
@@ -139,45 +172,50 @@ const TablaExamen = () => {
                 </select>
               </div>
               <br />
-              <button type='submit' disabled={isButtonDisabled}>
-                Continuar
-              </button>
+              <button type='submit' disabled={isButtonDisabled || isSubmitting}>Continuar</button>
             </form>
           </div>
         </center>
       )}
       {submitted && (
         <center>
-          <div>
-            <h5>Estudio de un marcador cognitivo preclínico para la detección temprana de la Enfermedad Alzheimer en adultos mayores del sur colombiano Huila, Caquetá BPIN: 20200001000011 RESUMEN DE LOS PUNTAJES DE LAS PRUEBAS</h5>
-            {/* <p>Nombre: ____________________ Fecha de evaluación: ______</p> */}
-            <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
+          <div className='tableContainer'> <br />
+            <h2>{ExamData.examName1}</h2>
+            <h4>{ExamData.titleExam1}</h4>
+            <p><b>Paciente: </b>{infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
+            <button className='boton-scroll-bottom' onClick={scrollToBottom}>
+              Ir al final
+            </button> <br /> <br />
             <table>
               <tbody>
-                {titlesArray.map((title, index) => (
+                {ExamData.titlesArray1.map((title, index) => (
                   <tr key={index}>
-                    <td dangerouslySetInnerHTML={{ __html: title }}></td>
+                    {/* <td dangerouslySetInnerHTML={{ __html: title }}></td> */}
+                    <td className='tdTitle' dangerouslySetInnerHTML={{ __html: title }}></td>
                     <td>
-                      <input
+                      <textarea
+                        rows={2}
                         type='text'
                         className='input-no-borders'
                         name={`campo${index + 1}`}
                         value={inputValues[`campo${index + 1}`]}
-                        onChange={handleChange}
+                        onChange={handleInputChange}
                       />
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            < br /> <button onClick={enviarDatos}>Enviar Datos</button>
+            <br /> <button className='boton-scroll-top' onClick={scrollToTop}>
+              Ir al principio
+            </button>
+            <br /> <br /> <button disabled={isSubmitting} onClick={handleSubmit2}>Realizar Registro</button> 
+            <br /> <br /> <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
           </div>
         </center>
       )}
-
     </div>
   )
 }
 
 export default TablaExamen
-//&nbsp

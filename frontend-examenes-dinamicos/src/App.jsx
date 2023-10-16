@@ -1,122 +1,106 @@
-import { Routes, Route, Link, Navigate } from 'react-router-dom'
+import { useState } from 'react'
+import { Routes, Route, Link, Navigate, useLocation } from 'react-router-dom'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import './App.css'
+import Menu from '../src/assets/menu.svg'
 
-import Home from './components/Home'
+import Inicio from './components/Inicio'
 import CrearExamen from './components/CrearExamen'
-import RegistrosEnTablasExamen from './components/RegistrosEnTablasExamen'
+import RealizarRegistro from './components/RealizarRegistro'
 import RegistrarPaciente from './components/RegistrarPaciente'
-import ListarPacientes from './components/ListarPacientes'
+import RevisarPaciente from './components/RevisarPaciente'
 import EditarPaciente from './components/EditarPaciente'
 import EditarRegistro from './components/EditarRegistro'
-import RevisarRegistros from './components/RevisarRegistros'
+import RevisarRegistro from './components/RevisarRegistro'
 import TablaExamen from './components/TablaExamen'
 
-const routeTitles = {
-  '/Home': 'Página de inicio',
-  '/RegistrarPaciente': 'Registrar Paciente',
-  '/ListarPacientes': 'Listar Pacientes',
-  '/EditarPaciente': 'Editar Paciente',
-  '/CrearExamen': 'Crear Examen',
-  '/RegistroEnExamen': 'Realizar Registro',
-  '/RevisarRegistros': 'Revisar Registros',
-  '/EditarRegistro': 'Editar Registro',
-  '/TablaExamen': 'Tabla Examen',
-  default: 'Lab Neuro',
+function formatLocationPathname(pathname) {
+  return pathname.replace(/([A-Z])/g, ' $1').trim()
 }
 
 function App() {
-
-  // const location = useLocation()
-  // const handleCrearExamenClick = () => {
-  //   if (location.pathname === '/CrearExamen') {
-  //     const shouldReload = window.confirm('¿Estás seguro que deseas recargar la página? Los cambios no guardados se perderán.')
-  //     if (shouldReload) {
-  //       window.location.reload()
-  //     }
-  //   }
-  // }
-
-  const currentPath = window.location.pathname
-  const pageTitle = routeTitles[currentPath] || routeTitles.default
-
+  
+  const location = useLocation()
+  const formattedLocationPathname = formatLocationPathname(location.pathname.substring(1)) || 'Inicio'
+  
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const toggleMenu = () => {
+    setIsMenuOpen(prevIsMenuOpen => !prevIsMenuOpen)
+  }
+  
   return (
     <HelmetProvider>
       <div>
         <Helmet>
-          <title>{pageTitle}</title>
+          <title>{formattedLocationPathname} - Lab System</title>
         </Helmet>
-        <nav>
-          <div>
-            <li>
-              <Link to={'/Home'}>
-                Exámenes de Laboratorio
-              </Link>
-            </li>
-            <li>
-              <Link to={'/RegistrarPaciente'}>
-                Registar Paciente
-              </Link>
-            </li>
-            <li>
-              <Link to={'/ListarPacientes'}>
-                Listar Pacientes
-              </Link>
-            </li>
-            <li>
-              <Link to={'/EditarPaciente'}>
-                Editar Paciente
-              </Link>
-            </li>
-            <li>
-              <Link to={'/CrearExamen'}>
-                Crear Examen
-              </Link>
-            </li>
-            {/* <li>
-              <Link to={'/CrearExamen'} onClick={handleCrearExamenClick}>
-                Crear Examen
-              </Link>
-            </li>  */}
-            <li>
-              <Link to={'/RegistroEnExamen'}>
-                Realizar Registro
-              </Link>
-            </li>
-            <li>
-              <Link to={'/RevisarRegistros'}>
-                Revisar Registros
-              </Link>
-            </li>
-            <li>
-              <Link to={'/EditarRegistro'}>
-                Editar Registro
-              </Link>
-            </li>
-            <li>
-              <Link to={'/TablaExamen'}>
-                Tabla Examen
-              </Link>
-            </li>
+        <div className={`menu-ham ${isMenuOpen ? 'abierto' : ''}`} onClick={toggleMenu}>
+          <div className="FaBars-container">
+            <img className='menuSvg' src={Menu} alt='menu' />
           </div>
-        </nav>
+          <li>
+            <Link to={'/Inicio'}>
+              Exámenes de Laboratorio
+            </Link>
+          </li>
+          <li>
+            <Link to={'/RegistrarPaciente'}>
+              Registrar Paciente
+            </Link>
+          </li>
+          <li>
+            <Link to={'/RevisarPaciente'}>
+              Revisar Paciente
+            </Link>
+          </li>
+          <li>
+            <Link to={'/EditarPaciente'}>
+              Editar Paciente
+            </Link>
+          </li>
+          <li>
+            <Link to={'/CrearExamen'}>
+              Crear Examen
+            </Link>
+          </li>
+          <li>
+            <Link to={'/RealizarRegistro'}>
+              Realizar Registro
+            </Link>
+          </li>
+          <li>
+            <Link to={'/RevisarRegistro'}>
+              Revisar Registro
+            </Link>
+          </li>
+          <li>
+            <Link to={'/EditarRegistro'}>
+              Editar Registro
+            </Link>
+          </li>
+          <li>
+            <Link to={'/TablaExamen'}>
+              Tabla Examen
+            </Link>
+          </li>
+          </div>
         <div>
             <Routes>
-              <Route path='*' element={<Navigate to='/Home' />} />
-              <Route path='/' element={<Home />} />
-              <Route path='/Home' element={<Home />} />
-              <Route path='/CrearExamen' element={<CrearExamen />} />
+              <Route path='*' element={<Navigate to='/Inicio' />} />
+              <Route path='/' element={<Inicio />} />
+              <Route path='/Inicio' element={<Inicio />} />
               <Route path='/RegistrarPaciente' element={<RegistrarPaciente />} />
-              <Route path='/ListarPacientes' element={<ListarPacientes />} />
+              <Route path='/RevisarPaciente' element={<RevisarPaciente />} />
               <Route path='/EditarPaciente' element={<EditarPaciente />} />
-              <Route path='/RegistroEnExamen' element={<RegistrosEnTablasExamen />} />
-              <Route path='/RevisarRegistros' element={<RevisarRegistros />} />
+              <Route path='/CrearExamen' element={<CrearExamen />} />
+              <Route path='/RealizarRegistro' element={<RealizarRegistro />} />
+              <Route path='/RevisarRegistro' element={<RevisarRegistro />} />
               <Route path='/EditarRegistro' element={<EditarRegistro />} />
               <Route path='/TablaExamen' element={<TablaExamen />} />
             </Routes>
         </div>
       </div>
-    </HelmetProvider>
+     </HelmetProvider>
   )
 }
 

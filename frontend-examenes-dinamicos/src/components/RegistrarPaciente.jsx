@@ -2,13 +2,12 @@ import { useState } from 'react'
 import ModalAlert from './ModalAlert'
 
 const RegistrarPaciente = () => {
-  
+  const BASE_URL = import.meta.env.VITE_BASE_URL
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalAMessage, setModalAMessage] = useState('')
   const closeAModal = () => {
     setIsModalOpen(false)
   }
-
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [formData, setFormData] = useState({
@@ -36,7 +35,7 @@ const RegistrarPaciente = () => {
     'apellidos must not be blank': 'Ingrese un Apellido válido',
     'email inválido': 'Email inválido'
   }
-  const handleSubmit = (e) => {
+  const handleSubmit1 = (e) => {
     e.preventDefault()
     setIsSubmitting(true)
     if (!formData.nombres || !formData.apellidos || !formData.documento || !formData.fechaNacimiento || !formData.email) {
@@ -45,7 +44,7 @@ const RegistrarPaciente = () => {
       setIsSubmitting(false)
       return
     }
-    fetch('http://localhost:8085/pacientes', {
+    fetch(`${BASE_URL}/pacientes`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -100,8 +99,8 @@ const RegistrarPaciente = () => {
       <ModalAlert message={modalAMessage} onClose={closeAModal} />
      )}
     <center> <br />
-    <h2>Registar un Nuevo Paciente</h2> <br />
-      <form onSubmit={handleSubmit}>
+    <h2>Registrar Paciente</h2> <br />
+      <form onSubmit={handleSubmit1}>
 
         <div>
           Nombres:ㅤ

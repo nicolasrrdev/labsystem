@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import ModalAlert from './ModalAlert'
 
 const RevisarRegistros = () => {
+  const BASE_URL = import.meta.env.VITE_BASE_URL
   const [tableName, setTableName] = useState('')
   const [examList, setExamList] = useState([])
   const [pacientes, setPacientes] = useState([])
@@ -25,11 +25,10 @@ const RevisarRegistros = () => {
   const closeAModal = () => {
     setIsModalOpen(false)
   }
-
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
-    fetch('http://localhost:8085/pacientes')
+    fetch(`${BASE_URL}/pacientes`)
       .then((response) => response.json())
       .then((data) => {
         setPacientes(data)
@@ -40,44 +39,48 @@ const RevisarRegistros = () => {
         setIsModalOpen(true)
         console.error(error)
       })
-  }, [])
+  }, [BASE_URL])
 
   useEffect(() => {
-    fetch(`http://localhost:8085/pacientes/${pacienteSeleccionado}`)
+    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`)
       .then((response) => response.json())
       .then((data) => setInfoPaciente(data))
       .catch((error) => {
         console.error(error)
       })
-  }, [pacienteSeleccionado])
+  }, [BASE_URL, pacienteSeleccionado])
 
   const handlePacienteSeleccionado = (event) => {
     setPacienteSeleccionado(event.target.value)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit1 = (e) => {
     e.preventDefault()
-    fetch(`http://localhost:8085/api/exam/${nombreTabla2}/paciente/${pacienteSeleccionado}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          await response.json()
-          setModalAMessage('No hay registros disponibles')
-          setIsModalOpen(true)
+    setIsSubmitting(true)
+    fetch(`${BASE_URL}/api/exam/${nombreTabla2}/paciente/${pacienteSeleccionado}`)
+      .then((response) => {
+        if (response.status === 404) {
+          return Promise.reject('No hay registros disponibles')
         }
-        const jsonData = await response.json()
-        setJsonData(jsonData)
+        return response.json()
       })
-      .then(() => {
+      .then((response) => {        
+        setJsonData(response)
         setRegistroExitoso(true)
         setSubmitted(true)
       })
       .catch((error) => {
+      if (error === 'No hay registros disponibles') {
+        setModalAMessage('No hay registros disponibles')
+        setIsModalOpen(true)
+      } else {
+        setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+        setIsModalOpen(true)
         console.error(error)
+      }
+      })
+      .finally(() => {
+        setIsSubmitting(false)
       })
   }
 
@@ -85,16 +88,16 @@ const RevisarRegistros = () => {
   const isButtonDisabled2 = registroDate === ''
 
   useEffect(() => {
-    axios
-      .get('http://localhost:8085/api/examen/nombreExamen')
-      .then((response) => {
-        setExamList(response.data.nombres_examenes)
-        setNombreTabla(response.data.nombres_tablas)
+    fetch(`${BASE_URL}/api/examen/nombreExamen`)
+      .then(response => response.json())
+      .then(data => {
+        setExamList(data.nombres_examenes)
+        setNombreTabla(data.nombres_tablas)
       })
       .catch((error) => {
         console.error(error)
       })
-  }, [])
+  }, [BASE_URL])
 
   const handleExamSelection = (e) => {
     const selectedIndex = e.target.selectedIndex
@@ -104,63 +107,64 @@ const RevisarRegistros = () => {
 
   useEffect(() => {
     if (nombreTabla2) {
-      fetch(`http://localhost:8085/api/examen/${nombreTabla2}/tiposCampos`)
+      fetch(`${BASE_URL}/api/examen/${nombreTabla2}/tiposCampos`)
         .then((response) => response.json())
         .catch((error) => {
           console.error(error)
         })
     }
-  }, [nombreTabla2])
+  }, [BASE_URL, nombreTabla2])
 
   useEffect(() => {
     if (nombreTabla2) {
-      fetch(`http://localhost:8085/api/exam/${nombreTabla2}`)
+      fetch(`${BASE_URL}/api/exam/${nombreTabla2}`)
         .then((response) => response.json())
         .catch((error) => {
           console.error(error)
         })
     }
-  }, [nombreTabla2])
+  }, [BASE_URL, nombreTabla2])
 
   useEffect(() => {
     if (nombreTabla2) {
-      fetch(`http://localhost:8085/api/exam/${nombreTabla2}/numFields`)
+      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/numFields`)
         .then((response) => response.json())
         .catch((error) => {
           console.error(error)
         })
     }
-  }, [nombreTabla2])
+  }, [BASE_URL, nombreTabla2])
 
   const handleSubmit2 = (e) => {
     e.preventDefault()
-    axios
-      .get(`http://localhost:8085/api/examen/${nombreTabla2}/tiposCampos`)
-      .then((response) => {
-        setCampoTipos(response.data)
+    setIsSubmitting(true)
+    const requests = [
+      fetch(`${BASE_URL}/api/examen/${nombreTabla2}/tiposCampos`),
+      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/record/${idSeleccionado2}`),
+      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/record/1`),
+    ]
+    Promise.all(requests)
+      .then((responses) => {
+        return Promise.all(responses.map(response => {
+          return response.json()
+        }))
+      })
+      .then(([campoTiposResponse, inputsResponse, campoDataResponse]) => {
+        setCampoTipos(campoTiposResponse)
+        setInputs(inputsResponse)
+        setCampoData(campoDataResponse)
+  
+        setRegistroExitoso(false)
+        setRegistroExitoso2(true)
       })
       .catch((error) => {
+        setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+        setIsModalOpen(true)
         console.error(error)
       })
-    axios
-      .get(`http://localhost:8085/api/exam/${nombreTabla2}/record/${idSeleccionado2}`)
-      .then((response) => {
-        setInputs(response.data)
+      .finally(() => {
+        setIsSubmitting(false)
       })
-      .catch((error) => {
-        console.error(error)
-      })
-    axios
-      .get(`http://localhost:8085/api/exam/${nombreTabla2}/record/1`)
-      .then((response) => {
-        const campoData = response.data
-        setCampoData(campoData)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-    setRegistroExitoso2(true)
-    setRegistroExitoso(false)
   }
   
   const handleReloadPage = () => {
@@ -195,13 +199,11 @@ const RevisarRegistros = () => {
       if (Object.prototype.hasOwnProperty.call(campoTipos, key)) {
         const campoNombre = key
         const valor = inputs[campoNombre] || ''
-  
         campos.push(
           <div key={campoNombre}>
-            <label htmlFor={campoNombre} style={{ marginRight: '5px' }}>
-              {campoData[campoNombre.split('_tipo')[0]] || campoNombre}{':'}
-            </label>
-            <span>{valor}</span>
+            <div style={{ marginRight: '5px' }}>
+              {campoData[campoNombre.split('_tipo')[0]] || campoNombre}{':'} <span>{valor}</span>
+            </div>
           </div>
         )
       }
@@ -218,9 +220,9 @@ const RevisarRegistros = () => {
         <center>
           <div>
             <br />
-            <h2>Revisar Registros</h2>
+            <h2>Revisar Registro</h2>
             <br />
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit1}>
               <div>
                 <label htmlFor='tableName'>Seleccione un examen:ㅤ</label>
                 <select
@@ -262,7 +264,7 @@ const RevisarRegistros = () => {
 
               </div>
               <br />
-              <button type='submit' disabled={isButtonDisabled}>
+              <button type='submit' disabled={isButtonDisabled || isSubmitting}>
                 Continuar
               </button>
             </form>
@@ -275,14 +277,15 @@ const RevisarRegistros = () => {
         <form onSubmit={handleSubmit2}>
         <div>
           <br />
-          <h2>Revisar Registros</h2>
+          <h2>Revisar Registro</h2>
           <br />
           <div>
             <p>Nombre del examen: {tableName}</p>
             <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
             
-            <label>Seleccione un registro:ㅤ</label>
+            <label htmlFor='registroDate'>Seleccione un registro:ㅤ</label>
             <select
+              id='registroDate'
               name='registroDate'
               value={registroDate}
               onChange={handleRegistroSeleccionado}
@@ -295,6 +298,7 @@ const RevisarRegistros = () => {
                 const fechaB = new Date(b.fecha_registro)
                 return fechaA - fechaB
               })
+              .reverse()
               .map((seleccion, index) => (
                 <option key={index} value={seleccion.fecha_registro} data-id={seleccion.id}>
                   {new Date(seleccion.fecha_registro).toLocaleString('es-ES')}
@@ -304,11 +308,11 @@ const RevisarRegistros = () => {
           </div>
         </div>
         <br />
-          <button type='submit' disabled={isButtonDisabled2}>
+          <button type='submit' disabled={isButtonDisabled2 || isSubmitting}>
             Continuar
           </button>
         </form>
-        <br /> <button onClick={handleReloadPage}>Volver</button>
+        <br /> <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
         </center>
       )}
 
@@ -316,16 +320,17 @@ const RevisarRegistros = () => {
         <center>
         <div>
           <br />
-          <h2>Revisar Registros</h2>
+          <h2>Revisar Registro</h2>
           <br />
           <div>
-            <p>Registros en: {tableName}</p>
-            <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
+            <p><b>Nombre del Examen: </b>{tableName}</p>
+            <p><b>Paciente: </b>{infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
+            <p><b>Información registrada:</b></p>
             {renderCamposDinamicos()}
           </div>
         </div>
         <br />
-        <button onClick={handleReloadPage}>Volver</button>
+        <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
         </center>
       )}
 

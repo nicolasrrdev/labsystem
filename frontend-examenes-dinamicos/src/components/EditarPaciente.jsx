@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import ModalAlert from './ModalAlert'
 
 const EditarPacientes = () => {
-
+  const BASE_URL = import.meta.env.VITE_BASE_URL
   const [pacientes, setPacientes] = useState([])
   const [pacienteSeleccionado, setPacienteSeleccionado] = useState('')
 
@@ -21,11 +21,10 @@ const EditarPacientes = () => {
   const closeAModal = () => {
     setIsModalOpen(false)
   }
-
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
-    fetch('http://localhost:8085/pacientes')
+    fetch(`${BASE_URL}/pacientes`)
       .then((response) => response.json())
       .then((data) => {
         setPacientes(data)
@@ -36,10 +35,10 @@ const EditarPacientes = () => {
         setIsModalOpen(true)
         console.error(error)
       })
-  }, [])
+  }, [BASE_URL])
 
   useEffect(() => {
-    fetch(`http://localhost:8085/pacientes/${pacienteSeleccionado}`)
+    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`)
       .then((response) => response.json())
       .then((data) => {
         setNombres(data.nombres)
@@ -53,13 +52,13 @@ const EditarPacientes = () => {
     .catch((error) => {
       console.error(error)
     })
-  }, [pacienteSeleccionado])
+  }, [BASE_URL, pacienteSeleccionado])
 
   const handlePacienteSeleccionado = (event) => {
     setPacienteSeleccionado(event.target.value)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit1 = (e) => {
     e.preventDefault()
     setSubmitted(true)
     pacientes.find(
@@ -112,7 +111,7 @@ const EditarPacientes = () => {
       setIsSubmitting(false)
       return
     }
-    fetch(`http://localhost:8085/pacientes/${pacienteSeleccionado}`, {
+    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -168,7 +167,7 @@ const EditarPacientes = () => {
           <div>
             <br />
             <h2>Editar Paciente</h2> <br />
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit1}>
               <div>
                 <input
                   type='text'
@@ -272,7 +271,7 @@ const EditarPacientes = () => {
             </select> <br /> <br />
             <button type='submit' disabled={isSubmitting}>Enviar</button>
           </form>
-          <br /> <button onClick={handleReload}>Volver</button>
+          <br /> <button className='btnVolv' onClick={handleReload}>Volver</button> <br /> <br />
           </center>
         </div>
       )}
