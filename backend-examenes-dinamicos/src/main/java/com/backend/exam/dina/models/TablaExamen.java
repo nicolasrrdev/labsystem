@@ -1,5 +1,7 @@
 package com.backend.exam.dina.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ public class TablaExamen {
     private Paciente paciente;
 
     @OneToMany(mappedBy = "tablaExamen", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<TablaExamenCampo> campos = new ArrayList<>();
 
     @Column(name = "timestamp")

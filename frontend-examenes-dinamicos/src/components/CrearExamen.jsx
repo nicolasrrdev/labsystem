@@ -47,7 +47,6 @@ const CrearExamen = () => {
       data[`nombreCampo${index + 1}`] = input.value
       data[`tipoCampo${index + 1}`] = options[index]
     })
-    // console.log(data)
     fetch(`${BASE_URL}/api/generateTable`, {
       method: 'POST',
       headers: {
@@ -55,17 +54,27 @@ const CrearExamen = () => {
       },
       body: JSON.stringify(data)
     })
+    .then((response) => {
+      if (response.status === 500) {
+        return Promise.reject('Ha ocurrido un error inesperado')
+      }
+    })
     .then(() => {
       setRegistroExitoso(true)
     })
     .catch((error) => {
-      setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
-      setIsModalOpen(true)
-      console.error(error)
-    })
-    .finally(() => {
-      setIsSubmitting(false)
-    })
+      if (error === 'Ha ocurrido un error inesperado') {
+        setModalAMessage('Ha ocurrido un error inesperado')
+        setIsModalOpen(true)
+      } else {
+        setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+        setIsModalOpen(true)
+        console.error(error)
+      }
+      })
+      .finally(() => {
+        setIsSubmitting(false)
+      })
 }
 
 const handleReload = () => {

@@ -71,14 +71,14 @@ const EditarRegistro = () => {
         setSubmitted(true)
       })
       .catch((error) => {
-      if (error === 'No hay registros disponibles') {
-        setModalAMessage('No hay registros disponibles')
-        setIsModalOpen(true)
-      } else {
-        setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
-        setIsModalOpen(true)
-        console.error(error)
-      }
+        if (error === 'No hay registros disponibles') {
+          setModalAMessage('No hay registros disponibles')
+          setIsModalOpen(true)
+        } else {
+          setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+          setIsModalOpen(true)
+          console.error(error)
+        }
       })
       .finally(() => {
         setIsSubmitting(false)

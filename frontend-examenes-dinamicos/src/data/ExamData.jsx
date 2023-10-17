@@ -6,7 +6,7 @@ export const titlesArrayExample = [
   'FCRST Recuerdo libre ensayo 1'
 ]
 
-export const examName1 = '1. Hoja de Resumen Puntaje Pruebas Actualizada'
+export const examName1 = 'Tabla de Datos y Exámenes'
 export const titleExam1 = 'Estudio de un marcador cognitivo preclínico para la detección temprana de la Enfermedad Alzheimer en adultos mayores del sur colombiano Huila, Caquetá BPIN: 20200001000011 RESUMEN DE LOS PUNTAJES DE LAS PRUEBAS'
 export const titlesArray1 = [
   '<b>1. FCSRT</b>',

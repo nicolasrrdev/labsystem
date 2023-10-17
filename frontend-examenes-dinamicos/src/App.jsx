@@ -81,12 +81,12 @@ function App() {
           </li>
           <li>
             <Link to={'/TablaExamen'}>
-              Tabla Datos y Exámenes
+              Tabla de Datos y Exámenes
             </Link>
           </li>
           <li>
             <Link to={'/EditarTablaExamen'}>
-              Editar Tabla Datos y Exámenes
+              Editar Tabla de Datos y Exámenes
             </Link>
           </li>
           </div>
