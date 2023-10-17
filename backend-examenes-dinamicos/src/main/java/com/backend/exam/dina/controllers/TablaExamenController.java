@@ -30,9 +30,9 @@ public class TablaExamenController {
 
     @PostMapping("/insertar/{pacienteId}")
     public ResponseEntity<String> insertarTablaExamen(@RequestBody List<String> valores, @PathVariable Integer pacienteId) {
-        if (valores.size() != 124) {
+        if (valores.size() != 3) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Debe proporcionar 124 valores");
+                    .body("Debe proporcionar 3 valores");
         }
 
         Paciente paciente = pacienteService.obtenerPacientePorId(pacienteId);
@@ -60,4 +60,46 @@ public class TablaExamenController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("Registro exitoso");
     }
+
+
+    @PutMapping("/actualizar/{tablaExamenId}")
+    public ResponseEntity<String> actualizarTablaExamen(@PathVariable Integer tablaExamenId,
+                                                        @RequestBody List<String> nuevosValores) {
+        if (nuevosValores.size() != 3) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Debe proporcionar 3 valores");
+        }
+        TablaExamen tablaExamen = tablaExamenService.obtenerTablaExamenPorId(tablaExamenId);
+        if (tablaExamen == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Registro no encontrado");
+        }
+        List<TablaExamenCampo> campos = tablaExamen.getCampos();
+        if (campos.size() != nuevosValores.size()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("La cantidad de valores proporcionados no coincide con la cantidad de campos");
+        }
+        for (int i = 0; i < campos.size(); i++) {
+            campos.get(i).setCampo(nuevosValores.get(i));
+        }
+        tablaExamen.setTimestamp(LocalDateTime.now());
+        tablaExamenService.actualizarTablaExamen(tablaExamen);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("Actualización exitosa");
+    }
+
+    @DeleteMapping("/eliminar/{tablaExamenId}")
+    public ResponseEntity<String> eliminarTablaExamen(@PathVariable Integer tablaExamenId) {
+        TablaExamen tablaExamen = tablaExamenService.obtenerTablaExamenPorId(tablaExamenId);
+        if (tablaExamen == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Registro no encontrado");
+        }
+
+        tablaExamenService.eliminarTablaExamen(tablaExamen);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("Eliminación exitosa");
+    }
+
 }
