@@ -17,8 +17,7 @@ const TablaExamen = () => {
   }
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // ¡El title no se debe eliminar!
-  const defaultInputValues = ExamData.titlesArray1.reduce((acc, title, index) => {
+  const defaultInputValues = ExamData.titlesArrayExample.reduce((acc, title, index) => {
     acc[`campo${index + 1}`] = ''
     return acc
   }, {})
@@ -45,8 +44,8 @@ const TablaExamen = () => {
       })
   }, [BASE_URL])
 
-  const handlePacienteSeleccionado = (event) => {
-    setPacienteSeleccionado(event.target.value)
+  const handlePacienteSeleccionado = (e) => {
+    setPacienteSeleccionado(e.target.value)
   }
 
   const handleSubmit1 = (e) => {
@@ -55,13 +54,21 @@ const TablaExamen = () => {
     fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`)
       .then((response) => response.json())
       .then((response) => {
+        if (!response.ok) {
+          throw new Error('Hubo un error al obtener los datos')
+        }
         setInfoPaciente(response)
         setSubmitted(true)
       })
       .catch((error) => {
-        setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
-        setIsModalOpen(true)
-        console.error(error)
+        if (error.message === 'Hubo un error al obtener los datos') {
+          setModalAMessage('Hubo un error al obtener los datos')
+          setIsModalOpen(true)
+        } else {
+          setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+          setIsModalOpen(true)
+          console.error(error)
+        }
       })
       .finally(() => {
         setIsSubmitting(false)
@@ -75,8 +82,8 @@ const TablaExamen = () => {
 
   const [searchTerm, setSearchTerm] = useState('')
   const [filteredPacientes, setFilteredPacientes] = useState(pacientes)
-  const handleSearchChange = (event) => {
-    const newSearchTerm = event.target.value
+  const handleSearchChange = (e) => {
+    const newSearchTerm = e.target.value
     setSearchTerm(newSearchTerm)
     if (newSearchTerm === '') {
       setFilteredPacientes(pacientes)
@@ -103,7 +110,7 @@ const TablaExamen = () => {
 
   const handleSubmit2 = () => {
     const dataArray = Object.values(inputValues)
-    fetch(`${BASE_URL}/api/tabla-examen/insertar/${pacienteSeleccionado}`, {
+    fetch(`${BASE_URL}/api/tabla_examen/post/${pacienteSeleccionado}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -150,7 +157,7 @@ const TablaExamen = () => {
         <center>
           <div>
             <br />
-            <h2>{ExamData.examName1}</h2><br />
+            <h2>Tabla de Datos y Exámenes</h2> <br />
             <form onSubmit={handleSubmit1}>
               <div>
                 <input
@@ -180,17 +187,13 @@ const TablaExamen = () => {
       {submitted && (
         <center>
           <div className='tableContainer'> <br />
-            <h2>{ExamData.examName1}</h2>
-            <h4>{ExamData.titleExam1}</h4>
+            <h2>Tabla de Datos y Exámenes</h2> <br />
             <p><b>Paciente: </b>{infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
-            <button className='boton-scroll-bottom' onClick={scrollToBottom}>
-              Ir al final
-            </button> <br /> <br />
+            <button className='boton-scroll-bottom' onClick={scrollToBottom}>Ir al final</button> <br /> <br />
             <table>
               <tbody>
-                {ExamData.titlesArray1.map((title, index) => (
+                {ExamData.titlesArrayExample.map((title, index) => (
                   <tr key={index}>
-                    {/* <td dangerouslySetInnerHTML={{ __html: title }}></td> */}
                     <td className='tdTitle' dangerouslySetInnerHTML={{ __html: title }}></td>
                     <td>
                       <textarea
@@ -206,9 +209,7 @@ const TablaExamen = () => {
                 ))}
               </tbody>
             </table>
-            <br /> <button className='boton-scroll-top' onClick={scrollToTop}>
-              Ir al principio
-            </button>
+            <br /> <button className='boton-scroll-top' onClick={scrollToTop}>Ir al principio</button>
             <br /> <br /> <button disabled={isSubmitting} onClick={handleSubmit2}>Realizar Registro</button> 
             <br /> <br /> <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
           </div>

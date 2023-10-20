@@ -1,28 +1,22 @@
 package com.backend.exam.dina.services;
-
 import com.backend.exam.dina.models.TablaExamen;
 import com.backend.exam.dina.repositories.TablaExamenRepository;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
-
+import java.util.List;
 @Service
 @Transactional
 public class TablaExamenService {
-
     private final TablaExamenRepository tablaExamenRepository;
-
     @Autowired
     public TablaExamenService(TablaExamenRepository tablaExamenRepository) {
         this.tablaExamenRepository = tablaExamenRepository;
     }
-
     public void insertarTablaExamen(TablaExamen tablaExamen) {
         tablaExamenRepository.save(tablaExamen);
     }
-
     public TablaExamen obtenerTablaExamenPorId(Integer id) {
         TablaExamen tablaExamen = tablaExamenRepository.findById(id).orElse(null);
         if (tablaExamen != null) {
@@ -30,13 +24,16 @@ public class TablaExamenService {
         }
         return tablaExamen;
     }
-
     public void actualizarTablaExamen(TablaExamen tablaExamen) {
         tablaExamenRepository.save(tablaExamen);
     }
-
     public void eliminarTablaExamen(TablaExamen tablaExamen) {
         tablaExamenRepository.delete(tablaExamen);
     }
-
+    public List<TablaExamen> obtenerTodosTablaExamen() {
+        return tablaExamenRepository.findAll();
+    }
+    public List<TablaExamen> obtenerTablaExamenPorPacienteId(Integer pacienteId) {
+        return tablaExamenRepository.findByPacienteId(pacienteId);
+    }
 }

@@ -3,13 +3,19 @@ import ModalAlert from './ModalAlert'
 import * as ExamData from '../data/ExamData'
 
 const EditarTablaExamen = () => {
-
   const BASE_URL = import.meta.env.VITE_BASE_URL
   const [pacientes, setPacientes] = useState([])
   const [pacienteSeleccionado, setPacienteSeleccionado] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [initialPage, setInitialPage] = useState(true)
+  const [submitted1, setSubmitted1] = useState(false)
+  const [submitted2, setSubmitted2] = useState(false)
   const [infoPaciente, setInfoPaciente] = useState([])
   const [registroExitoso, setRegistroExitoso] = useState(false)
+  const [tablaExamenData, setTablaExamenData] = useState([])
+  const [registroSeleccionado, setRegistroSeleccionado] = useState()
+  const [dataId, setDataId] = useState()
+  const [inputValues, setInputValues] = useState()
+  const [tablaExamenId,setTablaExamenId] = useState()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalAMessage, setModalAMessage] = useState('')
@@ -17,27 +23,38 @@ const EditarTablaExamen = () => {
     setIsModalOpen(false)
   }
   const [isSubmitting, setIsSubmitting] = useState(false)
-
-  // ¡El title no se debe eliminar!
-  const defaultInputValues = ExamData.titlesArray1.reduce((acc, title, index) => {
-    acc[`campo${index + 1}`] = ''
-    return acc
-  }, {})
-  const [inputValues, setInputValues] = useState(defaultInputValues)
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setInputValues({
       ...inputValues,
-      [name]: value
+      [name]: value,
     })
   }
+  useEffect(() => {
+    dataId?.length && fetch(`${BASE_URL}/api/tabla_examen/_campos/get/${dataId}`)
+      .then((response) => response.json())
+      .then((response) => {
+        const campos = response.map((item) => item.campo)
+        setTablaExamenId(response[0]?.tabla_examen_id)
+        const defaultInputValues = ExamData.titlesArrayExample.reduce((acc, title, index) => {
+          acc[`campo${index + 1}`] = campos[index]
+          return acc
+        }, {})
+        setInputValues(defaultInputValues)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }, [BASE_URL, dataId])
   
+
   useEffect(() => {
     fetch(`${BASE_URL}/pacientes`)
       .then((response) => response.json())
-      .then((data) => {
-        setPacientes(data)
-        setFilteredPacientes(data)
+      .then((response) => {
+        setPacientes(response)
+        setFilteredPacientes(response)
       })
       .catch((error) => {
         setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
@@ -46,21 +63,54 @@ const EditarTablaExamen = () => {
       })
   }, [BASE_URL])
 
-  const handlePacienteSeleccionado = (event) => {
-    setPacienteSeleccionado(event.target.value)
-  }
-
-  const handleSubmit1 = (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+  useEffect(() => {
     fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`)
       .then((response) => response.json())
       .then((response) => {
         setInfoPaciente(response)
-        setSubmitted(true)
       })
       .catch((error) => {
-        setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+        console.error(error)
+      })
+  }, [BASE_URL, pacienteSeleccionado])
+
+  const handlePacienteSeleccionado = (e) => {
+    setPacienteSeleccionado(e.target.value)
+  }
+
+  const errorMessages = {
+    '404': 'No se encontraron registros',
+    '404-2': 'No se encontraron registros',
+    '500': 'Ha ocurrido un error inesperado',
+    'default': 'Error: No se pudo establecer conexión con el servidor'
+  }
+  const handleSubmit1 = (e) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    const fetchAllData = fetch(`${BASE_URL}/api/tabla_examen/get/all`)
+      .then((response) => {
+        if (response.status === 404) {
+          throw new Error('404')
+        }
+        if (response.status === 500) {
+          throw new Error('500')
+        }
+        return response.json()
+      })
+    const fetchSpecificData = fetch(`${BASE_URL}/api/tabla_examen/get/timestamp/${pacienteSeleccionado}`)
+      .then((response) => {
+        if (response.status === 404) {
+          throw new Error('404-2')
+        }
+      })
+    Promise.all([fetchAllData, fetchSpecificData])
+      .then(([allData]) => {
+        setTablaExamenData(allData)
+        setInitialPage(false)
+        setSubmitted1(true)
+      })
+      .catch((error) => {
+        setModalAMessage(errorMessages[error.message] || errorMessages.default)
         setIsModalOpen(true)
         console.error(error)
       })
@@ -68,7 +118,7 @@ const EditarTablaExamen = () => {
         setIsSubmitting(false)
       })
   }
-
+  
   const isButtonDisabled = pacienteSeleccionado === ''
   const handleReloadPage = () => {
     window.location.reload()
@@ -76,8 +126,8 @@ const EditarTablaExamen = () => {
 
   const [searchTerm, setSearchTerm] = useState('')
   const [filteredPacientes, setFilteredPacientes] = useState(pacientes)
-  const handleSearchChange = (event) => {
-    const newSearchTerm = event.target.value
+  const handleSearchChange = (e) => {
+    const newSearchTerm = e.target.value
     setSearchTerm(newSearchTerm)
     if (newSearchTerm === '') {
       setFilteredPacientes(pacientes)
@@ -102,10 +152,57 @@ const EditarTablaExamen = () => {
     })
   }
 
-  const handleSubmit2 = () => {
+  const handleRegistroSeleccionado = (e) => {
+    const selectedOption = e.target.options[e.target.selectedIndex]
+    const selectedTimestamp = e.target.value
+    const selectedId = selectedOption.dataset.id
+    if (selectedTimestamp === '') {
+      setRegistroSeleccionado(undefined)
+    } else {
+      setRegistroSeleccionado(selectedTimestamp)
+    }
+    setDataId(selectedId)
+  }
+
+  const handleSubmit2 = (e) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    fetch(`${BASE_URL}/api/tabla_examen/_campos/get/${dataId}`)
+      .then((response) => {
+        if (response.status === 404) {
+          throw new Error('No se encontró el registro')
+        }
+        if (response.status === 500) {
+          throw new Error('Ha ocurrido un error inesperado')
+        }
+        return response.json()
+      })
+      .then(() => {
+        setSubmitted1(false)
+        setSubmitted2(true)
+      })
+      .catch((error) => {
+        if (error.message === 'No se encontró el registro') {
+          setModalAMessage('No se encontró el registro')
+        } else if (error.message === 'Ha ocurrido un error inesperado') {
+          setModalAMessage('Ha ocurrido un error inesperado')
+        } else {
+          setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+          console.error(error)
+        }
+        setIsModalOpen(true)
+      })
+      .finally(() => {
+        setIsSubmitting(false)
+      })
+  }
+
+  const handleSubmit3 = (e) => {
+    e.preventDefault()
+    setIsSubmitting(true)
     const dataArray = Object.values(inputValues)
-    fetch(`${BASE_URL}/api/tabla-examen/insertar/${pacienteSeleccionado}`, {
-      method: 'POST',
+    fetch(`${BASE_URL}/api/tabla_examen/put/${tablaExamenId}`, {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -127,6 +224,9 @@ const EditarTablaExamen = () => {
           console.error(error)
         }
       })
+      .finally(() => {
+        setIsSubmitting(false)
+      })
   }
 
   if (registroExitoso) {
@@ -134,9 +234,9 @@ const EditarTablaExamen = () => {
       <div>
         <center>
           <br />
-          <h2>Registro realizado con éxito</h2>
+          <h2>Registro editado con éxito</h2>
           <br />
-          <button onClick={handleReloadPage}>Realizar un Nuevo Registro</button>
+          <button onClick={handleReloadPage}>Editar otro Registro</button>
         </center>
       </div>
     )
@@ -147,11 +247,11 @@ const EditarTablaExamen = () => {
       {isModalOpen && (
         <ModalAlert message={modalAMessage} onClose={closeAModal} />
       )}
-      {!submitted && (
+      {initialPage && (
         <center>
           <div>
             <br />
-            <h2>Editar {ExamData.examName1}</h2><br />
+            <h2>Editar Tabla de Datos y Exámenes</h2> <br />
             <form onSubmit={handleSubmit1}>
               <div>
                 <input
@@ -178,10 +278,59 @@ const EditarTablaExamen = () => {
           </div>
         </center>
       )}
-      {submitted && (
+      {submitted1 && (
+        <center>
+          <div> <br />
+            <h2>Editar Tabla de Datos y Exámenes</h2> <br />
+            <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
+            <form onSubmit={handleSubmit2}>
+              <label className='labelFontSize' htmlFor='timestampSelect'>Registro: </label>
+              <select id='timestampSelect' onChange={handleRegistroSeleccionado}>
+                <option value=''>Seleccione un registro</option>
+                {tablaExamenData
+                  .filter(item => item.paciente_id === pacienteSeleccionado)
+                  .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                  .map(item => (
+                    <option key={item.timestamp} value={item.timestamp} data-id={item.id}>
+                      {new Date(item.timestamp).toLocaleString()}
+                    </option>
+                  ))}
+              </select>
+              <br /> <br />
+              <button type='submit' disabled={registroSeleccionado === undefined || isSubmitting}>Continuar</button>
+              <br /> <br /> <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br />
+            </form>
+          </div> <br />
+        </center>
+      )}
+      {submitted2 && (
         <center>
           <div className='tableContainer'> <br />
-            <h1>¡Hola!</h1>
+            <h2>Editar Tabla de Datos y Exámenes</h2> <br />
+            <p><b>Paciente: </b>{infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
+            <button className='boton-scroll-bottom' onClick={scrollToBottom}>Ir al final</button> <br /> <br />
+            <table>
+              <tbody>
+                {ExamData.titlesArrayExample.map((title, index) => (
+                  <tr key={index}>
+                    <td className='tdTitle' dangerouslySetInnerHTML={{ __html: title }}></td>
+                    <td>
+                      <textarea
+                        rows={2}
+                        type='text'
+                        className='input-no-borders'
+                        name={`campo${index + 1}`}
+                        value={inputValues[`campo${index + 1}`]}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <br /> <button className='boton-scroll-top' onClick={scrollToTop}>Ir al principio</button> <br /> <br />
+            <button disabled={isSubmitting} onClick={handleSubmit3}>Editar Registro</button> <br /> <br />
+            <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
           </div>
         </center>
       )}

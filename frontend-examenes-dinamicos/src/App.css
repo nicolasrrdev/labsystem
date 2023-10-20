@@ -208,3 +208,7 @@ p {
     width: 400px;
   }
 }
+
+.labelFontSize {
+  font-size: 20px;
+}

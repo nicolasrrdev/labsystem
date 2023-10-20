@@ -46,8 +46,8 @@ const RealizarRegistro = () => {
       })
   }, [BASE_URL, pacienteSeleccionado])
 
-  const handlePacienteSeleccionado = (event) => {
-    setPacienteSeleccionado(event.target.value)
+  const handlePacienteSeleccionado = (e) => {
+    setPacienteSeleccionado(e.target.value)
   }
 
   const handleSubmit1 = (e) => {
@@ -176,8 +176,8 @@ const RealizarRegistro = () => {
 
   const [searchTerm, setSearchTerm] = useState('')
   const [filteredPacientes, setFilteredPacientes] = useState(pacientes)
-  const handleSearchChange = (event) => {
-    const newSearchTerm = event.target.value
+  const handleSearchChange = (e) => {
+    const newSearchTerm = e.target.value
     setSearchTerm(newSearchTerm)
     if (newSearchTerm === '') {
       setFilteredPacientes(pacientes)
