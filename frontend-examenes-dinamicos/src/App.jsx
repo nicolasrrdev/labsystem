@@ -14,6 +14,7 @@ import EditarRegistro from './components/EditarRegistro'
 import RevisarRegistro from './components/RevisarRegistro'
 import TablaExamen from './components/TablaExamen'
 import EditarTablaExamen from './components/EditarTablaExamen'
+import EliminarTablaExamen from './components/EliminarTablaExamen'
 
 function formatLocationPathname(pathname) {
   return pathname.replace(/([A-Z])/g, ' $1').trim()
@@ -89,6 +90,11 @@ function App() {
               Editar Tabla de Datos y Exámenes
             </Link>
           </li>
+          <li>
+            <Link to={'/EliminarTablaExamen'}>
+              Eliminar Tabla de Datos y Exámenes
+            </Link>
+          </li>
           </div>
         <div>
             <Routes>
@@ -104,6 +110,7 @@ function App() {
               <Route path='/EditarRegistro' element={<EditarRegistro />} />
               <Route path='/TablaExamen' element={<TablaExamen />} />
               <Route path='/EditarTablaExamen' element={<EditarTablaExamen />} />
+              <Route path='/EliminarTablaExamen' element={<EliminarTablaExamen />} />
             </Routes>
         </div>
       </div>

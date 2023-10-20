@@ -212,3 +212,7 @@ p {
 .labelFontSize {
   font-size: 20px;
 }
+
+img {
+  cursor: pointer;
+}

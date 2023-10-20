@@ -98,6 +98,7 @@ public class TablaExamenController {
                     .body("No se encontró el registro con el ID suministrado");
         }
         List<TablaExamenCampo> campos = tablaExamen.getCampos();
+        campos.sort(Comparator.comparingInt(TablaExamenCampo::getId));
         List<Map<String, Object>> camposData = new ArrayList<>();
         for (TablaExamenCampo campo : campos) {
             Map<String, Object> campoData = new LinkedHashMap<>();

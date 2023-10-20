@@ -1,21 +1,17 @@
 import { useState, useEffect } from 'react'
 import ModalAlert from './ModalAlert'
-import * as ExamData from '../data/ExamData'
 
-const EditarTablaExamen = () => {
+const EliminarTablaExamen = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
   const [pacientes, setPacientes] = useState([])
   const [pacienteSeleccionado, setPacienteSeleccionado] = useState('')
   const [initialPage, setInitialPage] = useState(true)
   const [submitted1, setSubmitted1] = useState(false)
-  const [submitted2, setSubmitted2] = useState(false)
   const [infoPaciente, setInfoPaciente] = useState([])
   const [registroExitoso, setRegistroExitoso] = useState(false)
   const [tablaExamenData, setTablaExamenData] = useState([])
   const [registroSeleccionado, setRegistroSeleccionado] = useState()
   const [dataId, setDataId] = useState()
-  const [inputValues, setInputValues] = useState()
-  const [tablaExamenId,setTablaExamenId] = useState()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalAMessage, setModalAMessage] = useState('')
@@ -24,31 +20,6 @@ const EditarTablaExamen = () => {
   }
   const [isSubmitting, setIsSubmitting] = useState(false)
   
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setInputValues({
-      ...inputValues,
-      [name]: value
-    })
-  }
-  useEffect(() => {
-    dataId?.length && fetch(`${BASE_URL}/api/tabla_examen/_campos/get/${dataId}`)
-      .then((response) => response.json())
-      .then((response) => {
-        const campos = response.map((item) => item.campo)
-        setTablaExamenId(response[0]?.tabla_examen_id)
-        const defaultInputValues = ExamData.titlesArrayExample.reduce((acc, title, index) => {
-          acc[`campo${index + 1}`] = campos[index]
-          return acc
-        }, {})
-        setInputValues(defaultInputValues)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  }, [BASE_URL, dataId])
-  
-
   useEffect(() => {
     fetch(`${BASE_URL}/pacientes`)
       .then((response) => response.json())
@@ -139,19 +110,6 @@ const EditarTablaExamen = () => {
     }
   }
 
-  const scrollToBottom = () => {
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: 'smooth'
-    })
-  }
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    })
-  }
-
   const handleRegistroSeleccionado = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex]
     const selectedTimestamp = e.target.value
@@ -167,7 +125,12 @@ const EditarTablaExamen = () => {
   const handleSubmit2 = (e) => {
     e.preventDefault()
     setIsSubmitting(true)
-    fetch(`${BASE_URL}/api/tabla_examen/_campos/get/${dataId}`)
+    fetch(`${BASE_URL}/api/tabla_examen/delete/${dataId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
       .then((response) => {
         if (response.status === 404) {
           throw new Error('No se encontró el registro')
@@ -175,11 +138,10 @@ const EditarTablaExamen = () => {
         if (response.status === 500) {
           throw new Error('Ha ocurrido un error inesperado')
         }
-        return response.json()
       })
       .then(() => {
         setSubmitted1(false)
-        setSubmitted2(true)
+        setRegistroExitoso(true)
       })
       .catch((error) => {
         if (error.message === 'No se encontró el registro') {
@@ -197,46 +159,14 @@ const EditarTablaExamen = () => {
       })
   }
 
-  const handleSubmit3 = (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    const dataArray = Object.values(inputValues)
-    fetch(`${BASE_URL}/api/tabla_examen/put/${tablaExamenId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(dataArray)
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Hubo un error al enviar los datos')
-        }
-        setRegistroExitoso(true)
-      })
-      .catch((error) => {
-        if (error.message === 'Hubo un error al enviar los datos') {
-          setModalAMessage('Hubo un error al enviar los datos')
-          setIsModalOpen(true)
-        } else {
-          setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
-          setIsModalOpen(true)
-          console.error(error)
-        }
-      })
-      .finally(() => {
-        setIsSubmitting(false)
-      })
-  }
-
   if (registroExitoso) {
     return (
       <div>
         <center>
           <br />
-          <h2>Registro editado con éxito</h2>
+          <h2>Registro eliminado con éxito</h2>
           <br />
-          <button onClick={handleReloadPage}>Editar otro Registro</button>
+          <button onClick={handleReloadPage}>Eliminar otro Registro</button>
         </center>
       </div>
     )
@@ -251,7 +181,7 @@ const EditarTablaExamen = () => {
         <center>
           <div>
             <br />
-            <h2>Editar Tabla de Datos y Exámenes</h2> <br />
+            <h2>Eliminar Tabla de Datos y Exámenes</h2> <br />
             <form onSubmit={handleSubmit1}>
               <div>
                 <input
@@ -281,7 +211,7 @@ const EditarTablaExamen = () => {
       {submitted1 && (
         <center>
           <div> <br />
-            <h2>Editar Tabla de Datos y Exámenes</h2> <br />
+            <h2>Eliminar Tabla de Datos y Exámenes</h2> <br />
             <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
             <form onSubmit={handleSubmit2}>
               <label className='labelFontSize' htmlFor='timestampSelect'>Registro: </label>
@@ -303,39 +233,8 @@ const EditarTablaExamen = () => {
           </div> <br />
         </center>
       )}
-      {submitted2 && (
-        <center>
-          <div className='tableContainer'> <br />
-            <h2>Editar Tabla de Datos y Exámenes</h2> <br />
-            <p><b>Paciente: </b>{infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
-            <button className='boton-scroll-bottom' onClick={scrollToBottom}>Ir al final</button> <br /> <br />
-            <table>
-              <tbody>
-                {ExamData.titlesArrayExample.map((title, index) => (
-                  <tr key={index}>
-                    <td className='tdTitle' dangerouslySetInnerHTML={{ __html: title }}></td>
-                    <td>
-                      <textarea
-                        rows={2}
-                        type='text'
-                        className='input-no-borders'
-                        name={`campo${index + 1}`}
-                        value={inputValues[`campo${index + 1}`]}
-                        onChange={handleInputChange}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <br /> <button className='boton-scroll-top' onClick={scrollToTop}>Ir al principio</button> <br /> <br />
-            <button disabled={isSubmitting} onClick={handleSubmit3}>Editar Registro</button> <br /> <br />
-            <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
-          </div>
-        </center>
-      )}
     </div>
   )
 }
 
-export default EditarTablaExamen
+export default EliminarTablaExamen

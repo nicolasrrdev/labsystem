@@ -52,12 +52,14 @@ const TablaExamen = () => {
     e.preventDefault()
     setIsSubmitting(true)
     fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`)
-      .then((response) => response.json())
       .then((response) => {
         if (!response.ok) {
           throw new Error('Hubo un error al obtener los datos')
         }
-        setInfoPaciente(response)
+        return response.json()
+      })
+      .then((responseData) => {
+        setInfoPaciente(responseData)
         setSubmitted(true)
       })
       .catch((error) => {

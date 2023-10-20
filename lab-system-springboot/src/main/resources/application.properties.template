@@ -1,11 +1,11 @@
-spring.datasource.url=
-spring.datasource.username=
-spring.datasource.password=
+spring.datasource.url =
+spring.datasource.username =
+spring.datasource.password =
 
-spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation= true
-spring.jpa.properties.hibernate.dialect= org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation = true
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
 
-spring.jpa.hibernate.ddl-auto= update
+spring.jpa.hibernate.ddl-auto = update
 
-app.jwtSecret=
-app.jwtExpirationMs=
+app.jwtSecret =
+app.jwtExpirationMs =

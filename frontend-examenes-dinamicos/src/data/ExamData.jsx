@@ -4,7 +4,7 @@ export const titlesArrayExample = [
   'FCRST Recuerdo libre ensayo 1'
 ]
 
-export const titlesArray1 = [
+export const titlesArray = [
   '<b>1. FCSRT</b>',
   'Total identificación',
   'FCRST Recuerdo libre ensayo 1',
