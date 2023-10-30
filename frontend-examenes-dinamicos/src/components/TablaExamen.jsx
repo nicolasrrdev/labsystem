@@ -221,8 +221,8 @@ const TablaExamen = () => {
                 ))}
               </tbody>
             </table>
-            <br /> <button className='boton-scroll-top' onClick={scrollToTop}>Ir al principio</button>
-            <br /> <br /> <button disabled={isSubmitting} onClick={handleSubmit2}>Realizar Registro</button> 
+            <br /> <button disabled={isSubmitting} onClick={handleSubmit2}>Realizar Registro</button>
+            <br /> <br />  <button className='boton-scroll-top' onClick={scrollToTop}>Ir al principio</button>
             <br /> <br /> <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
           </div>
         </center>

@@ -2,7 +2,7 @@ package com.labsystem.models;
 
 import java.util.HashSet;
 import java.util.Set;
-
+import java.util.Date;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -35,6 +35,9 @@ public class User {
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
   private Set<Role> roles = new HashSet<>();
+
+  private String resetToken;
+  private Date resetTokenExpiration;
 
   public User() {
   }
@@ -83,5 +86,21 @@ public class User {
 
   public void setRoles(Set<Role> roles) {
     this.roles = roles;
+  }
+
+  public String getResetToken() {
+    return resetToken;
+  }
+
+  public void setResetToken(String resetToken) {
+    this.resetToken = resetToken;
+  }
+
+  public Date getResetTokenExpiration() {
+    return resetTokenExpiration;
+  }
+
+  public void setResetTokenExpiration(Date resetTokenExpiration) {
+    this.resetTokenExpiration = resetTokenExpiration;
   }
 }
