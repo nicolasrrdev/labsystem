@@ -22,6 +22,12 @@ const EditarTablaExamen = () => {
   const closeAModal = () => {
     setIsModalOpen(false)
   }
+  const handleTabKeyPress = (e) => {
+    if (isModalOpen && e.key === 'Tab') {
+      e.preventDefault()
+    }
+  }
+
   const [isSubmitting, setIsSubmitting] = useState(false)
   
   const handleInputChange = (e) => {
@@ -37,7 +43,7 @@ const EditarTablaExamen = () => {
       .then((response) => {
         const campos = response.map((item) => item.campo)
         setTablaExamenId(response[0]?.tabla_examen_id)
-        const defaultInputValues = ExamData.titlesArrayExample.reduce((acc, title, index) => {
+        const defaultInputValues = ExamData.titlesArray.reduce((acc, title, index) => {
           acc[`campo${index + 1}`] = campos[index]
           return acc
         }, {})
@@ -242,11 +248,31 @@ const EditarTablaExamen = () => {
     )
   }
 
+  const downloadData = () => {
+    const sanitizedData = ExamData.titlesArray.map(title => title.replace(/<.*?>/g, ''))
+    const data = sanitizedData.map((title, index) => [
+      title,
+      inputValues[`campo${index + 1}`],
+    ])
+    const csvContent = data.map(row => row.join(';')).join('\n')
+    const blob = new Blob([csvContent], { type: 'text/csv charset=UTF-8' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'user_data.csv'
+    a.click()
+    window.URL.revokeObjectURL(url)
+  }
+
   return (
     <div>
-      {isModalOpen && (
-        <ModalAlert message={modalAMessage} onClose={closeAModal} />
-      )}
+      <div onKeyDown={handleTabKeyPress}>
+        <ModalAlert
+          message={modalAMessage}
+          isOpen={isModalOpen}
+          onClose={closeAModal}
+        />
+      </div>
       {initialPage && (
         <center>
           <div>
@@ -311,7 +337,7 @@ const EditarTablaExamen = () => {
             <button className='boton-scroll-bottom' onClick={scrollToBottom}>Ir al final</button> <br /> <br />
             <table>
               <tbody>
-                {ExamData.titlesArrayExample.map((title, index) => (
+                {ExamData.titlesArray.map((title, index) => (
                   <tr key={index}>
                     <td className='tdTitle' dangerouslySetInnerHTML={{ __html: title }}></td>
                     <td>
@@ -330,6 +356,8 @@ const EditarTablaExamen = () => {
             </table>
             <br /> <button className='boton-scroll-top' onClick={scrollToTop}>Ir al principio</button> <br /> <br />
             <button disabled={isSubmitting} onClick={handleSubmit3}>Editar Registro</button> <br /> <br />
+            <button className='downloadData' onClick={downloadData}>Descargar Datos</button>
+            <h6>{`*Para una correcta visualización de los datos en Excel: Data -> Get Data -> From File -> From Text/CSV -> Abrir el archivo File Origin: UTF-8 Delimiter: Semicolon -> Load`}</h6>
             <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
           </div>
         </center>

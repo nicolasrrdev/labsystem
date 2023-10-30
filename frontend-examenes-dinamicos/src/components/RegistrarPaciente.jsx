@@ -3,11 +3,18 @@ import ModalAlert from './ModalAlert'
 
 const RegistrarPaciente = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
+
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalAMessage, setModalAMessage] = useState('')
   const closeAModal = () => {
     setIsModalOpen(false)
   }
+  const handleTabKeyPress = (e) => {
+    if (isModalOpen && e.key === 'Tab') {
+      e.preventDefault()
+    }
+  }
+
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [formData, setFormData] = useState({
@@ -95,9 +102,13 @@ const RegistrarPaciente = () => {
 
   return (
     <div>
-    {isModalOpen && (
-      <ModalAlert message={modalAMessage} onClose={closeAModal} />
-     )}
+    <div onKeyDown={handleTabKeyPress}>
+      <ModalAlert
+        message={modalAMessage}
+        isOpen={isModalOpen}
+        onClose={closeAModal}
+      />
+    </div>
     <center> <br />
     <h2>Registrar Paciente</h2> <br />
       <form onSubmit={handleSubmit1}>

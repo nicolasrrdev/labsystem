@@ -46,6 +46,14 @@ button[disabled] {
   background-color: rgb(2, 153, 2);
   border: 2px solid rgb(2, 153, 2);
 }
+.downloadData {
+  background-color: mediumpurple;
+  border: 2px solid mediumpurple;
+}
+.downloadData:hover {
+  background-color: rgb(121, 94, 176);
+  border: 2px solid rgb(121, 94, 176);
+}
 input {
   color: #333;
   background-color: #f0f0f0;
@@ -215,4 +223,13 @@ p {
 
 img {
   cursor: pointer;
+}
+
+h6 {
+  font-weight: normal;
+}
+
+.uscoLogo {
+  background-color: rgb(143, 20, 27);
+  padding: 2rem;
 }

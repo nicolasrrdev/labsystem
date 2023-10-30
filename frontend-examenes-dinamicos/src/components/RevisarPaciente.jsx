@@ -14,6 +14,12 @@ const RevisarPaciente = () => {
   const closeAModal = () => {
     setIsModalOpen(false)
   }
+  const handleTabKeyPress = (e) => {
+    if (isModalOpen && e.key === 'Tab') {
+      e.preventDefault()
+    }
+  }
+
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
@@ -127,9 +133,13 @@ const RevisarPaciente = () => {
           <div>
             <br />
             <h2>Revisar Paciente</h2><br />
-            {isModalOpen && (
-              <ModalAlert message={modalAMessage} onClose={closeAModal} />
-            )}
+            <div onKeyDown={handleTabKeyPress}>
+              <ModalAlert
+                message={modalAMessage}
+                isOpen={isModalOpen}
+                onClose={closeAModal}
+              />
+            </div>
             <form onSubmit={handleSubmit1}>
               <div>
                 <input

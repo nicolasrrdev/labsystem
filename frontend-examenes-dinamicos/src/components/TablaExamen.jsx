@@ -15,9 +15,15 @@ const TablaExamen = () => {
   const closeAModal = () => {
     setIsModalOpen(false)
   }
+  const handleTabKeyPress = (e) => {
+    if (isModalOpen && e.key === 'Tab') {
+      e.preventDefault()
+    }
+  }
+
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const defaultInputValues = ExamData.titlesArrayExample.reduce((acc, title, index) => {
+  const defaultInputValues = ExamData.titlesArray.reduce((acc, title, index) => {
     acc[`campo${index + 1}`] = ''
     return acc
   }, {})
@@ -152,9 +158,13 @@ const TablaExamen = () => {
 
   return (
     <div>
-      {isModalOpen && (
-        <ModalAlert message={modalAMessage} onClose={closeAModal} />
-      )}
+      <div onKeyDown={handleTabKeyPress}>
+        <ModalAlert
+          message={modalAMessage}
+          isOpen={isModalOpen}
+          onClose={closeAModal}
+        />
+      </div>
       {!submitted && (
         <center>
           <div>
@@ -194,7 +204,7 @@ const TablaExamen = () => {
             <button className='boton-scroll-bottom' onClick={scrollToBottom}>Ir al final</button> <br /> <br />
             <table>
               <tbody>
-                {ExamData.titlesArrayExample.map((title, index) => (
+                {ExamData.titlesArray.map((title, index) => (
                   <tr key={index}>
                     <td className='tdTitle' dangerouslySetInnerHTML={{ __html: title }}></td>
                     <td>

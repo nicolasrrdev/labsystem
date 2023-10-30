@@ -15,6 +15,12 @@ const CrearExamen = () => {
   const closeAModal = () => {
     setIsModalOpen(false)
   }
+  const handleTabKeyPress = (e) => {
+    if (isModalOpen && e.key === 'Tab') {
+      e.preventDefault()
+    }
+  }
+
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit1 = (e) => {
@@ -96,9 +102,13 @@ if (registroExitoso) {
 
   return (
     <div>
-      {isModalOpen && (
-        <ModalAlert message={modalAMessage} onClose={closeAModal} />
-      )}
+      <div onKeyDown={handleTabKeyPress}>
+        <ModalAlert
+          message={modalAMessage}
+          isOpen={isModalOpen}
+          onClose={closeAModal}
+        />
+      </div>
       {!submitted &&
         <center><br/>
         <h2>Crear Examen</h2><br/>

@@ -21,6 +21,12 @@ const EditarPacientes = () => {
   const closeAModal = () => {
     setIsModalOpen(false)
   }
+  const handleTabKeyPress = (e) => {
+    if (isModalOpen && e.key === 'Tab') {
+      e.preventDefault()
+    }
+  }
+
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
@@ -159,9 +165,13 @@ const EditarPacientes = () => {
 
   return (
     <div>
-      {isModalOpen && (
-        <ModalAlert message={modalAMessage} onClose={closeAModal} />
-      )}
+      <div onKeyDown={handleTabKeyPress}>
+        <ModalAlert
+          message={modalAMessage}
+          isOpen={isModalOpen}
+          onClose={closeAModal}
+        />
+      </div>
       <center>
       {!submitted && (
           <div>
