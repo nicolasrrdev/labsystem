@@ -1,5 +1,3 @@
-///*
-
 package com.labsystem.security.services;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,10 +19,9 @@ public class EmailService {
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
         messageHelper.setFrom(fromEmail);
         messageHelper.setTo(to);
-        messageHelper.setSubject("Restablecimiento de Contraseña");
-        messageHelper.setText("Haga clic en el siguiente enlace para restablecer su contraseña: " + resetLink, true);
+        messageHelper.setSubject("Lab Neuro - Restablecimiento de Contraseña");
+        messageHelper.setText("Haga clic en el siguiente enlace para restablecer su contraseña: <a href='" + resetLink + "'>Restablecer su contraseña</a>", true);
         javaMailSender.send(mimeMessage);
     }
-}
 
-//*/
+}

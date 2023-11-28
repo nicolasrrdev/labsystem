@@ -65,7 +65,9 @@ class App extends Component {
           <Link to={'/'} className='navbar-brand'>
             Sistema de Información Lab Neuro
           </Link>
+          
           <div className='navbar-nav mr-auto'>
+            
             <li className='nav-item'>
               <Link to={'/home'} className='nav-link'>
                 Home
@@ -79,7 +81,6 @@ class App extends Component {
                 </Link>
               </li>
             )}
-
             {showAdminBoard && (
               <li className='nav-item'>
                 <Link to={'/admin'} className='nav-link'>
@@ -87,7 +88,6 @@ class App extends Component {
                 </Link>
               </li>
             )}
-
             {currentUser && (
               <li className='nav-item'>
                 <Link to={'/user'} className='nav-link'>
@@ -95,6 +95,7 @@ class App extends Component {
                 </Link>
               </li>
             )}
+
           </div>
 
           {currentUser ? (
