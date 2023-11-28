@@ -36,6 +36,7 @@ const EditarTablaExamen = () => {
       ...inputValues,
       [name]: value
     })
+    //console.log('inputValues:', inputValues)
   }
   useEffect(() => {
     dataId?.length && fetch(`${BASE_URL}/api/tabla_examen/_campos/get/${dataId}`)
@@ -207,6 +208,7 @@ const EditarTablaExamen = () => {
     e.preventDefault()
     setIsSubmitting(true)
     const dataArray = Object.values(inputValues)
+    console.log('Data enviada por PUT:', dataArray)
     fetch(`${BASE_URL}/api/tabla_examen/put/${tablaExamenId}`, {
       method: 'PUT',
       headers: {
@@ -332,7 +334,7 @@ const EditarTablaExamen = () => {
       {submitted2 && (
         <center>
           <div className='tableContainer'> <br />
-            <h2>Editar Tabla de Datos y Exámenes</h2> <br />
+            <h2>Editar Tabla de Datos y Exámenes</h2>
             <p><b>Paciente: </b>{infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
             <button className='boton-scroll-bottom' onClick={scrollToBottom}>Ir al final</button> <br /> <br />
             <table>
@@ -354,10 +356,10 @@ const EditarTablaExamen = () => {
                 ))}
               </tbody>
             </table>
-            <br /> <button className='boton-scroll-top' onClick={scrollToTop}>Ir al principio</button> <br /> <br />
-            <button disabled={isSubmitting} onClick={handleSubmit3}>Editar Registro</button> <br /> <br />
-            <button className='downloadData' onClick={downloadData}>Descargar Datos</button>
             <h6>{`*Para una correcta visualización de los datos en Excel: Data -> Get Data -> From File -> From Text/CSV -> Abrir el archivo File Origin: UTF-8 Delimiter: Semicolon -> Load`}</h6>
+            <button disabled={isSubmitting} onClick={handleSubmit3}>Editar Registro</button> <br /> <br />
+            <button className='downloadData' onClick={downloadData}>Descargar Datos</button> <br /> <br />
+            <button className='boton-scroll-top' onClick={scrollToTop}>Ir al principio</button> <br /> <br />
             <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
           </div>
         </center>

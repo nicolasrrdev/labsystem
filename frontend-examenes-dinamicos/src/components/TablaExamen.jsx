@@ -199,7 +199,7 @@ const TablaExamen = () => {
       {submitted && (
         <center>
           <div className='tableContainer'> <br />
-            <h2>Tabla de Datos y Exámenes</h2> <br />
+            <h2>Tabla de Datos y Exámenes</h2>
             <p><b>Paciente: </b>{infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
             <button className='boton-scroll-bottom' onClick={scrollToBottom}>Ir al final</button> <br /> <br />
             <table>
