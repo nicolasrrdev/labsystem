@@ -215,14 +215,14 @@ const EliminarTablaExamen = () => {
         <center>
           <div>
             <br />
-            <h2>Eliminar Tabla de Datos y Exámenes</h2> <br />
+            <h2>Eliminar Tabla de Datos y Exámenes</h2>
             <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
             <form onSubmit={handleSubmit2}>
               <label className='labelFontSize' htmlFor='timestampSelect'>Registro: </label>
               <select id='timestampSelect' onChange={handleRegistroSeleccionado}>
                 <option value=''>Seleccione un registro</option>
                 {tablaExamenData
-                  .filter(item => item.pacienteId === parseInt(pacienteSeleccionado)) // Asegúrate de comparar el tipo correcto
+                  .filter(item => item.pacienteId === parseInt(pacienteSeleccionado))
                   .sort((a, b) => new Date(b.timestampColumn) - new Date(a.timestampColumn))
                   .map(item => (
                     <option key={item.timestampColumn} value={item.timestampColumn} data-id={item.id}>
