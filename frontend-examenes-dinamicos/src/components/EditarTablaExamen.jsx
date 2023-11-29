@@ -595,1619 +595,1502 @@ const EditarTablaExamen = () => {
             <h2>Editar Tabla de Datos y Exámenes</h2>
             <p><b>Paciente: </b>{infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
             <button className='boton-scroll-bottom' onClick={scrollToBottom}>Ir al final</button> <br /> <br />
+
             <form onSubmit={handleSubmit3}>
 
-            <div>
-              <label>
-                1. FCSRT:ㅤ
+            <table>
+              <tbody>
+
+              <tr>
+                  <td>1. FCSRT:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo1"
                   value={inputValues.campo1 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Total identificación:ㅤ
+            <tr>
+                  <td>Total identificación:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo2"
                   value={inputValues.campo2 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                FCRST Recuerdo libre ensayo 1:ㅤ
+            <tr>
+                  <td>FCRST Recuerdo libre ensayo 1:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo3"
                   value={inputValues.campo3 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                FCRST Recuerdo facilitado ensayo 1:ㅤ
+                <tr>
+                  <td>FCRST Recuerdo facilitado ensayo 1:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo4"
                   value={inputValues.campo4 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                FCRST Recuerdo libre ensayo 2:ㅤ
+            <tr>
+                  <td>FCRST Recuerdo libre ensayo 2:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo5"
                   value={inputValues.campo5 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                FCRST Recuerdo facilitado ensayo 2:ㅤ
+            <tr>
+                  <td>FCRST Recuerdo facilitado ensayo 2:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo6"
                   value={inputValues.campo6 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                FCRST Recuerdo libre ensayo 3:ㅤ
+            <tr>
+                  <td>FCRST Recuerdo libre ensayo 3:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo7"
                   value={inputValues.campo7 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                FCRST Recuerdo facilitado ensayo 3:ㅤ
+            <tr>
+                  <td>FCRST Recuerdo facilitado ensayo 3:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo8"
                   value={inputValues.campo8 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                FCRST - RECUERDO DIFERIDO Recuerdo libre:ㅤ
+            <tr>
+                  <td>FCRST - RECUERDO DIFERIDO Recuerdo libre:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo9"
                   value={inputValues.campo9 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+              </td>
+            </tr>
 
-            <div>
-              <label>
-                FCRST - RECUERDO DIFERIDO Recuerdo facilitado:ㅤ
+            <tr>
+                  <td>FCRST - RECUERDO DIFERIDO Recuerdo facilitado:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo10"
                   value={inputValues.campo10 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                FCRST LIBRE TOTAL (0-48):ㅤ
+            <tr>
+                  <td>FCRST LIBRE TOTAL (0-48):ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo11"
                   value={inputValues.campo11 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                FCRST RECUERDO FACILITADO TOTAL (0-48):ㅤ
+            <tr>
+                  <td>FCRST RECUERDO FACILITADO TOTAL (0-48):ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo12"
                   value={inputValues.campo12 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                FCRST RECUERDO DIFERIDO LIBRE (0-16):ㅤ
+            <tr>
+                  <td>FCRST RECUERDO DIFERIDO LIBRE (0-16):ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo13"
                   value={inputValues.campo13 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                FCRST RECUERDO DIFERIDO FACILITADO (0-16):ㅤ
+            <tr>
+                  <td>FCRST RECUERDO DIFERIDO FACILITADO (0-16):ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo14"
                   value={inputValues.campo14 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                2. TEST VISIÓN DE COLORES - DVORINE:ㅤ
+            <tr>
+                  <td>2. TEST VISIÓN DE COLORES - DVORINE:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo15"
                   value={inputValues.campo15 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Número de errores:ㅤ
+            <tr>
+                  <td>Número de errores:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo16"
                   value={inputValues.campo16 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                3. TEST DE MEMORIA DE TRABAJO VISUAL PARA FORMAS COLORES Y COMBINACIONES:ㅤ
+            <tr>
+                  <td>3. TEST DE MEMORIA DE TRABAJO VISUAL PARA FORMAS COLORES Y COMBINACIONES:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo17"
                   value={inputValues.campo17 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Percepción:ㅤ
+            <tr>
+                  <td>Percepción:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo18"
                   value={inputValues.campo18 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Correctas:ㅤ
+                <tr>
+                  <td>Correctas:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo19"
                   value={inputValues.campo19 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Porcentaje correctas:ㅤ
+            <tr>
+                  <td>Porcentaje correctas:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo20"
                   value={inputValues.campo20 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Tiempo total:ㅤ
+            <tr>
+                  <td>Tiempo total:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo21"
                   value={inputValues.campo21 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Forma:ㅤ
+                <tr>
+                  <td>Forma:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo22"
                   value={inputValues.campo22 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                2 formas - Correctas:ㅤ
+            <tr>
+                  <td>2 formas - Correctas:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo23"
                   value={inputValues.campo23 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                2 formas - Porcentaje correctas:ㅤ
+                <tr>
+                  <td>2 formas - Porcentaje correctas:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo24"
                   value={inputValues.campo24 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                3 formas - Correctas:ㅤ
+            <tr>
+                  <td>3 formas - Correctas:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo25"
                   value={inputValues.campo25 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                3 formas - Porcentaje correctas:ㅤ
+            <tr>
+                  <td>3 formas - Porcentaje correctas:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo26"
                   value={inputValues.campo26 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Tiempo total:ㅤ
+            <tr>
+                  <td>Tiempo total:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo27"
                   value={inputValues.campo27 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Binding:ㅤ
+            <tr>
+                  <td>Binding:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo28"
                   value={inputValues.campo28 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                2 Bindings - Correctas:ㅤ
+            <tr>
+                  <td>2 Bindings - Correctas:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo29"
                   value={inputValues.campo29 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                2 Bindings - Porcentaje correctas:ㅤ
+            <tr>
+                  <td>2 Bindings - Porcentaje correctas:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo30"
                   value={inputValues.campo30 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                3 Bindings - Correctas:ㅤ
+            <tr>
+                  <td>3 Bindings - Correctas:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo31"
                   value={inputValues.campo31 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                3 Bindings - Porcentaje correctas:ㅤ
+                <tr>
+                  <td>3 Bindings - Porcentaje correctas:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo32"
                   value={inputValues.campo32 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Tiempo total en segundos:ㅤ
+            <tr>
+                  <td>Tiempo total en segundos:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo33"
                   value={inputValues.campo33 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                4. ACER:ㅤ
+            <tr>
+                  <td>4. ACER:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo34"
                   value={inputValues.campo34 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                ACE Orientación:ㅤ
+            <tr>
+                  <td>ACE Orientación:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo35"
                   value={inputValues.campo35 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                ACE Atención:ㅤ
+            <tr>
+                  <td>ACE Atención:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo36"
                   value={inputValues.campo36 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                ACE Memoria:ㅤ
+            <tr>
+                  <td>ACE Memoria:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo37"
                   value={inputValues.campo37 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                ACE Fluidez:ㅤ
+            <tr>
+                  <td>ACE Fluidez:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo38"
                   value={inputValues.campo38 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                ACE Lenguaje:ㅤ
+            <tr>
+                  <td>ACE Lenguaje:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo39"
                   value={inputValues.campo39 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                ACE Visoespaciales:ㅤ
+                <tr>
+                  <td>ACE Visoespaciales:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo40"
                   value={inputValues.campo40 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                ACE TOTAL:ㅤ
+            <tr>
+                  <td>ACE TOTAL:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo41"
                   value={inputValues.campo41 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                MMSE:ㅤ
+            <tr>
+                  <td>MMSE:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo42"
                   value={inputValues.campo42 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                5. ECOG:ㅤ
+            <tr>
+                  <td>5. ECOG:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo43"
                   value={inputValues.campo43 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                ECOG Memoria:ㅤ
+            <tr>
+                  <td>ECOG Memoria:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo44"
                   value={inputValues.campo44 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                ECOG Planificación:ㅤ
+            <tr>
+                  <td>ECOG Planificación:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo45"
                   value={inputValues.campo45 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                ECOG Lenguaje:ㅤ
+            <tr>
+                  <td>ECOG Lenguaje:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo46"
                   value={inputValues.campo46 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                ECOG Organización:ㅤ
+            <tr>
+                  <td>ECOG Organización:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo47"
                   value={inputValues.campo47 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                ECOG Atención:ㅤ
+            <tr>
+                  <td>ECOG Atención:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo48"
                   value={inputValues.campo48 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                ECOG Visuoespacial:ㅤ
+            <tr>
+                  <td>ECOG Visuoespacial:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo49"
                   value={inputValues.campo49 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                ECOG TOTAL:ㅤ
+            <tr>
+                  <td>ECOG TOTAL:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo50"
                   value={inputValues.campo50 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                6. ESCALA DEPRESIÓN GERIÁTRICA - YESAVAGE:ㅤ
+            <tr>
+                  <td>6. ESCALA DEPRESIÓN GERIÁTRICA - YESAVAGE:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo51"
                   value={inputValues.campo51 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                7. ESCALA DE HACHINSKI:ㅤ
+            <tr>
+                  <td>7. ESCALA DE HACHINSKI:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo52"
                   value={inputValues.campo52 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                8. CERAD:ㅤ
+            <tr>
+                  <td>8. CERAD:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo53"
                   value={inputValues.campo53 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                DENOMINACION (Test de Boston):ㅤ
+            <tr>
+                  <td>DENOMINACION (Test de Boston):ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo54"
                   value={inputValues.campo54 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Puntaje alta:ㅤ
+            <tr>
+                  <td>Puntaje alta:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo55"
                   value={inputValues.campo55 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Puntaje media:ㅤ
+            <tr>
+                  <td>Puntaje media:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo56"
                   value={inputValues.campo56 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Puntaje baja:ㅤ
+            <tr>
+                  <td>Puntaje baja:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo57"
                   value={inputValues.campo57 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Puntaje total/15:ㅤ
+            <tr>
+                  <td>Puntaje total/15:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo58"
                   value={inputValues.campo58 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                MEMORIA DE UNA LISTA DE PALABRAS:ㅤ
+            <tr>
+                  <td>MEMORIA DE UNA LISTA DE PALABRAS:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo59"
                   value={inputValues.campo59 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Intento 1 totales:ㅤ
+            <tr>
+                  <td>Intento 1 totales:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo60"
                   value={inputValues.campo60 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Intento 1 intrusiones:ㅤ
+            <tr>
+                  <td>Intento 1 intrusiones:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo61"
                   value={inputValues.campo61 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Intento 2 totales:ㅤ
+            <tr>
+                  <td>Intento 2 totales:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo62"
                   value={inputValues.campo62 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Intento 2 intrusiones:ㅤ
+            <tr>
+                  <td>Intento 2 intrusiones:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo63"
                   value={inputValues.campo63 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Intento 3 totales:ㅤ
+            <tr>
+                  <td>Intento 3 totales:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo64"
                   value={inputValues.campo64 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Intento 3 intrusiones:ㅤ
+            <tr>
+                  <td>Intento 3 intrusiones:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo65"
                   value={inputValues.campo65 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Total palabras:ㅤ
+            <tr>
+                  <td>Total palabras:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo66"
                   value={inputValues.campo66 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Total intrusiones:ㅤ
+            <tr>
+                  <td>Total intrusiones:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo67"
                   value={inputValues.campo67 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                PRAXIAS CONSTRUCTIVAS:ㅤ
+            <tr>
+                  <td>PRAXIAS CONSTRUCTIVAS:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo68"
                   value={inputValues.campo68 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Círculo - Item 1:ㅤ
+            <tr>
+                  <td>Círculo - Item 1:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo69"
                   value={inputValues.campo69 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Rombo - Item 2:ㅤ
+            <tr>
+                  <td>Rombo - Item 2:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo70"
                   value={inputValues.campo70 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Rectángulos - Item 3:ㅤ
+            <tr>
+                  <td>Rectángulos - Item 3:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo71"
                   value={inputValues.campo71 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Cubo - Item 4:ㅤ
+            <tr>
+                  <td>Cubo - Item 4:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo72"
                   value={inputValues.campo72 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Total 11:ㅤ
+            <tr>
+                  <td>Total 11:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo73"
                   value={inputValues.campo73 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                RECUERDO DE UNA LISTA DE PALABRAS:ㅤ
+            <tr>
+                  <td>RECUERDO DE UNA LISTA DE PALABRAS:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo74"
                   value={inputValues.campo74 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Total 10:ㅤ
+            <tr>
+                  <td>Total 10:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo75"
                   value={inputValues.campo75 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Total intrusiones:ㅤ
+            <tr>
+                  <td>Total intrusiones:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo76"
                   value={inputValues.campo76 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                RECONOCIMIENTO DE UNA LISTA DE PALABRAS:ㅤ
+            <tr>
+                  <td>RECONOCIMIENTO DE UNA LISTA DE PALABRAS:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo77"
                   value={inputValues.campo77 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Total SI correctos/10:ㅤ
+            <tr>
+                  <td>Total SI correctos/10:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo78"
                   value={inputValues.campo78 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Total NO correctos/10:ㅤ
+            <tr>
+                  <td>Total NO correctos/10:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo79"
                   value={inputValues.campo79 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                EVOCACIÓN PRAXIAS CONSTRUCTIVAS:ㅤ
+            <tr>
+                  <td>EVOCACIÓN PRAXIAS CONSTRUCTIVAS:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo80"
                   value={inputValues.campo80 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Círculo - Item 1:ㅤ
+            <tr>
+                  <td>Círculo - Item 1:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo81"
                   value={inputValues.campo81 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Rombo - Item 2:ㅤ
+            <tr>
+                  <td>Rombo - Item 2:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo82"
                   value={inputValues.campo82 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Rectángulos - Item 3:ㅤ
+            <tr>
+                  <td>Rectángulos - Item 3:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo83"
                   value={inputValues.campo83 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Cubo - Item 4:ㅤ
+            <tr>
+                  <td>Cubo - Item 4:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo84"
                   value={inputValues.campo84 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Total 11:ㅤ
+            <tr>
+                  <td>Total 11:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo85"
                   value={inputValues.campo85 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                TRAIL MAKING TEST (T.M.T) PARTE A:ㅤ
+            <tr>
+                  <td>TRAIL MAKING TEST (T.M.T) PARTE A:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo86"
                   value={inputValues.campo86 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Aciertos /24:ㅤ
+            <tr>
+                  <td>Aciertos /24:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo87"
                   value={inputValues.campo87 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Errores:ㅤ
+            <tr>
+                  <td>Errores:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo88"
                   value={inputValues.campo88 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Tiempo en segundos:ㅤ
+            <tr>
+                  <td>Tiempo en segundos:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo89"
                   value={inputValues.campo89 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Ensayo a los 300’’:ㅤ
+            <tr>
+                  <td>Ensayo a los 300’’:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo90"
                   value={inputValues.campo90 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                TRAIL MAKING TEST (T.M.T) PARTE B:ㅤ
+            <tr>
+                  <td>TRAIL MAKING TEST (T.M.T) PARTE B:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo91"
                   value={inputValues.campo91 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Aciertos /24:ㅤ
+            <tr>
+                  <td>Aciertos /24:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo92"
                   value={inputValues.campo92 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Errores:ㅤ
+                <tr>
+                  <td>Errores:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo93"
                   value={inputValues.campo93 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Tiempo en segundos:ㅤ
+            <tr>
+                  <td>Tiempo en segundos:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo94"
                   value={inputValues.campo94 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Ensayo a los 300’’:ㅤ
+            <tr>
+                  <td>Ensayo a los 300’’:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo95"
                   value={inputValues.campo95 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                FIGURA COMPLEJA DE REY - OSTERRIETH - COPIA:ㅤ
+            <tr>
+                  <td>FIGURA COMPLEJA DE REY - OSTERRIETH - COPIA:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo96"
                   value={inputValues.campo96 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Tiempo en segundos:ㅤ
+            <tr>
+                  <td>Tiempo en segundos:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo97"
                   value={inputValues.campo97 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Puntaje:ㅤ
+            <tr>
+                  <td>Puntaje:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo98"
                   value={inputValues.campo98 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                FIGURA COMPLEJA DE REY - OSTERRIETH - EVOCACIÓN:ㅤ
+            <tr>
+                  <td>FIGURA COMPLEJA DE REY - OSTERRIETH - EVOCACIÓN:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo99"
                   value={inputValues.campo99 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Tiempo en segundos:ㅤ
+            <tr>
+                  <td>Tiempo en segundos:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo100"
                   value={inputValues.campo100 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Puntaje:ㅤ
+            <tr>
+                  <td>Puntaje:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo101"
                   value={inputValues.campo101 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                FLUIDEZ VERBAL:ㅤ
+            <tr>
+                  <td>FLUIDEZ VERBAL:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo102"
                   value={inputValues.campo102 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Total F:ㅤ
+                <tr>
+                  <td>Total F:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo103"
                   value={inputValues.campo103 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Total A:ㅤ
+            <tr>
+                  <td>Total A:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo104"
                   value={inputValues.campo104 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Total S:ㅤ
+            <tr>
+                  <td>Total S:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo105"
                   value={inputValues.campo105 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Pérdida de categoría:ㅤ
+            <tr>
+                  <td>Pérdida de categoría:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo106"
                   value={inputValues.campo106 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Puntuación total:ㅤ
+            <tr>
+                  <td>Puntuación total:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo107"
                   value={inputValues.campo107 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                9. ESCALA DE TRASTORNOS DE MEMORIA:ㅤ
+            <tr>
+                  <td>9. ESCALA DE TRASTORNOS DE MEMORIA:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo108"
                   value={inputValues.campo108 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                QF Total:ㅤ
+            <tr>
+                  <td>QF Total:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo109"
                   value={inputValues.campo109 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                QP Total:ㅤ
+            <tr>
+                  <td>QP Total:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo110"
                   value={inputValues.campo110 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                10. ESCALA GLOBAL DE DETERIORO:ㅤ
+            <tr>
+                  <td>10. ESCALA GLOBAL DE DETERIORO:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo111"
                   value={inputValues.campo111 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Puntaje:ㅤ
+            <tr>
+                  <td>Puntaje:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo112"
                   value={inputValues.campo112 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                11. ESCALA DE BARTHEL DE AVD Y ALIMENTACIÓN:ㅤ
+            <tr>
+                  <td>11. ESCALA DE BARTHEL DE AVD Y ALIMENTACIÓN:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo113"
                   value={inputValues.campo113 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Puntaje /50:ㅤ
+            <tr>
+                  <td>Puntaje /50:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo114"
                   value={inputValues.campo114 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                12. ESCALA DE LAWTON Y BRODY:ㅤ
+            <tr>
+                  <td>12. ESCALA DE LAWTON Y BRODY:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo115"
                   value={inputValues.campo115 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Total /5 o Total /8:ㅤ
+            <tr>
+                  <td>Total /5 o Total /8:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo116"
                   value={inputValues.campo116 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                13. THE TECHONOLOGY - ACTIVITIES OF DAILY LIVING QUESTIONNAIRE (T-ADLQ):ㅤ
+            <tr>
+                  <td>13. THE TECHONOLOGY - ACTIVITIES OF DAILY LIVING QUESTIONNAIRE (T-ADLQ):ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo117"
                   value={inputValues.campo117 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Puntaje de deterioro funcional:ㅤ
+            <tr>
+                  <td>Puntaje de deterioro funcional:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo118"
                   value={inputValues.campo118 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                14. FUNCIONES DETALLADAS DE LA VIDA DIARIA (FDVD):ㅤ
+            <tr>
+                  <td>14. FUNCIONES DETALLADAS DE LA VIDA DIARIA (FDVD):ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo119"
                   value={inputValues.campo119 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Total funciones relacionales ( R ) (/52):ㅤ
+            <tr>
+                  <td>Total funciones relacionales ( R ) (/52):ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo120"
                   value={inputValues.campo120 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Puntaje de deterioro funcional ( C ) (/30):ㅤ
+            <tr>
+                  <td>Puntaje de deterioro funcional ( C ) (/30):ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo121"
                   value={inputValues.campo121 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                15. INECO FRONTAL SCREENING (IFS):ㅤ
+            <tr>
+                  <td>15. INECO FRONTAL SCREENING (IFS):ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo122"
                   value={inputValues.campo122 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Índice de Memoria de Trabajo (Dígitos atrás + corsi):ㅤ
+            <tr>
+                  <td>Índice de Memoria de Trabajo (Dígitos atrás + corsi):ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo123"
                   value={inputValues.campo123 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
 
-            <div>
-              <label>
-                Puntaje total:ㅤ
+            <tr>
+                  <td>Puntaje total:ㅤ</td>
+                  <td>
                 <input
                   type="text"
                   name="campo124"
                   value={inputValues.campo124 || ''}
                   onChange={handleInputChange}
                 />
-              </label>
-              <br />
-            </div>
+            </td>
+            </tr>
+
+            </tbody>
+            </table>
 
               <br /> <button type='submit' disabled={isSubmitting}>Editar Registro</button>
               <h6>{`*Para una correcta visualización de los datos en Excel: Data -> Get Data -> From File -> From Text/CSV -> Abrir el archivo File Origin: UTF-8 Delimiter: Semicolon -> Load`}</h6>
