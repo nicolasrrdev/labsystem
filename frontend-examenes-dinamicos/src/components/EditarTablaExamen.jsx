@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import ModalAlert from './ModalAlert'
-import * as ExamData from '../data/ExamData'
 
 const EditarTablaExamen = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -15,7 +14,6 @@ const EditarTablaExamen = () => {
   const [registroSeleccionado, setRegistroSeleccionado] = useState()
   const [dataId, setDataId] = useState()
   const [inputValues, setInputValues] = useState()
-  const [tablaExamenId,setTablaExamenId] = useState()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalAMessage, setModalAMessage] = useState('')
@@ -31,29 +29,40 @@ const EditarTablaExamen = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   
   const handleInputChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setInputValues({
       ...inputValues,
-      [name]: value
-    })
-    //console.log('inputValues:', inputValues)
-  }
+      [name]: value,
+    });
+  };
+
   useEffect(() => {
-    dataId?.length && fetch(`${BASE_URL}/api/tabla_examen/_campos/get/${dataId}`)
-      .then((response) => response.json())
-      .then((response) => {
-        const campos = response.map((item) => item.campo)
-        setTablaExamenId(response[0]?.tabla_examen_id)
-        const defaultInputValues = ExamData.titlesArray.reduce((acc, title, index) => {
-          acc[`campo${index + 1}`] = campos[index]
-          return acc
-        }, {})
-        setInputValues(defaultInputValues)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  }, [BASE_URL, dataId])
+    dataId &&
+      fetch(`${BASE_URL}/api/tabla_examen/${dataId}`)
+        .then((response) => {
+          if (response.status === 404) {
+            throw new Error('No se encontró el registro');
+          }
+          if (response.status === 500) {
+            throw new Error('Ha ocurrido un error inesperado');
+          }
+          return response.json();
+        })
+        .then((response) => {
+          const { campo1, campo2, campo3 } = response;
+          setInputValues({
+            campo1: campo1 || '',
+            campo2: campo2 || '',
+            campo3: campo3 || '',
+          });
+        })
+        .catch((error) => {
+          // Handle error
+          console.error(error);
+        });
+  }, [BASE_URL, dataId]);
+  
+  
   
 
   useEffect(() => {
@@ -85,46 +94,32 @@ const EditarTablaExamen = () => {
     setPacienteSeleccionado(e.target.value)
   }
 
-  const errorMessages = {
-    '404': 'No se encontraron registros',
-    '404-2': 'No se encontraron registros',
-    '500': 'Ha ocurrido un error inesperado',
-    'default': 'Error: No se pudo establecer conexión con el servidor'
-  }
-  const handleSubmit1 = (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    const fetchAllData = fetch(`${BASE_URL}/api/tabla_examen/get/all`)
-      .then((response) => {
-        if (response.status === 404) {
-          throw new Error('404')
-        }
-        if (response.status === 500) {
-          throw new Error('500')
-        }
-        return response.json()
-      })
-    const fetchSpecificData = fetch(`${BASE_URL}/api/tabla_examen/get/timestamp/${pacienteSeleccionado}`)
-      .then((response) => {
-        if (response.status === 404) {
-          throw new Error('404-2')
-        }
-      })
-    Promise.all([fetchAllData, fetchSpecificData])
-      .then(([allData]) => {
-        setTablaExamenData(allData)
-        setInitialPage(false)
-        setSubmitted1(true)
-      })
-      .catch((error) => {
-        setModalAMessage(errorMessages[error.message] || errorMessages.default)
-        setIsModalOpen(true)
-        console.error(error)
-      })
-      .finally(() => {
-        setIsSubmitting(false)
-      })
-  }
+
+  const handleSubmit1 = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${BASE_URL}/api/tabla_examen/por_paciente/${pacienteSeleccionado}`, {
+        method: 'GET',
+      });
+      // console.log(pacienteSeleccionado)
+      if (response.ok) {
+        const data = await response.json();
+        // console.log('Datos recibidos:', data);
+        setTablaExamenData(data);
+        setSubmitted1(true);
+        setInitialPage(false);
+      } else if (response.status === 404) {
+        throw new Error('No se encontró el registro');
+      } else {
+        throw new Error('Ha ocurrido un error inesperado');
+      }
+    } catch (error) {
+      // Manejo de errores
+      console.log(error)
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   
   const isButtonDisabled = pacienteSeleccionado === ''
   const handleReloadPage = () => {
@@ -146,12 +141,12 @@ const EditarTablaExamen = () => {
     }
   }
 
-  const scrollToBottom = () => {
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: 'smooth'
-    })
-  }
+  // const scrollToBottom = () => {
+  //   window.scrollTo({
+  //     top: document.documentElement.scrollHeight,
+  //     behavior: 'smooth'
+  //   })
+  // }
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -174,7 +169,7 @@ const EditarTablaExamen = () => {
   const handleSubmit2 = (e) => {
     e.preventDefault()
     setIsSubmitting(true)
-    fetch(`${BASE_URL}/api/tabla_examen/_campos/get/${dataId}`)
+    fetch(`${BASE_URL}/api/tabla_examen/${dataId}`)
       .then((response) => {
         if (response.status === 404) {
           throw new Error('No se encontró el registro')
@@ -205,37 +200,45 @@ const EditarTablaExamen = () => {
   }
 
   const handleSubmit3 = (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    const dataArray = Object.values(inputValues)
-    console.log('Data enviada por PUT:', dataArray)
-    fetch(`${BASE_URL}/api/tabla_examen/put/${tablaExamenId}`, {
+    e.preventDefault();
+    setIsSubmitting(true);
+  
+    const requestData = {
+      campo1: inputValues.campo1 || '',
+      campo2: inputValues.campo2 || '',
+      campo3: inputValues.campo3 || '',
+    };
+  
+    console.log('Data enviada por PUT:', requestData);
+  
+    fetch(`${BASE_URL}/api/tabla_examen/${dataId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(dataArray)
+      body: JSON.stringify(requestData),
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Hubo un error al enviar los datos')
+          throw new Error('Hubo un error al enviar los datos');
         }
-        setRegistroExitoso(true)
+        setRegistroExitoso(true);
       })
       .catch((error) => {
         if (error.message === 'Hubo un error al enviar los datos') {
-          setModalAMessage('Hubo un error al enviar los datos')
-          setIsModalOpen(true)
+          setModalAMessage('Hubo un error al enviar los datos');
+          setIsModalOpen(true);
         } else {
-          setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
-          setIsModalOpen(true)
-          console.error(error)
+          setModalAMessage('Error: No se pudo establecer conexión con el servidor.');
+          setIsModalOpen(true);
+          console.error(error);
         }
       })
       .finally(() => {
-        setIsSubmitting(false)
-      })
-  }
+        setIsSubmitting(false);
+      });
+  };
+  
 
   if (registroExitoso) {
     return (
@@ -250,22 +253,37 @@ const EditarTablaExamen = () => {
     )
   }
 
-  const downloadData = () => {
-    const sanitizedData = ExamData.titlesArray.map(title => title.replace(/<.*?>/g, ''))
-    const data = sanitizedData.map((title, index) => [
-      title,
-      inputValues[`campo${index + 1}`],
-    ])
-    const csvContent = data.map(row => row.join(';')).join('\n')
-    const blob = new Blob([csvContent], { type: 'text/csv charset=UTF-8' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'user_data.csv'
-    a.click()
-    window.URL.revokeObjectURL(url)
-  }
-
+  const downloadData = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/api/tabla_examen/${dataId}`);
+      if (!response.ok) {
+        throw new Error('No se pudo obtener los datos');
+      }
+      const data = await response.json();
+      if (typeof data !== 'object' || Array.isArray(data)) {
+        throw new Error('Los datos no son válidos para la descarga');
+      }
+      let csvContent = "FCSRT;Total identificación;FCRST Recuerdo libre ensayo 1\n";
+      const csvRow = `${data.campo1 || ''};${data.campo2 || ''};${data.campo3 || ''}`;
+      csvContent += csvRow;
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `data.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } else {
+        throw new Error('El navegador no soporta la descarga de archivos');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+    
   return (
     <div>
       <div onKeyDown={handleTabKeyPress}>
@@ -308,19 +326,20 @@ const EditarTablaExamen = () => {
       )}
       {submitted1 && (
         <center>
-          <div> <br />
-            <h2>Editar Tabla de Datos y Exámenes</h2> <br />
+          <div>
+            <br />
+            <h2>Eliminar Tabla de Datos y Exámenes</h2> <br />
             <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
             <form onSubmit={handleSubmit2}>
               <label className='labelFontSize' htmlFor='timestampSelect'>Registro: </label>
               <select id='timestampSelect' onChange={handleRegistroSeleccionado}>
                 <option value=''>Seleccione un registro</option>
                 {tablaExamenData
-                  .filter(item => item.paciente_id === pacienteSeleccionado)
-                  .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                  .filter(item => item.pacienteId === parseInt(pacienteSeleccionado)) // Asegúrate de comparar el tipo correcto
+                  .sort((a, b) => new Date(b.timestampColumn) - new Date(a.timestampColumn))
                   .map(item => (
-                    <option key={item.timestamp} value={item.timestamp} data-id={item.id}>
-                      {new Date(item.timestamp).toLocaleString()}
+                    <option key={item.timestampColumn} value={item.timestampColumn} data-id={item.id}>
+                      {new Date(item.timestampColumn).toLocaleString()}
                     </option>
                   ))}
               </select>
@@ -336,31 +355,51 @@ const EditarTablaExamen = () => {
           <div className='tableContainer'> <br />
             <h2>Editar Tabla de Datos y Exámenes</h2>
             <p><b>Paciente: </b>{infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
-            <button className='boton-scroll-bottom' onClick={scrollToBottom}>Ir al final</button> <br /> <br />
-            <table>
-              <tbody>
-                {ExamData.titlesArray.map((title, index) => (
-                  <tr key={index}>
-                    <td className='tdTitle' dangerouslySetInnerHTML={{ __html: title }}></td>
-                    <td>
-                      <textarea
-                        rows={2}
-                        type='text'
-                        className='input-no-borders'
-                        name={`campo${index + 1}`}
-                        value={inputValues[`campo${index + 1}`]}
-                        onChange={handleInputChange}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <h6>{`*Para una correcta visualización de los datos en Excel: Data -> Get Data -> From File -> From Text/CSV -> Abrir el archivo File Origin: UTF-8 Delimiter: Semicolon -> Load`}</h6>
-            <button disabled={isSubmitting} onClick={handleSubmit3}>Editar Registro</button> <br /> <br />
+            <form onSubmit={handleSubmit3}>
+              {/* Mostrar los campos para editar */}
+              <div>
+                <label>
+                  Campo 1:
+                  <input
+                    type="text"
+                    name="campo1"
+                    value={inputValues.campo1 || ''}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <br />
+              </div>
+              <div>
+                <label>
+                  Campo 2:
+                  <input
+                    type="text"
+                    name="campo2"
+                    value={inputValues.campo2 || ''}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <br />
+              </div>
+              <div>
+                <label>
+                  Campo 3:
+                  <input
+                    type="text"
+                    name="campo3"
+                    value={inputValues.campo3 || ''}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <br />
+              </div>
+              <h6>{`*Para una correcta visualización de los datos en Excel: Data -> Get Data -> From File -> From Text/CSV -> Abrir el archivo File Origin: UTF-8 Delimiter: Semicolon -> Load`}</h6>
+              <button type='submit' disabled={isSubmitting}>Editar Registro</button>
+            </form>
+            <br />
             <button className='downloadData' onClick={downloadData}>Descargar Datos</button> <br /> <br />
-            <button className='boton-scroll-top' onClick={scrollToTop}>Ir al principio</button> <br /> <br />
-            <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
+            <button className='boton-scroll-top' onClick={scrollToTop}>Ir al principio</button>
+            <br /> <br /> <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
           </div>
         </center>
       )}

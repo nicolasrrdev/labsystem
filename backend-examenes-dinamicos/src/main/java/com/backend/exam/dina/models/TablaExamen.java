@@ -1,45 +1,61 @@
 package com.backend.exam.dina.models;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Timestamp;
 @Entity
 @Table(name = "tablaExamen")
 public class TablaExamen {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @ManyToOne
-    @JoinColumn(name = "paciente_id")
-    private Paciente paciente;
-    @OneToMany(mappedBy = "tablaExamen", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<TablaExamenCampo> campos = new ArrayList<>();
-    @Column(name = "timestamp")
-    private LocalDateTime timestamp;
+    @Column(name = "paciente_id")
+    private Integer pacienteId;
+    @Column(name = "campo1")
+    private String campo1;
+    @Column(name = "campo2")
+    private String campo2;
+    @Column(name = "campo3")
+    private String campo3;
+    @Column(name = "timestamp_column", columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    private Timestamp timestampColumn;
+    public TablaExamen() {
+    }
+    public TablaExamen(Integer pacienteId, String campo1, String campo2, String campo3, Timestamp timestampColumn) {
+        this.pacienteId = pacienteId;
+        this.campo1 = campo1;
+        this.campo2 = campo2;
+        this.campo3 = campo3;
+        this.timestampColumn = timestampColumn;
+    }
     public Integer getId() {
         return id;
     }
     public void setId(Integer id) {
         this.id = id;
     }
-    public Paciente getPaciente() {
-        return paciente;
+    public Integer getPacienteId() {
+        return pacienteId;
     }
-    public void setPaciente(Paciente paciente) {
-        this.paciente = paciente;
+    public void setPacienteId(Integer pacienteId) {
+        this.pacienteId = pacienteId;
     }
-    public List<TablaExamenCampo> getCampos() {
-        return campos;
+    public String getCampo1() {
+        return campo1;
     }
-    public void setCampos(List<TablaExamenCampo> campos) {
-        this.campos = campos;
+    public void setCampo1(String campo1) {
+        this.campo1 = campo1;
     }
-    public LocalDateTime getTimestamp() {
-        return timestamp;
+    public String getCampo2() {
+        return campo2;
     }
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    public void setCampo2(String campo2) {
+        this.campo2 = campo2;
     }
+    public String getCampo3() {
+        return campo3;
+    }
+    public void setCampo3(String campo3) {
+        this.campo3 = campo3;
+    }
+    public Timestamp getTimestampColumn() { return timestampColumn; }
+    public void setTimestampColumn(Timestamp timestampColumn) { this.timestampColumn = timestampColumn; }
 }

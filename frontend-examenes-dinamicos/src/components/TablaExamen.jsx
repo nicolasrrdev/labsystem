@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import ModalAlert from './ModalAlert'
-import * as ExamData from '../data/ExamData'
 
 const TablaExamen = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -23,18 +22,6 @@ const TablaExamen = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const defaultInputValues = ExamData.titlesArray.reduce((acc, title, index) => {
-    acc[`campo${index + 1}`] = ''
-    return acc
-  }, {})
-  const [inputValues, setInputValues] = useState(defaultInputValues)
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setInputValues({
-      ...inputValues,
-      [name]: value
-    })
-  }
   
   useEffect(() => {
     fetch(`${BASE_URL}/pacientes`)
@@ -66,6 +53,10 @@ const TablaExamen = () => {
       })
       .then((responseData) => {
         setInfoPaciente(responseData)
+        setDatosFormulario((prevDatos) => ({
+          ...prevDatos,
+          pacienteId: responseData.id,
+        }));
         setSubmitted(true)
       })
       .catch((error) => {
@@ -116,32 +107,45 @@ const TablaExamen = () => {
     })
   }
 
-  const handleSubmit2 = () => {
-    const dataArray = Object.values(inputValues)
-    fetch(`${BASE_URL}/api/tabla_examen/post/${pacienteSeleccionado}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(dataArray)
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Hubo un error al enviar los datos')
-        }
+
+
+  const [datosFormulario, setDatosFormulario] = useState({
+    pacienteId: '',
+    campo1: '',
+    campo2: '',
+    campo3: '',
+  });
+
+  const manejarCambio = (event) => {
+    const { name, value } = event.target;
+    setDatosFormulario((prevDatos) => ({
+      ...prevDatos,
+      [name]: value,
+    }));
+  };
+
+  const manejarSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      console.log('POST:', JSON.stringify(datosFormulario));
+      const response = await fetch('http://localhost:8085/api/tabla_examen/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(datosFormulario),
+      });      
+      if (response.ok) {
+        console.log('Registro insertado con éxito.');
         setRegistroExitoso(true)
-      })
-      .catch((error) => {
-        if (error.message === 'Hubo un error al enviar los datos') {
-          setModalAMessage('Hubo un error al enviar los datos')
-          setIsModalOpen(true)
-        } else {
-          setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
-          setIsModalOpen(true)
-          console.error(error)
-        }
-      })
-  }
+      } else {
+        console.error('Error al insertar el registro.');
+      }
+    } catch (error) {
+      console.error('Error de red:', error);
+    }
+  };
 
   if (registroExitoso) {
     return (
@@ -201,28 +205,55 @@ const TablaExamen = () => {
           <div className='tableContainer'> <br />
             <h2>Tabla de Datos y Exámenes</h2>
             <p><b>Paciente: </b>{infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
+            {/* <p><b>Paciente id: </b>{infoPaciente.id}</p> */}
             <button className='boton-scroll-bottom' onClick={scrollToBottom}>Ir al final</button> <br /> <br />
-            <table>
-              <tbody>
-                {ExamData.titlesArray.map((title, index) => (
-                  <tr key={index}>
-                    <td className='tdTitle' dangerouslySetInnerHTML={{ __html: title }}></td>
-                    <td>
-                      <textarea
-                        rows={2}
-                        type='text'
-                        className='input-no-borders'
-                        name={`campo${index + 1}`}
-                        value={inputValues[`campo${index + 1}`]}
-                        onChange={handleInputChange}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <br /> <button disabled={isSubmitting} onClick={handleSubmit2}>Realizar Registro</button>
-            <br /> <br />  <button className='boton-scroll-top' onClick={scrollToTop}>Ir al principio</button>
+            <form>
+              {/* <label>
+                Paciente ID:
+                <input
+                  type="text"
+                  name="pacienteId"
+                  value={datosFormulario.pacienteId}
+                  onChange={manejarCambio}
+                />
+              </label>
+              <br /> */}
+              <label>
+                Campo 1:
+                <input
+                  type="text"
+                  name="campo1"
+                  value={datosFormulario.campo1}
+                  onChange={manejarCambio}
+                />
+              </label>
+              <br />
+              <label>
+                Campo 2:
+                <input
+                  type="text"
+                  name="campo2"
+                  value={datosFormulario.campo2}
+                  onChange={manejarCambio}
+                />
+              </label>
+              <br />
+              <label>
+                Campo 3:
+                <input
+                  type="text"
+                  name="campo3"
+                  value={datosFormulario.campo3}
+                  onChange={manejarCambio}
+                />
+              </label>
+              <br />
+              {/* <br /><button type="submit">Insertar Registro</button> */}
+              <br /> <button onClick={manejarSubmit}>Insertar Registro</button>
+            </form>
+
+
+            <br />  <button className='boton-scroll-top' onClick={scrollToTop}>Ir al principio</button>
             <br /> <br /> <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
           </div>
         </center>

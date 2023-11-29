@@ -1,39 +1,42 @@
 package com.backend.exam.dina.services;
 import com.backend.exam.dina.models.TablaExamen;
 import com.backend.exam.dina.repositories.TablaExamenRepository;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.List;
+import java.sql.Timestamp;
 @Service
-@Transactional
 public class TablaExamenService {
-    private final TablaExamenRepository tablaExamenRepository;
     @Autowired
-    public TablaExamenService(TablaExamenRepository tablaExamenRepository) {
-        this.tablaExamenRepository = tablaExamenRepository;
+    private TablaExamenRepository tablaExamenRepository;
+    public TablaExamen insertarRegistro(TablaExamen tablaExamen) {
+        return tablaExamenRepository.save(tablaExamen);
     }
-    public void insertarTablaExamen(TablaExamen tablaExamen) {
-        tablaExamenRepository.save(tablaExamen);
-    }
-    public TablaExamen obtenerTablaExamenPorId(Integer id) {
-        TablaExamen tablaExamen = tablaExamenRepository.findById(id).orElse(null);
-        if (tablaExamen != null) {
-            Hibernate.initialize(tablaExamen.getCampos());
+    public TablaExamen editarRegistro(Integer id, TablaExamen tablaExamen) {
+        Optional<TablaExamen> optionalTablaExamen = tablaExamenRepository.findById(id);
+        if (optionalTablaExamen.isPresent()) {
+            TablaExamen registroExistente = optionalTablaExamen.get();
+            registroExistente.setCampo1(tablaExamen.getCampo1());
+            registroExistente.setCampo2(tablaExamen.getCampo2());
+            registroExistente.setCampo3(tablaExamen.getCampo3());
+            registroExistente.setTimestampColumn(new Timestamp(System.currentTimeMillis()));
+            return tablaExamenRepository.save(registroExistente);
+        } else {
+            return null;
         }
-        return tablaExamen;
     }
-    public void actualizarTablaExamen(TablaExamen tablaExamen) {
-        tablaExamenRepository.save(tablaExamen);
+    public void eliminarRegistro(Integer id) {
+        tablaExamenRepository.deleteById(id);
     }
-    public void eliminarTablaExamen(TablaExamen tablaExamen) {
-        tablaExamenRepository.delete(tablaExamen);
-    }
-    public List<TablaExamen> obtenerTodosTablaExamen() {
+    public List<TablaExamen> obtenerTodosLosRegistros() {
         return tablaExamenRepository.findAll();
     }
-    public List<TablaExamen> obtenerTablaExamenPorPacienteId(Integer pacienteId) {
+    public TablaExamen obtenerRegistroPorId(Integer id) {
+        Optional<TablaExamen> optionalTablaExamen = tablaExamenRepository.findById(id);
+        return optionalTablaExamen.orElse(null);
+    }
+    public List<TablaExamen> obtenerRegistrosPorPacienteId(Integer pacienteId) {
         return tablaExamenRepository.findByPacienteId(pacienteId);
     }
 }

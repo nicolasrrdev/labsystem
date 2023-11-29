@@ -55,47 +55,33 @@ const EliminarTablaExamen = () => {
     setPacienteSeleccionado(e.target.value)
   }
 
-  const errorMessages = {
-    '404': 'No se encontraron registros',
-    '404-2': 'No se encontraron registros',
-    '500': 'Ha ocurrido un error inesperado',
-    'default': 'Error: No se pudo establecer conexión con el servidor'
-  }
-  const handleSubmit1 = (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    const fetchAllData = fetch(`${BASE_URL}/api/tabla_examen/get/all`)
-      .then((response) => {
-        if (response.status === 404) {
-          throw new Error('404')
-        }
-        if (response.status === 500) {
-          throw new Error('500')
-        }
-        return response.json()
-      })
-    const fetchSpecificData = fetch(`${BASE_URL}/api/tabla_examen/get/timestamp/${pacienteSeleccionado}`)
-      .then((response) => {
-        if (response.status === 404) {
-          throw new Error('404-2')
-        }
-      })
-    Promise.all([fetchAllData, fetchSpecificData])
-      .then(([allData]) => {
-        setTablaExamenData(allData)
-        setInitialPage(false)
-        setSubmitted1(true)
-      })
-      .catch((error) => {
-        setModalAMessage(errorMessages[error.message] || errorMessages.default)
-        setIsModalOpen(true)
-        console.error(error)
-      })
-      .finally(() => {
-        setIsSubmitting(false)
-      })
-  }
+  const handleSubmit1 = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${BASE_URL}/api/tabla_examen/por_paciente/${pacienteSeleccionado}`, {
+        method: 'GET',
+      });
+      // console.log(pacienteSeleccionado)
+      if (response.ok) {
+        const data = await response.json();
+        // console.log('Datos recibidos:', data);
+        setTablaExamenData(data);
+        setSubmitted1(true);
+        setInitialPage(false);
+      } else if (response.status === 404) {
+        throw new Error('No se encontró el registro');
+      } else {
+        throw new Error('Ha ocurrido un error inesperado');
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   
+  
+
   const isButtonDisabled = pacienteSeleccionado === ''
   const handleReloadPage = () => {
     window.location.reload()
@@ -129,41 +115,48 @@ const EliminarTablaExamen = () => {
   }
 
   const handleSubmit2 = (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    fetch(`${BASE_URL}/api/tabla_examen/delete/${dataId}`, {
+    e.preventDefault();
+  
+    if (!registroSeleccionado || !dataId) {
+      // Validación adicional, asegúrate de tener un registro seleccionado y un ID
+      return;
+    }
+  
+    setIsSubmitting(true);
+  
+    fetch(`${BASE_URL}/api/tabla_examen/${dataId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-      }
+      },
     })
       .then((response) => {
         if (response.status === 404) {
-          throw new Error('No se encontró el registro')
+          throw new Error('No se encontró el registro');
         }
         if (response.status === 500) {
-          throw new Error('Ha ocurrido un error inesperado')
+          throw new Error('Ha ocurrido un error inesperado');
         }
       })
       .then(() => {
-        setSubmitted1(false)
-        setRegistroExitoso(true)
+        setSubmitted1(false);
+        setRegistroExitoso(true);
       })
       .catch((error) => {
         if (error.message === 'No se encontró el registro') {
-          setModalAMessage('No se encontró el registro')
+          setModalAMessage('No se encontró el registro');
         } else if (error.message === 'Ha ocurrido un error inesperado') {
-          setModalAMessage('Ha ocurrido un error inesperado')
+          setModalAMessage('Ha ocurrido un error inesperado');
         } else {
-          setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
-          console.error(error)
+          setModalAMessage('Error: No se pudo establecer conexión con el servidor.');
+          console.error(error);
         }
-        setIsModalOpen(true)
+        setIsModalOpen(true);
       })
       .finally(() => {
-        setIsSubmitting(false)
-      })
-  }
+        setIsSubmitting(false);
+      });
+  };
 
   if (registroExitoso) {
     return (
@@ -220,7 +213,8 @@ const EliminarTablaExamen = () => {
       )}
       {submitted1 && (
         <center>
-          <div> <br />
+          <div>
+            <br />
             <h2>Eliminar Tabla de Datos y Exámenes</h2> <br />
             <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
             <form onSubmit={handleSubmit2}>
@@ -228,11 +222,11 @@ const EliminarTablaExamen = () => {
               <select id='timestampSelect' onChange={handleRegistroSeleccionado}>
                 <option value=''>Seleccione un registro</option>
                 {tablaExamenData
-                  .filter(item => item.paciente_id === pacienteSeleccionado)
-                  .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                  .filter(item => item.pacienteId === parseInt(pacienteSeleccionado)) // Asegúrate de comparar el tipo correcto
+                  .sort((a, b) => new Date(b.timestampColumn) - new Date(a.timestampColumn))
                   .map(item => (
-                    <option key={item.timestamp} value={item.timestamp} data-id={item.id}>
-                      {new Date(item.timestamp).toLocaleString()}
+                    <option key={item.timestampColumn} value={item.timestampColumn} data-id={item.id}>
+                      {new Date(item.timestampColumn).toLocaleString()}
                     </option>
                   ))}
               </select>
