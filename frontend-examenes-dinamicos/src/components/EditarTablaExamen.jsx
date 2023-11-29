@@ -489,7 +489,7 @@ const EditarTablaExamen = () => {
       </div>
     )
   }
-
+//
   const downloadData = async () => {
     try {
       const response = await fetch(`${BASE_URL}/api/tabla_examen/${dataId}`);
