@@ -32,7 +32,7 @@ const Login = () => {
 
   return (
 
-    <div className='col-md-12'>
+    <div>
       <div className='card card-container'>
         <img
           src='//ssl.gstatic.com/accounts/ui/avatar_2x.png'
@@ -40,6 +40,7 @@ const Login = () => {
           className='profile-img-card'
         />
         <form onSubmit={handleLogin}>
+          <center>
           <div className='form-group'>
             <label htmlFor='username'>Username</label>
             <input
@@ -65,10 +66,11 @@ const Login = () => {
               autoComplete='off'
             />
           </div>
-          {message && (
-                <div className='alert alert-danger' role='alert'>
-                  {message}
-                </div>
+              {message && (
+              <div>
+               {/* <div style={{ color: 'red' }}> */}
+                {message} <br /> <br />
+              </div>
               )}
           <div className='form-group'>
             <button type='submit' className='btn btn-primary' disabled={loading}>
@@ -78,6 +80,7 @@ const Login = () => {
               <span>Login</span>
             </button>
           </div>
+          </center>
         </form>
       </div>
     </div>

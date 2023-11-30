@@ -24,12 +24,33 @@ const Register = () => {
     return null
   }
 
+  // const passwordValidation = (value) => {
+  //   if (value.length < 6 || value.length > 40) {
+  //     return 'The password must be between 6 and 40 characters'
+  //   }
+  //   return null
+  // }
+
   const passwordValidation = (value) => {
-    if (value.length < 6 || value.length > 40) {
-      return 'The password must be between 6 and 40 characters'
+    if (value.length < 8) {
+      return 'The password must be at least 8 characters long';
     }
-    return null
-  }
+  
+    // Check if the password contains at least one lowercase letter
+    const lowercaseRegex = /[a-z]/;
+    if (!lowercaseRegex.test(value)) {
+      return 'The password must contain at least one lowercase letter';
+    }
+  
+    // Check if the password contains at least one uppercase letter
+    const uppercaseRegex = /[A-Z]/;
+    if (!uppercaseRegex.test(value)) {
+      return 'The password must contain at least one uppercase letter';
+    }
+  
+    return null;
+  };
+  
 
   const handleRegister = (e) => {
     e.preventDefault()
@@ -67,6 +88,7 @@ const Register = () => {
         <img src='//ssl.gstatic.com/accounts/ui/avatar_2x.png' alt='profile-img' className='profile-img-card' />
 
         <form onSubmit={handleRegister}>
+          <center>
           <div className='form-group'>
             <label htmlFor='username'>Username</label>
             <input
@@ -118,6 +140,7 @@ const Register = () => {
               Sign Up
             </button>
           </div>
+          </center>
         </form>
 
         {message && (

@@ -129,7 +129,7 @@ const TablaExamen = () => {
 
     try {
       console.log('POST:', JSON.stringify(datosFormulario));
-      const response = await fetch('http://localhost:8085/api/tabla_examen/', {
+      const response = await fetch(`${BASE_URL}/api/tabla_examen/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -29,6 +29,7 @@ export default class Profile extends Component {
 
     return (
       <div className="container">
+        <center>
         {(this.state.userReady) ?
         <div>
         <header className="jumbotron">
@@ -49,12 +50,13 @@ export default class Profile extends Component {
           <strong>Email:</strong>{" "}
           {currentUser.email}
         </p>
-        <strong>Authorities:</strong>
-        <ul>
+        <strong>Authorities:</strong> <br /> <br />
+        {/* <ul> */}
           {currentUser.roles &&
             currentUser.roles.map((role, index) => <li key={index}>{role}</li>)}
-        </ul>
+        {/* </ul> */}
       </div>: null}
+      </center>
       </div>
     );
   }

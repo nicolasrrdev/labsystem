@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 
 const ResetPasswordForm = () => {
+  const BASE_URL = import.meta.env.VITE_BASE_URL
   const [newPassword, setNewPassword] = useState('');
   const [message, setMessage] = useState('');
   const [inputDisabled, setInputDisabled] = useState(false);
@@ -45,7 +46,7 @@ const ResetPasswordForm = () => {
         return;
       }
 
-      const response = await axios.post('http://localhost:8080/reset-password/confirm', { token, newPassword });
+      const response = await axios.post(`${BASE_URL}/reset-password/confirm`, { token, newPassword });
       setMessage(response.data.message);
     } catch (error) {
       setMessage(error.response.data.error);

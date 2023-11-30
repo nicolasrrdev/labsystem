@@ -1,0 +1,51 @@
+package com.labsystem.controllers;
+
+import com.labsystem.models.TablaExamen;
+import com.labsystem.services.TablaExamenService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.sql.Timestamp;
+@RestController
+@RequestMapping("/api/tabla_examen")
+public class TablaExamenController {
+    @Autowired
+    private TablaExamenService tablaExamenService;
+    @GetMapping
+    public ResponseEntity<List<TablaExamen>> obtenerTodosLosRegistros() {
+        List<TablaExamen> registros = tablaExamenService.obtenerTodosLosRegistros();
+        return ResponseEntity.ok(registros);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<TablaExamen> obtenerRegistroPorId(@PathVariable Integer id) {
+        TablaExamen registro = tablaExamenService.obtenerRegistroPorId(id);
+        if (registro != null) {
+            return ResponseEntity.ok(registro);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @GetMapping("/por_paciente/{pacienteId}")
+    public ResponseEntity<List<TablaExamen>> obtenerRegistrosPorPacienteId(@PathVariable Integer pacienteId) {
+        List<TablaExamen> registros = tablaExamenService.obtenerRegistrosPorPacienteId(pacienteId);
+        return ResponseEntity.ok(registros);
+    }
+    @PostMapping
+    public ResponseEntity<TablaExamen> insertarRegistro(@RequestBody TablaExamen tablaExamen) {
+        tablaExamen.setTimestampColumn(new Timestamp(System.currentTimeMillis()));
+        TablaExamen nuevoRegistro = tablaExamenService.insertarRegistro(tablaExamen);
+        return ResponseEntity.ok(nuevoRegistro);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<TablaExamen> editarRegistro(@PathVariable Integer id, @RequestBody TablaExamen tablaExamen) {
+        tablaExamen.setTimestampColumn(new Timestamp(System.currentTimeMillis()));
+        TablaExamen registroActualizado = tablaExamenService.editarRegistro(id, tablaExamen);
+        return ResponseEntity.ok(registroActualizado);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarRegistro(@PathVariable Integer id) {
+        tablaExamenService.eliminarRegistro(id);
+        return ResponseEntity.noContent().build();
+    }
+}

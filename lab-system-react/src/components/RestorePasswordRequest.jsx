@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 
 const RestorePasswordRequest = () => {
+  const BASE_URL = import.meta.env.VITE_BASE_URL
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,7 +17,7 @@ const RestorePasswordRequest = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:8080/reset-password/request',
+        `${BASE_URL}/reset-password/request`,
         { email },
         {
           headers: {
