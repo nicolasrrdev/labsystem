@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 public class TablaExamenController {
     @Autowired
     private TablaExamenService tablaExamenService;
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<TablaExamen>> obtenerTodosLosRegistros() {
         List<TablaExamen> registros = tablaExamenService.obtenerTodosLosRegistros();
         return ResponseEntity.ok(registros);
@@ -31,7 +31,7 @@ public class TablaExamenController {
         List<TablaExamen> registros = tablaExamenService.obtenerRegistrosPorPacienteId(pacienteId);
         return ResponseEntity.ok(registros);
     }
-    @PostMapping
+    @PostMapping("/post")
     public ResponseEntity<TablaExamen> insertarRegistro(@RequestBody TablaExamen tablaExamen) {
         tablaExamen.setTimestampColumn(new Timestamp(System.currentTimeMillis()));
         TablaExamen nuevoRegistro = tablaExamenService.insertarRegistro(tablaExamen);

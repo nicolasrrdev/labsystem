@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 import AuthService from './services/auth.service';
 import Login from './components/login.component';
 import Register from './components/register.component';
@@ -31,7 +31,6 @@ function formatLocationPathname(pathname) {
 
 const App = () => {
 
-  const navigate = useNavigate()
   const location = useLocation();
   const formattedLocationPathname = formatLocationPathname(location.pathname.substring(1)) || 'Inicio';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,33 +40,34 @@ const App = () => {
 
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
+  const [showUserBoard, setShowUserBoard] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
+
+  const user = AuthService.getCurrentUser();
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
-
     if (user) {
       setCurrentUser(user);
       setShowModeratorBoard(user.roles.includes('ROLE_MODERATOR'));
       setShowAdminBoard(user.roles.includes('ROLE_ADMIN'));
+      setShowUserBoard(user.roles.includes('ROLE_USER'));
       // console.log(user.roles)
-    }
 
+    }
     const handleLogout = () => {
       AuthService.logout();
       setShowModeratorBoard(false);
       setShowAdminBoard(false);
+      setShowUserBoard(false);
       setCurrentUser(undefined);
+
     };
-
     EventBus.on('logout', handleLogout);
-
     return () => {
       EventBus.remove('logout', handleLogout);
     };
   }, []);
-
-
 
   return (
           <HelmetProvider>
@@ -80,16 +80,20 @@ const App = () => {
         <div className='FaBars-container'>
           <img className='menuSvg' src={Menu} alt='menu' />
         </div>
-        {/* <li>
-        <Link to={'/'}>
-          Exámenes de Laboratorio
-        </Link>
-        </li> */}
+
         <li>
           <Link to={'/Home'}>
             Inicio
           </Link>
         </li>
+
+        {/* {showUserBoard && (
+          <li>
+            <Link to={'/User'}>
+              User Board
+            </Link>
+          </li>
+        )} */}
 
         {/* {showModeratorBoard && (
           <li>
@@ -99,7 +103,6 @@ const App = () => {
           </li>
         )} */}
 
-
         {showAdminBoard && (
           <li>
             <Link to={'/Admin'}>
@@ -107,24 +110,94 @@ const App = () => {
             </Link>
           </li>
         )}
-        
 
-        {/* {showAdminBoard && (
+        {showAdminBoard && (
+        <li>
+          <Link to={'/RegistrarPaciente'}>
+            Registrar Paciente
+          </Link>
+        </li>
+        )}
+
+        {showAdminBoard && (
           <li>
-            <Link to={'/RegistrarPaciente'}>
-              Registrar Paciente
+            <Link to={'/RevisarPaciente'}>
+              Revisar Paciente
             </Link>
           </li>
-        )} */}
-
-        {/* {currentUser && (
+        )}
+          
+        {showAdminBoard && (
           <li>
-            <Link to={'/User'}>
-              User
+            <Link to={'/EditarPaciente'}>
+              Editar Paciente
             </Link>
           </li>
-        )} */}
+        )}
 
+        {showAdminBoard && (
+          <li>
+            <Link to={'/CrearExamen'}>
+              Crear Examen
+            </Link>
+          </li>
+        )}
+
+        {showAdminBoard && (
+          <li>
+            <Link to={'/RealizarRegistro'}>
+              Realizar Registro
+            </Link>
+          </li>
+        )}
+
+        {showAdminBoard && (
+          <li>
+            <Link to={'/RevisarRegistro'}>
+              Revisar Registro
+            </Link>
+          </li>
+        )}
+
+        {showAdminBoard && (
+          <li>
+            <Link to={'/RevisarRegistro'}>
+              Revisar Registro
+            </Link>
+          </li>
+        )}
+
+        {showAdminBoard && (
+          <li>
+            <Link to={'/EditarRegistro'}>
+              Editar Registro
+            </Link>
+          </li>
+        )}
+
+        {showAdminBoard && (
+          <li>
+            <Link to={'/TablaExamen'}>
+              Tabla Examen
+            </Link>
+          </li>
+        )}
+
+        {showAdminBoard && (
+          <li>
+            <Link to={'/EditarTablaExamen'}>
+              Editar Tabla Examen
+            </Link>
+          </li>
+        )}
+
+        {showAdminBoard && (
+          <li>
+            <Link to={'/EliminarTablaExamen'}>
+              Eliminar Tabla Examen
+            </Link>
+          </li>
+        )}
 
         {!currentUser && (
             <li>
@@ -163,16 +236,15 @@ const App = () => {
           </>
         )}
 
-
       </div>
 
       <div>
         <Routes>
 
           <Route path='*' element={<Navigate to='/home' />} />
-
           <Route path='/' element={<Home />} />
           <Route path='/Home' element={<Home />} />
+          <Route path='/Profile' element={<Profile />} />
 
           {currentUser ? (
             <>
@@ -185,14 +257,6 @@ const App = () => {
               <Route path="/Register" element={<Register />} />
             </>
           )}
-
-          <Route path='/Profile' element={<Profile />} />
-          
-          {/* <Route path='/User' element={<BoardUser />} /> */}
-
-          {/* <Route path='/Mod' element={<BoardModerator />} /> */}
-
-          {/* <Route path='/Admin' element={<BoardAdmin />} /> */}
 
           {!currentUser && (
             <Route path='/Restore' element={<RestorePasswordRequest />} />
@@ -208,30 +272,57 @@ const App = () => {
             <Route path='/reset-password' element={<Navigate to='/Home' />} />
           )}
 
-
-          {!currentUser && (
-           <Route path='/Admin' element={<Navigate to='/Home' />} />
-          )}
-          {currentUser && currentUser.roles.includes('ROLE_ADMIN') &&(
-          <>
-            {/* {console.log(currentUser.roles)} */}
+          {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
             <Route path='/Admin' element={<BoardAdmin />} />
-          </>
           )}
 
+          {/* {user && user.roles && user.roles.includes('ROLE_MODERATOR') &&(
+            <Route path='/Mod' element={<BoardModerator />} />
+          )} */}
 
+          {/* {user && user.roles && user.roles.includes('ROLE_USER') &&(
+            <Route path='/User' element={<BoardUser />} />
+          )} */}
 
-          <Route path='/RegistrarPaciente' element={<RegistrarPaciente />} />
-          <Route path='/RevisarPaciente' element={<RevisarPaciente />} />
-          <Route path='/EditarPaciente' element={<EditarPaciente />} />
-          <Route path='/CrearExamen' element={<CrearExamen />} />
-          <Route path='/RealizarRegistro' element={<RealizarRegistro />} />
-          <Route path='/RevisarRegistro' element={<RevisarRegistro />} />
-          <Route path='/EditarRegistro' element={<EditarRegistro />} />
-          <Route path='/TablaExamen' element={<TablaExamen />} />
-          <Route path='/EditarTablaExamen' element={<EditarTablaExamen />} />
-          <Route path='/EliminarTablaExamen' element={<EliminarTablaExamen />} />
+          {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
+            <Route path='/RegistrarPaciente' element={<RegistrarPaciente />} />
+          )}
 
+          {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
+            <Route path='/RevisarPaciente' element={<RevisarPaciente />} />
+          )}
+
+          {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
+            <Route path='/EditarPaciente' element={<EditarPaciente />} />
+          )}
+
+          {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
+            <Route path='/CrearExamen' element={<CrearExamen />} />
+          )}
+
+          {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
+            <Route path='/RealizarRegistro' element={<RealizarRegistro />} />
+          )}
+
+          {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
+            <Route path='/RevisarRegistro' element={<RevisarRegistro />} />
+          )}
+
+          {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
+            <Route path='/EditarRegistro' element={<EditarRegistro />} />
+          )}
+
+          {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
+            <Route path='/TablaExamen' element={<TablaExamen />} />
+          )}
+
+          {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
+            <Route path='/EditarTablaExamen' element={<EditarTablaExamen />} />
+          )}
+
+          {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
+            <Route path='/EliminarTablaExamen' element={<EliminarTablaExamen />} />
+          )}
 
         </Routes>
       </div>

@@ -137,7 +137,7 @@ const Register = () => {
 
           <div className='form-group' style={{ marginBottom: '20px' }}>
             <button type='submit' className='btn btn-primary btn-block'>
-              Sign Up
+              Registrarse
             </button>
           </div>
           </center>
