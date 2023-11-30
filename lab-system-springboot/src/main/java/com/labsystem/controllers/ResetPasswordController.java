@@ -26,7 +26,7 @@ public class ResetPasswordController {
 
   @Value("${reset.link.base.url}")
   private String resetLinkBaseUrl;
-  @GetMapping("/request")
+  @PostMapping("/request")
   public ResponseEntity<?> requestResetPassword(@RequestBody Map<String, String> request) throws MessagingException, jakarta.mail.MessagingException {
     String email = request.get("email");
     if (email != null) {
@@ -46,7 +46,11 @@ public class ResetPasswordController {
         String resetLink = resetLinkBaseUrl + "/reset-password?token=" + resetToken;
         emailService.sendResetPasswordEmail(user.getEmail(), resetLink);
         Map<String, String> responseJson = new HashMap<>();
-        responseJson.put("token", resetToken);
+
+        //responseJson.put("token", resetToken);
+
+        responseJson.put("message", "ok");
+
         return ResponseEntity.ok(responseJson);
       } else {
         Map<String, String> errorJson = new HashMap<>();
