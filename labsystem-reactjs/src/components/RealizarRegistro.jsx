@@ -147,8 +147,15 @@ const RealizarRegistro = () => {
       const campoTipo = `${campo}_tipo`
       const inputType = tiposCampos[campoTipo]
       const inputValue = e.target.elements[campo].value
-      dataToSend[campoTipo] = inputType === 'character varying' ? inputValue : parseFloat(inputValue)
+      if (inputType === 'date') {
+        const dateValue = new Date(inputValue)
+        const formattedDate = dateValue.toISOString().split('T')[0]
+        dataToSend[campoTipo] = formattedDate
+      } else {
+        dataToSend[campoTipo] = inputType === 'character varying' ? inputValue : parseFloat(inputValue)
+      }
     })
+    // console.log(dataToSend)
     fetch(`${BASE_URL}/api/insertData/${nombreTabla2}`, {
       method: 'POST',
       headers: {
@@ -209,7 +216,6 @@ const RealizarRegistro = () => {
           <div>
             <br />
             <h2>Realizar Registro</h2>
-            <br />
             <form onSubmit={handleSubmit1}>
               <div>
                 <label htmlFor='tableName'>Seleccione un examen:ㅤ</label>
@@ -264,23 +270,41 @@ const RealizarRegistro = () => {
           <div>
             <br />
             <h2>Realizar Registro</h2>
-            <br />
             <p>Examen seleccionado: {tableName}</p>
-            <p>Paciente seleccionado: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
+            <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
             <form  onSubmit={handleSubmit2}>
 
               {Array.from({ length: Object.values(numeroCampos)[0] }, (_, index) => {
                 const campo = `campo${index + 1}`
                 const campoTipo = `${campo}_tipo`
-                const inputType = tiposCampos[campoTipo] === 'character varying' ? 'text' : 'number'
+                let inputType
+                switch (tiposCampos[campoTipo]) {
+                  case 'character varying':
+                    inputType = 'text'
+                    break
+                  case 'numeric':
+                  case 'integer':
+                    inputType = 'number'
+                    break
+                  case 'date':
+                    inputType = 'date'
+                    break
+                  default:
+                    inputType = 'text'
+                    break
+                }
                 let maxLength = null
                 let min = null
                 let max = null
-
                 if (inputType === 'text') {
                   maxLength = 255
                 } else if (inputType === 'number') {
                   min = -999999999
+                  max = 999999999
+                } else if (inputType === 'date') {
+                  min='1900-01-01'
+                } else if (inputType === 'integer') {
+                  min=0
                   max = 999999999
                 }
             
@@ -295,6 +319,11 @@ const RealizarRegistro = () => {
                       maxLength={maxLength}
                       min={min}
                       max={max}
+                      onChange={(e) => {
+                        if (inputType === 'number' && tiposCampos[campoTipo] === 'integer') {
+                          e.target.value = Math.max(0, Math.floor(e.target.value))
+                        }
+                      }}
                     />
                   </div>
                 )

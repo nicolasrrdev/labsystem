@@ -237,6 +237,30 @@ const EditarRegistro = () => {
               max = {999999999}
             />
           )
+        } else if (tipo === 'date') {
+          inputComponent = (
+            <input
+              type='date'
+              id={campoNombre}
+              name={campoNombre}
+              value={valor}
+              onChange={handleInputChange}
+              min='1900-01-01'
+            />
+          )
+        } else if (tipo === 'integer') {
+          inputComponent = (
+            <input
+              type='number'
+              id={campoNombre}
+              name={campoNombre}
+              value={valor}
+              onChange={handleInputChange}
+              min={0}
+              step={1}
+              max={999999999}
+            />
+          )
         }
         campos.push(
           <div key={campoNombre} >
@@ -262,6 +286,7 @@ const EditarRegistro = () => {
   const handleSubmit3 = (e) => {
     e.preventDefault()
     setIsSubmitting(true)
+    console.log(inputs)
     fetch(`${BASE_URL}/api/exam/${nombreTabla2}/update/${idSeleccionado2}`, {
       method: 'POST',
       headers: {
@@ -304,7 +329,6 @@ const EditarRegistro = () => {
           <div>
             <br />
             <h2>Editar Registro</h2>
-            <br />
             <form onSubmit={handleSubmit1}>
               <div>
                 <label htmlFor='tableName'>Seleccione un examen:ㅤ</label>
@@ -354,14 +378,12 @@ const EditarRegistro = () => {
           </div>
         </center>
       )}
-
       {registroExitoso && (
         <center>
         <form onSubmit={handleSubmit2}>
         <div>
           <br />
           <h2>Editar Registro</h2>
-          <br />
           <div>
             <p>Registros en: {tableName}</p>
             <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
@@ -398,14 +420,12 @@ const EditarRegistro = () => {
         <br /> <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
         </center>
       )}
-
       {registroExitoso2 && (
         <center>
         <form onSubmit={handleSubmit3}>
         <div>
           <br />
           <h2>Editar Registro</h2>
-          <br />
           <div>
             <p>Registros en: {tableName}</p>
             <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
@@ -420,18 +440,16 @@ const EditarRegistro = () => {
         <br /> <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
         </center>
       )}
-
       {registroExitoso3 && (
           <center>
             <div>
               <br />
               <h3>Registro actualizado con éxito.</h3>
               <br />
-              <button onClick={handleReloadPage}>Realizar un nuevo registro</button>
+              <button onClick={handleReloadPage}>Editar otro registro</button>
             </div>
           </center>
         )}
-
     </div>
   )
 }

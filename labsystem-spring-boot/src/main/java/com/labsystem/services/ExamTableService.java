@@ -40,16 +40,30 @@ public class ExamTableService {
         while (jsonObject.has("nombreCampo" + i)) {
             String fieldType = jsonObject.getString("tipoCampo" + i);
 
-            if (!"Texto".equals(fieldType) && !"Numérico".equals(fieldType)) {
+/*            if (!"Texto".equals(fieldType) && !"Numérico".equals(fieldType)) {
                 throw new IllegalArgumentException("El tipo de campo '" + fieldType + "' no es válido. Debe ser 'Texto' o 'Numérico'.");
+            }*/
+
+            if (!"Texto".equals(fieldType) && !"Numérico".equals(fieldType) && !"Fecha".equals(fieldType) && !"EnteroPositivo".equals(fieldType)) {
+                throw new IllegalArgumentException("El tipo de campo '" + fieldType + "' no es válido. Debe ser 'Texto', 'Numérico', 'Fecha' o 'EnteroPositivo'.");
             }
 
             queryBuilder.append(", " + ("campo" + i) + " VARCHAR(50)");
+
+/*            if ("Texto".equals(fieldType)) {
+                queryBuilder.append(", " + ("campo" + i + "_tipo") + " VARCHAR(255)");
+            } else if ("Numérico".equals(fieldType)) {
+                queryBuilder.append(", " + ("campo" + i + "_tipo") + " NUMERIC");
+            }*/
 
             if ("Texto".equals(fieldType)) {
                 queryBuilder.append(", " + ("campo" + i + "_tipo") + " VARCHAR(255)");
             } else if ("Numérico".equals(fieldType)) {
                 queryBuilder.append(", " + ("campo" + i + "_tipo") + " NUMERIC");
+            } else if ("Fecha".equals(fieldType)) {
+                queryBuilder.append(", " + ("campo" + i + "_tipo") + " DATE");
+            } else if ("EnteroPositivo".equals(fieldType)) {
+                queryBuilder.append(", " + ("campo" + i + "_tipo") + " INTEGER CHECK (" + ("campo" + i + "_tipo") + " >= 0)");
             }
 
             i++;

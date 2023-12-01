@@ -131,9 +131,9 @@ if (registroExitoso) {
             <form onSubmit={handleSubmit2}>
               {inputs.map((input, index) => (
                 <div key={index}>
-                  <label htmlFor={`input-${index}`} >
+                  {/* <label htmlFor={`input-${index}`} > */}
                     {`Nombre del Campo #${index + 1}:ㅤ`}
-                  </label>
+                  {/* </label> */}
                   <input type='text' id={`input-${index}`} value={input.value} onChange={(e) => handleInputChange(index, e)} 
                   // pattern = '^[a-zA-ZñÑáéíóúÁÉÍÓÚ 0-9#]{2,20}$'
                   // title='Ingrese un Nombre válido.'
@@ -142,6 +142,8 @@ if (registroExitoso) {
                   ㅤTipo de Campo:ㅤ<select name={`tipoCampo-${index}`} value={options[index]} onChange={(e) => handleFieldChange(index, e)}>
                     <option value='Texto'>Texto</option>
                     <option value='Numérico'>Numérico</option>
+                    <option value='Fecha'>Fecha</option>
+                    <option value='EnteroPositivo'>Entero Positivo</option>
                   </select>
                 </div>
               ))}

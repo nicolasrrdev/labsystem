@@ -231,7 +231,6 @@ const RevisarRegistros = () => {
           <div>
             <br />
             <h2>Revisar Registro</h2>
-            <br />
             <form onSubmit={handleSubmit1}>
               <div>
                 <label htmlFor='tableName'>Seleccione un examen:ㅤ</label>
@@ -281,14 +280,12 @@ const RevisarRegistros = () => {
           </div>
         </center>
       )}
-
       {registroExitoso && (
         <center>
         <form onSubmit={handleSubmit2}>
         <div>
           <br />
           <h2>Revisar Registro</h2>
-          <br />
           <div>
             <p>Nombre del examen: {tableName}</p>
             <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
@@ -325,13 +322,11 @@ const RevisarRegistros = () => {
         <br /> <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
         </center>
       )}
-
       {registroExitoso2 && (
         <center>
         <div>
           <br />
           <h2>Revisar Registro</h2>
-          <br />
           <div>
             <p><b>Nombre del Examen: </b>{tableName}</p>
             <p><b>Paciente: </b>{infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
@@ -343,7 +338,6 @@ const RevisarRegistros = () => {
         <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
         </center>
       )}
-
     </div>
   )
 }
