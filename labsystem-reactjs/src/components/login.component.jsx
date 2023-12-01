@@ -42,7 +42,7 @@ const Login = () => {
         <form onSubmit={handleLogin}>
           <center>
           <div className='form-group'>
-            <label htmlFor='username'>Username</label>
+            <label htmlFor='username'>Nombre de usuario</label>
             <input
               type='text'
               className='form-control'
@@ -55,7 +55,7 @@ const Login = () => {
           </div>
 
           <div className='form-group' style={{ marginBottom: '20px' }}>
-            <label htmlFor='password'>Password</label>
+            <label htmlFor='password'>Contraseña</label>
             <input
               type='password'
               className='form-control'

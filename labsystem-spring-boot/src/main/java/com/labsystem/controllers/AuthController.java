@@ -27,8 +27,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.labsystem.repository.RoleRepository;
-import com.labsystem.repository.UserRepository;
+import com.labsystem.repositories.RoleRepository;
+import com.labsystem.repositories.UserRepository;
 import com.labsystem.security.jwt.JwtUtils;
 import com.labsystem.security.services.UserDetailsImpl;
 

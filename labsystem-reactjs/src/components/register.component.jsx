@@ -12,46 +12,36 @@ const Register = () => {
 
   const emailValidation = (value) => {
     if (!isEmail(value)) {
-      return 'This is not a valid email'
+      return 'Este no es un email válido'
     }
     return null
   }
 
   const usernameValidation = (value) => {
     if (value.length < 3 || value.length > 20) {
-      return 'The username must be between 3 and 20 characters'
+      return 'El nombre de usuario debe ser entre 3 y 20 caracteres'
+    }
+    if (/\s/.test(value)) {
+      return 'El nombre de usuario no puede contener espacios'
     }
     return null
   }
 
-  // const passwordValidation = (value) => {
-  //   if (value.length < 6 || value.length > 40) {
-  //     return 'The password must be between 6 and 40 characters'
-  //   }
-  //   return null
-  // }
-
   const passwordValidation = (value) => {
     if (value.length < 8) {
-      return 'The password must be at least 8 characters long';
+      return 'La contraseña debe ser de la menos 8 caracteres'
     }
-  
-    // Check if the password contains at least one lowercase letter
-    const lowercaseRegex = /[a-z]/;
+    const lowercaseRegex = /[a-z]/
     if (!lowercaseRegex.test(value)) {
-      return 'The password must contain at least one lowercase letter';
+      return 'La contraseña de contener por lo menos una minúscula'
     }
-  
-    // Check if the password contains at least one uppercase letter
-    const uppercaseRegex = /[A-Z]/;
+    const uppercaseRegex = /[A-Z]/
     if (!uppercaseRegex.test(value)) {
-      return 'The password must contain at least one uppercase letter';
+      return 'La contraseña debe contener al menos una mayúscula'
     }
+    return null
+  }
   
-    return null;
-  };
-  
-
   const handleRegister = (e) => {
     e.preventDefault()
     setIsSubmitted(true)
@@ -78,19 +68,19 @@ const Register = () => {
     })
     .catch(() => {
       setSuccessful(false)
-      setMessage('No se pudo establecer conexión con el servidor.')
+      setMessage('No se pudo establecer conexión con el servidor')
     })
   }
 
   return (
-    <div className='col-md-12'>
+    <div>
       <div className='card card-container'>
         <img src='//ssl.gstatic.com/accounts/ui/avatar_2x.png' alt='profile-img' className='profile-img-card' />
 
         <form onSubmit={handleRegister}>
           <center>
           <div className='form-group'>
-            <label htmlFor='username'>Username</label>
+            <label htmlFor='username'>Nombre de usuario</label>
             <input
               type='text'
               className='form-control'
@@ -101,7 +91,7 @@ const Register = () => {
               autoComplete='off'
             />
             {isSubmitted && usernameValidation(username) && (
-              <div className='alert alert-danger'>{usernameValidation(username)}</div>
+              <div>{usernameValidation(username)}</div>
             )}
           </div>
 
@@ -116,11 +106,11 @@ const Register = () => {
               onChange={(e) => setEmail(e.target.value)}
               autoComplete='off'
             />
-            {isSubmitted && emailValidation(email) && <div className='alert alert-danger'>{emailValidation(email)}</div>}
+            {isSubmitted && emailValidation(email) && <div>{emailValidation(email)}</div>}
           </div>
 
           <div className='form-group' style={{ marginBottom: '20px' }}>
-            <label htmlFor='password'>Password</label>
+            <label htmlFor='password'>Contraseña</label>
             <input
               type='password'
               className='form-control'
@@ -131,21 +121,20 @@ const Register = () => {
               autoComplete='off'
             />
             {isSubmitted && passwordValidation(password) && (
-              <div className='alert alert-danger'>{passwordValidation(password)}</div>
+              <div>{passwordValidation(password)}</div>
             )}
           </div>
 
           <div className='form-group' style={{ marginBottom: '20px' }}>
-            <button type='submit' className='btn btn-primary btn-block'>
+            <button type='submit'>
               Registrarse
             </button>
           </div>
           </center>
         </form>
-
         {message && (
           <div className='form-group'>
-            <div className={successful ? 'alert alert-success' : 'alert alert-danger'} role='alert'>
+            <div>
               {message}
             </div>
           </div>

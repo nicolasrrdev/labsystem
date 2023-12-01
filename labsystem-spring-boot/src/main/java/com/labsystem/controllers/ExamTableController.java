@@ -86,7 +86,7 @@ public class ExamTableController {
         List<String> nombresExamenes = new ArrayList<>();
         List<String> nombresTablas = new ArrayList<>();
         int examNumber = 1;
-        int examTablesCount = getExamTablesCount().getStatusCodeValue();
+        int examTablesCount = getExamTablesCount().getStatusCode().value();
         while (examNumber <= examTablesCount) {
             String tableName = "examen" + examNumber;
             String query = "SELECT nombre_examen FROM " + tableName + " WHERE id=1";

@@ -73,7 +73,7 @@ const App = () => {
           <HelmetProvider>
       <div>
         <Helmet>
-          <title>{formattedLocationPathname} - Lab System</title>
+          <title>{formattedLocationPathname} - Labsystem</title>
         </Helmet>
     
       <div className={`menu-ham ${isMenuOpen ? 'abierto' : ''}`} onClick={toggleMenu}>
@@ -102,14 +102,6 @@ const App = () => {
             </Link>
           </li>
         )} */}
-
-        {showAdminBoard && (
-          <li>
-            <Link to={'/Admin'}>
-              Admin Board
-            </Link>
-          </li>
-        )}
 
         {showAdminBoard && (
         <li>
@@ -199,14 +191,22 @@ const App = () => {
           </li>
         )}
 
+        {showAdminBoard && (
+          <li>
+            <Link to={'/Admin'}>
+              Panel de Administrador
+            </Link>
+          </li>
+        )}
+
         {!currentUser && (
             <li>
               <Link to={'/Restore'}>
-                Reestablecer Contraseña
+                Restablecer Contraseña
               </Link>
             </li>
         )}
-
+        
         {currentUser ? (
           <>
             <li>

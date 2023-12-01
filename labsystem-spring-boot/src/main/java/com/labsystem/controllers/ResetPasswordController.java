@@ -1,6 +1,6 @@
 package com.labsystem.controllers;
 import com.labsystem.models.User;
-import com.labsystem.repository.UserRepository;
+import com.labsystem.repositories.UserRepository;
 import com.labsystem.security.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +44,7 @@ public class ResetPasswordController {
         user.setResetTokenExpiration(expirationDate);
         userRepository.save(user);
         String resetLink = resetLinkBaseUrl + "/reset-password?token=" + resetToken;
-        emailService.sendResetPasswordEmail(user.getEmail(), resetLink);
+        emailService.sendResetPasswordEmail(user.getEmail(), resetLink, user.getUsername());
         Map<String, String> responseJson = new HashMap<>();
 
         //responseJson.put("token", resetToken);

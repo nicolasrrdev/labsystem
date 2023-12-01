@@ -1,0 +1,735 @@
+{
+	"info": {
+		"_postman_id": "b5954a5c-28e6-49dc-9bc6-5100dfbd96ef",
+		"name": "labsystem",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24071174"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "1. Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"test\",\n    \"email\": \"test@gmail.com\",\n    \"password\": \"123456rR\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"nicolasrrdev\",\n    \"password\": \"123456rR\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/signin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. Restablecer contraseña 1",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"u20211196092@usco.edu.co\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/reset-password/request",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"reset-password",
+								"request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Restablecer contraseña 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\": \"7ebe6e68-c011-4ccc-97ce-f98a714373b8\"\r\n    ,\"newPassword\": \"1234567rR\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/reset-password/confirm",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"reset-password",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. All - Public",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/test/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"test",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. Actualizar Rol",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/users/1/roles/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"1",
+								"roles",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Exams",
+			"item": [
+				{
+					"name": "Pacientes",
+					"item": [
+						{
+							"name": "1. Obtener pacientes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/pacientes",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"pacientes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "2. Obtener paciente según el id",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/pacientes/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"pacientes",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3. Crear paciente",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombres\": \"Someone\",\n  \"apellidos\": \"Simenone\",\n  \"tipoDocumento\": 0,\n  \"documento\": 1234567893,\n  \"fechaNacimiento\": \"1997-12-25\",\n  \"email\": \"someonesimeone@gmail.com\",\n  \"genero\": 0\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/pacientes",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"pacientes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "4. Actualizar paciente",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombres\": \"Nicolas\",\n  \"apellidos\": \"Reinales\",\n  \"tipoDocumento\": 0,\n  \"documento\": 123456780,\n  \"fechaNacimiento\": \"1990-01-01\",\n  \"email\": \"nicolasreinales@gmail.com\",\n  \"genero\": 0\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/pacientes/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"pacientes",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Exámenes dinámicos",
+					"item": [
+						{
+							"name": "1. Crear Examen",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombreExamen\": \"Examen #4\",\n  \"nombreCampo1\": \"Nombre\",\n  \"tipoCampo1\": \"Texto\",\n  \"nombreCampo2\": \"Edad\",\n  \"tipoCampo2\": \"Numérico\",\n  \"nombreCampo3\": \"Fecha\",\n  \"tipoCampo3\": \"Fecha\",\n  \"nombreCampo4\": \"Entero\",\n  \"tipoCampo4\": \"EnteroPositivo\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/generateTable",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"generateTable"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "2. Insertar registro en tabla examen1",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"paciente_id\": 1,\n  \"campo1_tipo\": \"NoOne\",\n  \"campo2_tipo\": 20,\n  \"campo3_tipo\": \"2000-12-12\",\n  \"campo4_tipo\": 3\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/insertData/examen4",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"insertData",
+										"examen4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3. Insertar registro en la tabla examen2",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"paciente_id\": 2,\n  \"campo1_tipo\": \"OneNo\",\n  \"campo2_tipo\": 20,\n  \"campo3_tipo\": \"2002-02-02\",\n  \"campo4_tipo\": 3\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/insertData/examen2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"insertData",
+										"examen2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "4. Obtener el número de tablas examen",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/examTablesCount",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"examTablesCount"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "5. Obtener el nombre de cada examen",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/examen/nombreExamen",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"examen",
+										"nombreExamen"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "6. Obtener nombres de los campos de una tabla examen",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/exam/examen1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"exam",
+										"examen1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "7. Obtener los tipos de los campos de una tabla examen",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/examen/examen3/tiposCampos",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"examen",
+										"examen3",
+										"tiposCampos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "8. Obtener el número de campos de una tabla examen",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/exam/examen2/numFields",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"exam",
+										"examen2",
+										"numFields"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "9. Buscar registros en examenes según el paciente",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/exam/examen1/paciente/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"exam",
+										"examen1",
+										"paciente",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10. Obtener registro en examenes según el id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/exam/examen1/record/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"exam",
+										"examen1",
+										"record",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "11. Actualizar registro en examen",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"campo1_tipo\": \"Nicolas\",\n    \"campo2_tipo\": 25,\n    \"campo3_tipo\": \"1969-12-12\",\n    \"campo4_tipo\": 50\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/exam/examen1/update/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"exam",
+										"examen1",
+										"update",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Tabla de exámenes",
+					"item": [
+						{
+							"name": "1. Obtener todos los registros",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/tabla_examen/all",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"tabla_examen",
+										"all"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "2. Obtener registro por id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/tabla_examen/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"tabla_examen",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3. Obtener registros por paciente id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/tabla_examen/por_paciente/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"tabla_examen",
+										"por_paciente",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "4. Realizar registro",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"pacienteId\": 1,\r\n    \"campo1\": \"ValorCampo1Nicolas\",\r\n    \"campo2\": \"ValorCampo2\",\r\n    \"campo3\": \"ValorCampo3\",\r\n    \"campo4\": \"ValorCampo4\",\r\n    \"campo5\": \"ValorCampo5\",\r\n    \"campo6\": \"ValorCampo6\",\r\n    \"campo7\": \"ValorCampo7\",\r\n    \"campo8\": \"ValorCampo8\",\r\n    \"campo9\": \"ValorCampo9\",\r\n    \"campo10\": \"ValorCampo10\",\r\n    \"campo11\": \"ValorCampo11\",\r\n    \"campo12\": \"ValorCampo12\",\r\n    \"campo13\": \"ValorCampo13\",\r\n    \"campo14\": \"ValorCampo14\",\r\n    \"campo15\": \"ValorCampo15\",\r\n    \"campo16\": \"ValorCampo16\",\r\n    \"campo17\": \"ValorCampo17\",\r\n    \"campo18\": \"ValorCampo18\",\r\n    \"campo19\": \"ValorCampo19\",\r\n    \"campo20\": \"ValorCampo20\",\r\n    \"campo21\": \"ValorCampo21\",\r\n    \"campo22\": \"ValorCampo22\",\r\n    \"campo23\": \"ValorCampo23\",\r\n    \"campo24\": \"ValorCampo24\",\r\n    \"campo25\": \"ValorCampo25\",\r\n    \"campo26\": \"ValorCampo26\",\r\n    \"campo27\": \"ValorCampo27\",\r\n    \"campo28\": \"ValorCampo28\",\r\n    \"campo29\": \"ValorCampo29\",\r\n    \"campo30\": \"ValorCampo30\",\r\n    \"campo31\": \"ValorCampo31\",\r\n    \"campo32\": \"ValorCampo32\",\r\n    \"campo33\": \"ValorCampo33\",\r\n    \"campo34\": \"ValorCampo34\",\r\n    \"campo35\": \"ValorCampo35\",\r\n    \"campo36\": \"ValorCampo36\",\r\n    \"campo37\": \"ValorCampo37\",\r\n    \"campo38\": \"ValorCampo38\",\r\n    \"campo39\": \"ValorCampo39\",\r\n    \"campo40\": \"ValorCampo40\",\r\n    \"campo41\": \"ValorCampo41\",\r\n    \"campo42\": \"ValorCampo42\",\r\n    \"campo43\": \"ValorCampo43\",\r\n    \"campo44\": \"ValorCampo44\",\r\n    \"campo45\": \"ValorCampo45\",\r\n    \"campo46\": \"ValorCampo46\",\r\n    \"campo47\": \"ValorCampo47\",\r\n    \"campo48\": \"ValorCampo48\",\r\n    \"campo49\": \"ValorCampo49\",\r\n    \"campo50\": \"ValorCampo50\",\r\n    \"campo51\": \"ValorCampo51\",\r\n    \"campo52\": \"ValorCampo52\",\r\n    \"campo53\": \"ValorCampo53\",\r\n    \"campo54\": \"ValorCampo54\",\r\n    \"campo55\": \"ValorCampo55\",\r\n    \"campo56\": \"ValorCampo56\",\r\n    \"campo57\": \"ValorCampo57\",\r\n    \"campo58\": \"ValorCampo58\",\r\n    \"campo59\": \"ValorCampo59\",\r\n    \"campo60\": \"ValorCampo60\",\r\n    \"campo61\": \"ValorCampo61\",\r\n    \"campo62\": \"ValorCampo62\",\r\n    \"campo63\": \"ValorCampo63\",\r\n    \"campo64\": \"ValorCampo64\",\r\n    \"campo65\": \"ValorCampo65\",\r\n    \"campo66\": \"ValorCampo66\",\r\n    \"campo67\": \"ValorCampo67\",\r\n    \"campo68\": \"ValorCampo68\",\r\n    \"campo69\": \"ValorCampo69\",\r\n    \"campo70\": \"ValorCampo70\",\r\n    \"campo71\": \"ValorCampo71\",\r\n    \"campo72\": \"ValorCampo72\",\r\n    \"campo73\": \"ValorCampo73\",\r\n    \"campo74\": \"ValorCampo74\",\r\n    \"campo75\": \"ValorCampo75\",\r\n    \"campo76\": \"ValorCampo76\",\r\n    \"campo77\": \"ValorCampo77\",\r\n    \"campo78\": \"ValorCampo78\",\r\n    \"campo79\": \"ValorCampo79\",\r\n    \"campo80\": \"ValorCampo80\",\r\n    \"campo81\": \"ValorCampo81\",\r\n    \"campo82\": \"ValorCampo82\",\r\n    \"campo83\": \"ValorCampo83\",\r\n    \"campo84\": \"ValorCampo84\",\r\n    \"campo85\": \"ValorCampo85\",\r\n    \"campo86\": \"ValorCampo86\",\r\n    \"campo87\": \"ValorCampo87\",\r\n    \"campo88\": \"ValorCampo88\",\r\n    \"campo89\": \"ValorCampo89\",\r\n    \"campo90\": \"ValorCampo90\",\r\n    \"campo91\": \"ValorCampo91\",\r\n    \"campo92\": \"ValorCampo92\",\r\n    \"campo93\": \"ValorCampo93\",\r\n    \"campo94\": \"ValorCampo94\",\r\n    \"campo95\": \"ValorCampo95\",\r\n    \"campo96\": \"ValorCampo96\",\r\n    \"campo97\": \"ValorCampo97\",\r\n    \"campo98\": \"ValorCampo98\",\r\n    \"campo99\": \"ValorCampo99\",\r\n    \"campo100\": \"ValorCampo100\",\r\n    \"campo101\": \"ValorCampo101\",\r\n    \"campo102\": \"ValorCampo102\",\r\n    \"campo103\": \"ValorCampo103\",\r\n    \"campo104\": \"ValorCampo104\",\r\n    \"campo105\": \"ValorCampo105\",\r\n    \"campo106\": \"ValorCampo106\",\r\n    \"campo107\": \"ValorCampo107\",\r\n    \"campo108\": \"ValorCampo108\",\r\n    \"campo109\": \"ValorCampo109\",\r\n    \"campo110\": \"ValorCampo110\",\r\n    \"campo111\": \"ValorCampo111\",\r\n    \"campo112\": \"ValorCampo112\",\r\n    \"campo113\": \"ValorCampo113\",\r\n    \"campo114\": \"ValorCampo114\",\r\n    \"campo115\": \"ValorCampo115\",\r\n    \"campo116\": \"ValorCampo116\",\r\n    \"campo117\": \"ValorCampo117\",\r\n    \"campo118\": \"ValorCampo118\",\r\n    \"campo119\": \"ValorCampo119\",\r\n    \"campo120\": \"ValorCampo120\",\r\n    \"campo121\": \"ValorCampo121\",\r\n    \"campo122\": \"ValorCampo122\",\r\n    \"campo123\": \"ValorCampo123\",\r\n    \"campo124\": \"ValorCampo124\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/tabla_examen/post",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"tabla_examen",
+										"post"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "5. Editar registro",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"pacienteId\": 1,\r\n    \"campo1\": \"ValorCampo1Nicolas\",\r\n    \"campo2\": \"ValorCampo2\",\r\n    \"campo3\": \"ValorCampo3\",\r\n    \"campo4\": \"ValorCampo4\",\r\n    \"campo5\": \"ValorCampo5\",\r\n    \"campo6\": \"ValorCampo6\",\r\n    \"campo7\": \"ValorCampo7\",\r\n    \"campo8\": \"ValorCampo8\",\r\n    \"campo9\": \"ValorCampo9\",\r\n    \"campo10\": \"ValorCampo10\",\r\n    \"campo11\": \"ValorCampo11\",\r\n    \"campo12\": \"ValorCampo12\",\r\n    \"campo13\": \"ValorCampo13\",\r\n    \"campo14\": \"ValorCampo14\",\r\n    \"campo15\": \"ValorCampo15\",\r\n    \"campo16\": \"ValorCampo16\",\r\n    \"campo17\": \"ValorCampo17\",\r\n    \"campo18\": \"ValorCampo18\",\r\n    \"campo19\": \"ValorCampo19\",\r\n    \"campo20\": \"ValorCampo20\",\r\n    \"campo21\": \"ValorCampo21\",\r\n    \"campo22\": \"ValorCampo22\",\r\n    \"campo23\": \"ValorCampo23\",\r\n    \"campo24\": \"ValorCampo24\",\r\n    \"campo25\": \"ValorCampo25\",\r\n    \"campo26\": \"ValorCampo26\",\r\n    \"campo27\": \"ValorCampo27\",\r\n    \"campo28\": \"ValorCampo28\",\r\n    \"campo29\": \"ValorCampo29\",\r\n    \"campo30\": \"ValorCampo30\",\r\n    \"campo31\": \"ValorCampo31\",\r\n    \"campo32\": \"ValorCampo32\",\r\n    \"campo33\": \"ValorCampo33\",\r\n    \"campo34\": \"ValorCampo34\",\r\n    \"campo35\": \"ValorCampo35\",\r\n    \"campo36\": \"ValorCampo36\",\r\n    \"campo37\": \"ValorCampo37\",\r\n    \"campo38\": \"ValorCampo38\",\r\n    \"campo39\": \"ValorCampo39\",\r\n    \"campo40\": \"ValorCampo40\",\r\n    \"campo41\": \"ValorCampo41\",\r\n    \"campo42\": \"ValorCampo42\",\r\n    \"campo43\": \"ValorCampo43\",\r\n    \"campo44\": \"ValorCampo44\",\r\n    \"campo45\": \"ValorCampo45\",\r\n    \"campo46\": \"ValorCampo46\",\r\n    \"campo47\": \"ValorCampo47\",\r\n    \"campo48\": \"ValorCampo48\",\r\n    \"campo49\": \"ValorCampo49\",\r\n    \"campo50\": \"ValorCampo50\",\r\n    \"campo51\": \"ValorCampo51\",\r\n    \"campo52\": \"ValorCampo52\",\r\n    \"campo53\": \"ValorCampo53\",\r\n    \"campo54\": \"ValorCampo54\",\r\n    \"campo55\": \"ValorCampo55\",\r\n    \"campo56\": \"ValorCampo56\",\r\n    \"campo57\": \"ValorCampo57\",\r\n    \"campo58\": \"ValorCampo58\",\r\n    \"campo59\": \"ValorCampo59\",\r\n    \"campo60\": \"ValorCampo60\",\r\n    \"campo61\": \"ValorCampo61\",\r\n    \"campo62\": \"ValorCampo62\",\r\n    \"campo63\": \"ValorCampo63\",\r\n    \"campo64\": \"ValorCampo64\",\r\n    \"campo65\": \"ValorCampo65\",\r\n    \"campo66\": \"ValorCampo66\",\r\n    \"campo67\": \"ValorCampo67\",\r\n    \"campo68\": \"ValorCampo68\",\r\n    \"campo69\": \"ValorCampo69\",\r\n    \"campo70\": \"ValorCampo70\",\r\n    \"campo71\": \"ValorCampo71\",\r\n    \"campo72\": \"ValorCampo72\",\r\n    \"campo73\": \"ValorCampo73\",\r\n    \"campo74\": \"ValorCampo74\",\r\n    \"campo75\": \"ValorCampo75\",\r\n    \"campo76\": \"ValorCampo76\",\r\n    \"campo77\": \"ValorCampo77\",\r\n    \"campo78\": \"ValorCampo78\",\r\n    \"campo79\": \"ValorCampo79\",\r\n    \"campo80\": \"ValorCampo80\",\r\n    \"campo81\": \"ValorCampo81\",\r\n    \"campo82\": \"ValorCampo82\",\r\n    \"campo83\": \"ValorCampo83\",\r\n    \"campo84\": \"ValorCampo84\",\r\n    \"campo85\": \"ValorCampo85\",\r\n    \"campo86\": \"ValorCampo86\",\r\n    \"campo87\": \"ValorCampo87\",\r\n    \"campo88\": \"ValorCampo88\",\r\n    \"campo89\": \"ValorCampo89\",\r\n    \"campo90\": \"ValorCampo90\",\r\n    \"campo91\": \"ValorCampo91\",\r\n    \"campo92\": \"ValorCampo92\",\r\n    \"campo93\": \"ValorCampo93\",\r\n    \"campo94\": \"ValorCampo94\",\r\n    \"campo95\": \"ValorCampo95\",\r\n    \"campo96\": \"ValorCampo96\",\r\n    \"campo97\": \"ValorCampo97\",\r\n    \"campo98\": \"ValorCampo98\",\r\n    \"campo99\": \"ValorCampo99\",\r\n    \"campo100\": \"ValorCampo100\",\r\n    \"campo101\": \"ValorCampo101\",\r\n    \"campo102\": \"ValorCampo102\",\r\n    \"campo103\": \"ValorCampo103\",\r\n    \"campo104\": \"ValorCampo104\",\r\n    \"campo105\": \"ValorCampo105\",\r\n    \"campo106\": \"ValorCampo106\",\r\n    \"campo107\": \"ValorCampo107\",\r\n    \"campo108\": \"ValorCampo108\",\r\n    \"campo109\": \"ValorCampo109\",\r\n    \"campo110\": \"ValorCampo110\",\r\n    \"campo111\": \"ValorCampo111\",\r\n    \"campo112\": \"ValorCampo112\",\r\n    \"campo113\": \"ValorCampo113\",\r\n    \"campo114\": \"ValorCampo114\",\r\n    \"campo115\": \"ValorCampo115\",\r\n    \"campo116\": \"ValorCampo116\",\r\n    \"campo117\": \"ValorCampo117\",\r\n    \"campo118\": \"ValorCampo118\",\r\n    \"campo119\": \"ValorCampo119\",\r\n    \"campo120\": \"ValorCampo120\",\r\n    \"campo121\": \"ValorCampo121\",\r\n    \"campo122\": \"ValorCampo122\",\r\n    \"campo123\": \"ValorCampo123\",\r\n    \"campo124\": \"ValorCampo124\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/tabla_examen/3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"tabla_examen",
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "6. Eliminar registro",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/tabla_examen/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"tabla_examen",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

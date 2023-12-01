@@ -33,31 +33,57 @@ export default class Profile extends Component {
         {(this.state.userReady) ?
         <div>
         <header className="jumbotron">
-          <h3>
-            <strong>{currentUser.username}</strong> Profile
-          </h3>
+          <br />
+          <h2>
+            Bienvenido
+          </h2>
+          {/* <h2>
+            <strong>Nombre de usuario: </strong>{" "}
+            {currentUser.username}
+          </h2> */}
+          <p>
+            <strong>Nombre de usuario: </strong>{" "}
+            {currentUser.username}
+          </p>
         </header>
-        <p>
+        {/* <p>
           <strong>Token:</strong>{" "}
           {currentUser.accessToken.substring(0, 20)} ...{" "}
           {currentUser.accessToken.substr(currentUser.accessToken.length - 20)}
-        </p>
-        <p>
+        </p> */}
+        {/* <p>
           <strong>Id:</strong>{" "}
           {currentUser.id}
-        </p>
+        </p> */}
         <p>
           <strong>Email:</strong>{" "}
           {currentUser.email}
         </p>
-        <strong>Authorities:</strong> <br /> <br />
-        {/* <ul> */}
+        <p>
+          <strong>Rol:</strong>{" "}
+          {/* {currentUser.roles[0]} */}
+          {this.getRoleLabel(currentUser.roles[0])}
+        </p>
+        {/* <strong>Authorities:</strong> <br /> <br />
+        <ul>
           {currentUser.roles &&
             currentUser.roles.map((role, index) => <li key={index}>{role}</li>)}
-        {/* </ul> */}
+        </ul> */}
       </div>: null}
       </center>
       </div>
     );
+  }
+  getRoleLabel(role) {
+    switch (role) {
+      case "ROLE_ADMIN":
+        return "Administrador";
+      case "ROLE_MODERATOR":
+        return "Moderador";
+      case "ROLE_USER":
+        return "Usuario";
+      default:
+        return "Desconocido";
+    }
   }
 }

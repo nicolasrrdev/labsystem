@@ -1,7 +1,7 @@
 package com.labsystem.security.services;
 
 import com.labsystem.models.User;
-import com.labsystem.repository.UserRepository;
+import com.labsystem.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
