@@ -6,7 +6,6 @@ const Register = () => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [successful, setSuccessful] = useState(false)
   const [message, setMessage] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)
 
@@ -46,7 +45,6 @@ const Register = () => {
     e.preventDefault()
     setIsSubmitted(true)
     setMessage('')
-    setSuccessful(false)
     const usernameError = usernameValidation(username)
     const emailError = emailValidation(email)
     const passwordError = passwordValidation(password)
@@ -56,18 +54,14 @@ const Register = () => {
     AuthService.register(username, email, password)
     .then((response) => {
       if (response.status === 200) {
-        setSuccessful(true)
         setMessage(response.message)
       } if (response.message === 'Registro realizado con éxito. Ya puedes iniciar sesión') {
-        setSuccessful(true)
         setMessage(response.message)
       } else {
-        setSuccessful(false)
         setMessage(response.message)
       }
     })
     .catch(() => {
-      setSuccessful(false)
       setMessage('No se pudo establecer conexión con el servidor')
     })
   }

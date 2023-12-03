@@ -1,13 +1,16 @@
 package com.labsystem.controllers;
-
 import com.labsystem.models.TablaExamen;
 import com.labsystem.services.TablaExamenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.sql.Timestamp;
+
 @RestController
+// @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+// @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/api/tabla_examen")
 public class TablaExamenController {
     @Autowired

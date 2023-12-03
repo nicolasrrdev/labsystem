@@ -37,7 +37,9 @@ public class ResetPasswordController {
         // 10 segs
         // Date expirationDate = new Date(System.currentTimeMillis() + 10 * 1000);
         // 1 min
-        Date expirationDate = new Date(System.currentTimeMillis() + 60 * 1000);
+        // Date expirationDate = new Date(System.currentTimeMillis() + 60 * 1000);
+        // 2 min
+        Date expirationDate = new Date(System.currentTimeMillis() + 2 * 60 * 1000);
         // 10 min
         // Date expirationDate = new Date(System.currentTimeMillis() + 600000);
         user.setResetToken(resetToken);
@@ -46,11 +48,8 @@ public class ResetPasswordController {
         String resetLink = resetLinkBaseUrl + "/reset-password?token=" + resetToken;
         emailService.sendResetPasswordEmail(user.getEmail(), resetLink, user.getUsername());
         Map<String, String> responseJson = new HashMap<>();
-
         //responseJson.put("token", resetToken);
-
         responseJson.put("message", "ok");
-
         return ResponseEntity.ok(responseJson);
       } else {
         Map<String, String> errorJson = new HashMap<>();

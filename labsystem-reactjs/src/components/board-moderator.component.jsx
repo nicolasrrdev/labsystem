@@ -1,15 +1,15 @@
-// import { Component } from "react";
+// import { Component } from 'react'
 
-// import UserService from "../services/user.service";
-// import EventBus from "../common/EventBus";
+// import UserService from '../services/user.service'
+// import EventBus from '../common/EventBus'
 
 // export default class BoardModerator extends Component {
 //   constructor(props) {
-//     super(props);
+//     super(props)
 
 //     this.state = {
-//       content: ""
-//     };
+//       content: ''
+//     }
 //   }
 
 //   componentDidMount() {
@@ -17,7 +17,7 @@
 //       response => {
 //         this.setState({
 //           content: response.data
-//         });
+//         })
 //       },
 //       error => {
 //         this.setState({
@@ -27,23 +27,23 @@
 //               error.response.data.message) ||
 //             error.message ||
 //             error.toString()
-//         });
+//         })
 
 //         if (error.response && error.response.status === 401) {
-//           EventBus.dispatch("logout");
+//           EventBus.dispatch('logout')
 //         }
 //       }
-//     );
+//     )
 //   }
 
 //   render() {
 //     return (
-//       <div className="container">
-//         <header className="jumbotron">
+//       <div className='container'>
+//         <header className='jumbotron'>
 //           <h3>{this.state.content}</h3>
 //         </header>
 //       </div>
-//     );
+//     )
 //   }
 // }
 
@@ -54,8 +54,7 @@ const BoardModerator = () => {
       <h2>Bienvenido al Panel de Moderador</h2>
       </center>
     </div>
-  );
-};
+  )
+}
 
-export default BoardModerator;
-
+export default BoardModerator

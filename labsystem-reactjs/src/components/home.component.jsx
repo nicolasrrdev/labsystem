@@ -1,14 +1,14 @@
-// import { Component } from "react";
+// import { Component } from 'react'
 
-// import UserService from "../services/user.service";
+// import UserService from '../services/user.service'
 
 // export default class Home extends Component {
 //   constructor(props) {
-//     super(props);
+//     super(props)
 
 //     this.state = {
-//       content: ""
-//     };
+//       content: ''
+//     }
 //   }
 
 //   componentDidMount() {
@@ -16,7 +16,7 @@
 //       response => {
 //         this.setState({
 //           content: response.data
-//         });
+//         })
 //       },
 //       error => {
 //         this.setState({
@@ -24,22 +24,22 @@
 //             (error.response && error.response.data) ||
 //             error.message ||
 //             error.toString()
-//         });
+//         })
 //       }
-//     );
+//     )
 //   }
 
 //   render() {
 //     return (
-//       <div className="container">
-//         <header className="jumbotron">
+//       <div className='container'>
+//         <header className='jumbotron'>
 //           <center>
 //             <h2>Home</h2>
 //             <h3>{this.state.content}</h3>
 //           </center>
 //         </header>
 //       </div>
-//     );
+//     )
 //   }
 // }
 
@@ -59,7 +59,8 @@ const Home = () => {
 
   return (
     <div>
-      <center> <br />
+      <center>
+        <br />
         <h2>Sistema de Información</h2>
         <h2>Laboratorio De Neurocognición y Psicofisiología</h2>
         <h2>Bienvenido</h2> <br />
@@ -68,11 +69,11 @@ const Home = () => {
         <div style={{ textAlign: 'justify', maxWidth: '800px', margin: '20px' }}>
           <h3>Reseña Histórica</h3>
           <p>
-          El 17 de diciembre de 1968, mediante la Ley 55 se crea el Instituto Técnico Universitario Surcolombiano, ITUSCO, con la misión de preparar y calificar los profesionales que requerían la región y el conocimiento de su realidad concreta. Inició labores académicas el 30 de marzo de 1970, con tres programas de Tecnología, en Administración de Empresas, en Administración Educativa y en Contaduría Pública, con 305 alumnos y cuatro profesores de tiempo completo. Mediante la Ley 13 de 1976 se transformó el ITUSCO en Universidad Surcolombiana, con estructura similar a la de la Universidad Nacional de Colombia, excepto en la conformación del Consejo Superior; en consecuencia, limitó la competencia de la Universidad al ofrecimiento sólo de programas académicos establecidos por la Universidad Nacional. El 23 de agosto de 2017 fue inaugurado el Laboratorio de Neurocognición y Psicofisiología del Grupo de Investigación Midneuropsy del Programa de Psicología de la Universidad Surcolombiana. El espacio de investigación está ubicado en el Barrio Altico de Neiva, antiguo Consultorio Jurídico. En ese momento, Mario Alfredo Parra miembro fundador del Grupo de Investigación y docente de la Universidad Heriot-Watt de Edimburgo, fue uno de los profesionales encargados en el asesoramiento en la adquisición de los equipos del Laboratorio.
+          El 17 de diciembre de 1968, mediante la Ley 55 se crea el Instituto Técnico Universitario Surcolombiano, ITUSCO, con la misión de preparar y calificar los profesionales que requerían la región y el conocimiento de su realidad concreta. Inició labores académicas el 30 de marzo de 1970, con tres programas de Tecnología, en Administración de Empresas, en Administración Educativa y en Contaduría Pública, con 305 alumnos y cuatro profesores de tiempo completo. Mediante la Ley 13 de 1976 se transformó el ITUSCO en Universidad Surcolombiana, con estructura similar a la de la Universidad Nacional de Colombia, excepto en la conformación del Consejo Superior en consecuencia, limitó la competencia de la Universidad al ofrecimiento sólo de programas académicos establecidos por la Universidad Nacional. El 23 de agosto de 2017 fue inaugurado el Laboratorio de Neurocognición y Psicofisiología del Grupo de Investigación Midneuropsy del Programa de Psicología de la Universidad Surcolombiana. El espacio de investigación está ubicado en el Barrio Altico de Neiva, antiguo Consultorio Jurídico. En ese momento, Mario Alfredo Parra miembro fundador del Grupo de Investigación y docente de la Universidad Heriot-Watt de Edimburgo, fue uno de los profesionales encargados en el asesoramiento en la adquisición de los equipos del Laboratorio.
           </p>
           <h3>Misión</h3>
           <p>
-          La Universidad Surcolombiana orienta y lidera la formación integral, humana y crítica de profesionales e investigadores, fundamentada en conocimientos disciplinares, de las profesiones, interdisciplinares y multiculturales, mediante procesos académicos, sociales y políticos transformadores, comprometidos prioritariamente con la construcción de una nación democrática, deliberativa, participativa y en paz, sustentada en el desarrollo humano, social, sostenible y sustentable en la región Surcolombiana; su accionar será orientado por la ética cívica, el diálogo multicultural, la preservación y defensa del medio ambiente y el Pensamiento Complejo, con proyección nacional e internacional.
+          La Universidad Surcolombiana orienta y lidera la formación integral, humana y crítica de profesionales e investigadores, fundamentada en conocimientos disciplinares, de las profesiones, interdisciplinares y multiculturales, mediante procesos académicos, sociales y políticos transformadores, comprometidos prioritariamente con la construcción de una nación democrática, deliberativa, participativa y en paz, sustentada en el desarrollo humano, social, sostenible y sustentable en la región Surcolombiana su accionar será orientado por la ética cívica, el diálogo multicultural, la preservación y defensa del medio ambiente y el Pensamiento Complejo, con proyección nacional e internacional.
           </p>
           <h3>Visión</h3>
           <p>

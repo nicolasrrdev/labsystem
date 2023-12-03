@@ -1,5 +1,4 @@
 package com.labsystem.controllers;
-
 import com.labsystem.models.Paciente;
 import com.labsystem.repositories.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,9 +63,7 @@ public class PacienteController {
     @GetMapping("")
     public List<Map<String, Object>> obtenerPacientes() {
         List<Paciente> pacientes = pacienteRepository.findAll();
-
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
         return pacientes.stream().map(paciente -> {
             Map<String, Object> pacienteMap = new LinkedHashMap<>();
             pacienteMap.put("id", paciente.getId());
@@ -74,21 +71,17 @@ public class PacienteController {
             pacienteMap.put("apellidos", paciente.getApellidos());
             pacienteMap.put("tipoDocumento", paciente.getTipoDocumento());
             pacienteMap.put("documento", paciente.getDocumento());
-
             LocalDate fechaNacimiento = paciente.getFechaNacimiento();
             if (fechaNacimiento != null) {
                 String fechaNacimientoFormateada = fechaNacimiento.format(dateFormatter);
                 pacienteMap.put("fechaNacimiento", fechaNacimientoFormateada);
             }
-
             pacienteMap.put("email", paciente.getEmail());
             pacienteMap.put("genero", paciente.getGenero());
-
             return pacienteMap;
         }).collect(Collectors.toList());
     }
 
-    // Se lanza cuando ocurre una violación de integridad de datos en la base de datos
     @RestControllerAdvice
     public class ExceptionController {
         private String extractColumnNameFromErrorMessage(String errorMessage) {
@@ -119,7 +112,6 @@ public class PacienteController {
         }
     }
 
-    // Valida datos de entrada en las solicitudes
     @RestControllerAdvice
     public class GlobalExceptionHandler {
         @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -145,17 +137,14 @@ public class PacienteController {
             response.put("apellidos", paciente.getApellidos());
             response.put("tipoDocumento", paciente.getTipoDocumento());
             response.put("documento", paciente.getDocumento());
-
             LocalDate fechaNacimiento = paciente.getFechaNacimiento();
             if (fechaNacimiento != null) {
                 DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 String fechaNacimientoFormateada = fechaNacimiento.format(dateFormatter);
                 response.put("fechaNacimiento", fechaNacimientoFormateada);
             }
-
             response.put("email", paciente.getEmail());
             response.put("genero", paciente.getGenero());
-
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
             ErrorResponse errorResponse = new ErrorResponse("Paciente no encontrado");
@@ -168,8 +157,6 @@ public class PacienteController {
         Optional<Paciente> pacienteOptional = pacienteRepository.findById(id);
         if (pacienteOptional.isPresent()) {
             Paciente pacienteExistente = pacienteOptional.get();
-
-            // Actualizar los datos del paciente existente con los datos proporcionados
             pacienteExistente.setNombres(pacienteDatosActualizados.getNombres());
             pacienteExistente.setApellidos(pacienteDatosActualizados.getApellidos());
             pacienteExistente.setTipoDocumento(pacienteDatosActualizados.getTipoDocumento());
@@ -177,10 +164,7 @@ public class PacienteController {
             pacienteExistente.setFechaNacimiento(pacienteDatosActualizados.getFechaNacimiento());
             pacienteExistente.setEmail(pacienteDatosActualizados.getEmail());
             pacienteExistente.setGenero(pacienteDatosActualizados.getGenero());
-
-            // Guardar los cambios en la base de datos
             Paciente pacienteActualizado = pacienteRepository.save(pacienteExistente);
-
             ApiResponse<Paciente> response = new ApiResponse<>(pacienteActualizado);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {

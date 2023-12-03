@@ -22,7 +22,7 @@ const RestorePasswordRequest = () => {
   const handleRequest = async () => {
     setIsSubmitting(true)
     setMessage('Enviando...')
-
+    setInputDisabled(true)
     try {
       const response = await axios.post(
         `${BASE_URL}/reset-password/request`,
@@ -39,6 +39,7 @@ const RestorePasswordRequest = () => {
     } catch (error) {
       console.error('Error en la solicitud:', error.response.data)
       setMessage(error.response.data.error)
+      setInputDisabled(false)
     } finally {
       setIsSubmitting(false)
     }

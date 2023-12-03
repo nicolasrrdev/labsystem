@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import ModalAlert from './ModalAlert'
+import AuthService from '../services/auth.service'
 
 const TablaExamen = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -22,7 +23,6 @@ const TablaExamen = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  
   useEffect(() => {
     fetch(`${BASE_URL}/pacientes`)
       .then((response) => response.json())
@@ -31,7 +31,7 @@ const TablaExamen = () => {
         setFilteredPacientes(data)
       })
       .catch((error) => {
-        setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+        setModalAMessage('Error: No se pudo establecer conexión con el servidor')
         setIsModalOpen(true)
         console.error(error)
       })
@@ -56,7 +56,7 @@ const TablaExamen = () => {
         setDatosFormulario((prevDatos) => ({
           ...prevDatos,
           pacienteId: responseData.id,
-        }));
+        }))
         setSubmitted(true)
       })
       .catch((error) => {
@@ -64,7 +64,7 @@ const TablaExamen = () => {
           setModalAMessage('Hubo un error al obtener los datos')
           setIsModalOpen(true)
         } else {
-          setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+          setModalAMessage('Error: No se pudo establecer conexión con el servidor')
           setIsModalOpen(true)
           console.error(error)
         }
@@ -233,38 +233,42 @@ const TablaExamen = () => {
     campo122: '',
     campo123: '',
     campo124: '',
-  });
+  })
 
   const manejarCambio = (event) => {
-    const { name, value } = event.target;
+    const { name, value } = event.target
     setDatosFormulario((prevDatos) => ({
       ...prevDatos,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
+  const currentUser = AuthService.getCurrentUser()
   const manejarSubmit = async (event) => {
-    event.preventDefault();
-
+    event.preventDefault()
     try {
-      console.log('POST:', JSON.stringify(datosFormulario));
+      // console.log('POST:', JSON.stringify(datosFormulario))
       const response = await fetch(`${BASE_URL}/api/tabla_examen/post`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${currentUser.accessToken}`,
         },
         body: JSON.stringify(datosFormulario),
-      });      
+      })      
       if (response.ok) {
-        console.log('Registro insertado con éxito.');
+        console.log('Registro insertado con éxito')
         setRegistroExitoso(true)
       } else {
-        console.error('Error al insertar el registro.');
+        // console.log(currentUser.accessToken.substr(currentUser.accessToken))
+        setModalAMessage('Error al insertar el registro')
+        setIsModalOpen(true)
+        console.error('Error al insertar el registro')
       }
     } catch (error) {
-      console.error('Error de red:', error);
+      console.error('Error de red:', error)
     }
-  };
+  }
 
   if (registroExitoso) {
     return (
@@ -334,8 +338,8 @@ const TablaExamen = () => {
                   <td>1. FCSRT:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo1"
+                  type='text'
+                  name='campo1'
                   value={datosFormulario.campo1}
                   onChange={manejarCambio}
                 />
@@ -346,8 +350,8 @@ const TablaExamen = () => {
                   <td>Total identificación:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo2"
+                  type='text'
+                  name='campo2'
                   value={datosFormulario.campo2}
                   onChange={manejarCambio}
                 />
@@ -358,8 +362,8 @@ const TablaExamen = () => {
                   <td>FCRST Recuerdo libre ensayo 1:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo3"
+                  type='text'
+                  name='campo3'
                   value={datosFormulario.campo3}
                   onChange={manejarCambio}
                 />
@@ -370,8 +374,8 @@ const TablaExamen = () => {
                   <td>FCRST Recuerdo facilitado ensayo 1:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo4"
+                  type='text'
+                  name='campo4'
                   value={datosFormulario.campo4}
                   onChange={manejarCambio}
                 />
@@ -382,8 +386,8 @@ const TablaExamen = () => {
                   <td>FCRST Recuerdo libre ensayo 2:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo5"
+                  type='text'
+                  name='campo5'
                   value={datosFormulario.campo5}
                   onChange={manejarCambio}
                 />
@@ -394,8 +398,8 @@ const TablaExamen = () => {
                   <td>FCRST Recuerdo facilitado ensayo 2:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo6"
+                  type='text'
+                  name='campo6'
                   value={datosFormulario.campo6}
                   onChange={manejarCambio}
                 />
@@ -406,8 +410,8 @@ const TablaExamen = () => {
                   <td>FCRST Recuerdo libre ensayo 3:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo7"
+                  type='text'
+                  name='campo7'
                   value={datosFormulario.campo7}
                   onChange={manejarCambio}
                 />
@@ -418,8 +422,8 @@ const TablaExamen = () => {
                   <td>FCRST Recuerdo facilitado ensayo 3:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo8"
+                  type='text'
+                  name='campo8'
                   value={datosFormulario.campo8}
                   onChange={manejarCambio}
                 />
@@ -430,8 +434,8 @@ const TablaExamen = () => {
                   <td>FCRST - RECUERDO DIFERIDO Recuerdo libre:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo9"
+                  type='text'
+                  name='campo9'
                   value={datosFormulario.campo9}
                   onChange={manejarCambio}
                 />
@@ -442,8 +446,8 @@ const TablaExamen = () => {
                   <td>FCRST - RECUERDO DIFERIDO Recuerdo facilitado:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo10"
+                  type='text'
+                  name='campo10'
                   value={datosFormulario.campo10}
                   onChange={manejarCambio}
                 />
@@ -454,8 +458,8 @@ const TablaExamen = () => {
                   <td>FCRST LIBRE TOTAL (0-48):ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo11"
+                  type='text'
+                  name='campo11'
                   value={datosFormulario.campo11}
                   onChange={manejarCambio}
                 />
@@ -466,8 +470,8 @@ const TablaExamen = () => {
                   <td>FCRST RECUERDO FACILITADO TOTAL (0-48):ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo12"
+                  type='text'
+                  name='campo12'
                   value={datosFormulario.campo12}
                   onChange={manejarCambio}
                 />
@@ -478,8 +482,8 @@ const TablaExamen = () => {
                   <td>FCRST RECUERDO DIFERIDO LIBRE (0-16):ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo13"
+                  type='text'
+                  name='campo13'
                   value={datosFormulario.campo13}
                   onChange={manejarCambio}
                 />
@@ -490,8 +494,8 @@ const TablaExamen = () => {
                   <td>FCRST RECUERDO DIFERIDO FACILITADO (0-16):ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo14"
+                  type='text'
+                  name='campo14'
                   value={datosFormulario.campo14}
                   onChange={manejarCambio}
                 />
@@ -502,8 +506,8 @@ const TablaExamen = () => {
                   <td>2. TEST VISIÓN DE COLORES - DVORINE:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo15"
+                  type='text'
+                  name='campo15'
                   value={datosFormulario.campo15}
                   onChange={manejarCambio}
                 />
@@ -514,8 +518,8 @@ const TablaExamen = () => {
                   <td>Número de errores:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo16"
+                  type='text'
+                  name='campo16'
                   value={datosFormulario.campo16}
                   onChange={manejarCambio}
                 />
@@ -526,8 +530,8 @@ const TablaExamen = () => {
                   <td>3. TEST DE MEMORIA DE TRABAJO VISUAL PARA FORMAS COLORES Y COMBINACIONES:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo17"
+                  type='text'
+                  name='campo17'
                   value={datosFormulario.campo17}
                   onChange={manejarCambio}
                 />
@@ -538,8 +542,8 @@ const TablaExamen = () => {
                   <td>Percepción:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo18"
+                  type='text'
+                  name='campo18'
                   value={datosFormulario.campo18}
                   onChange={manejarCambio}
                 />
@@ -550,8 +554,8 @@ const TablaExamen = () => {
                   <td>Correctas:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo19"
+                  type='text'
+                  name='campo19'
                   value={datosFormulario.campo19}
                   onChange={manejarCambio}
                 />
@@ -562,8 +566,8 @@ const TablaExamen = () => {
                   <td>Porcentaje correctas:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo20"
+                  type='text'
+                  name='campo20'
                   value={datosFormulario.campo20}
                   onChange={manejarCambio}
                 />
@@ -574,8 +578,8 @@ const TablaExamen = () => {
                   <td>Tiempo total:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo21"
+                  type='text'
+                  name='campo21'
                   value={datosFormulario.campo21}
                   onChange={manejarCambio}
                 />
@@ -586,8 +590,8 @@ const TablaExamen = () => {
                   <td>Forma:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo22"
+                  type='text'
+                  name='campo22'
                   value={datosFormulario.campo22}
                   onChange={manejarCambio}
                 />
@@ -598,8 +602,8 @@ const TablaExamen = () => {
                   <td>2 formas - Correctas:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo23"
+                  type='text'
+                  name='campo23'
                   value={datosFormulario.campo23}
                   onChange={manejarCambio}
                 />
@@ -610,8 +614,8 @@ const TablaExamen = () => {
                   <td>2 formas - Porcentaje correctas:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo24"
+                  type='text'
+                  name='campo24'
                   value={datosFormulario.campo24}
                   onChange={manejarCambio}
                 />
@@ -622,8 +626,8 @@ const TablaExamen = () => {
                   <td>3 formas - Correctas:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo25"
+                  type='text'
+                  name='campo25'
                   value={datosFormulario.campo25}
                   onChange={manejarCambio}
                 />
@@ -634,8 +638,8 @@ const TablaExamen = () => {
                   <td>3 formas - Porcentaje correctas:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo26"
+                  type='text'
+                  name='campo26'
                   value={datosFormulario.campo26}
                   onChange={manejarCambio}
                 />
@@ -646,8 +650,8 @@ const TablaExamen = () => {
                   <td>Tiempo total:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo27"
+                  type='text'
+                  name='campo27'
                   value={datosFormulario.campo27}
                   onChange={manejarCambio}
                 />
@@ -658,8 +662,8 @@ const TablaExamen = () => {
                   <td>Binding:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo28"
+                  type='text'
+                  name='campo28'
                   value={datosFormulario.campo28}
                   onChange={manejarCambio}
                 />
@@ -670,8 +674,8 @@ const TablaExamen = () => {
                   <td>2 Bindings - Correctas:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo29"
+                  type='text'
+                  name='campo29'
                   value={datosFormulario.campo29}
                   onChange={manejarCambio}
                 />
@@ -682,8 +686,8 @@ const TablaExamen = () => {
                   <td>2 Bindings - Porcentaje correctas:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo30"
+                  type='text'
+                  name='campo30'
                   value={datosFormulario.campo30}
                   onChange={manejarCambio}
                 />
@@ -694,8 +698,8 @@ const TablaExamen = () => {
                   <td>3 Bindings - Correctas:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo31"
+                  type='text'
+                  name='campo31'
                   value={datosFormulario.campo31}
                   onChange={manejarCambio}
                 />
@@ -706,8 +710,8 @@ const TablaExamen = () => {
                   <td>3 Bindings - Porcentaje correctas:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo32"
+                  type='text'
+                  name='campo32'
                   value={datosFormulario.campo32}
                   onChange={manejarCambio}
                 />
@@ -718,8 +722,8 @@ const TablaExamen = () => {
                   <td>Tiempo total en segundos:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo33"
+                  type='text'
+                  name='campo33'
                   value={datosFormulario.campo33}
                   onChange={manejarCambio}
                 />
@@ -730,8 +734,8 @@ const TablaExamen = () => {
                   <td>4. ACER:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo34"
+                  type='text'
+                  name='campo34'
                   value={datosFormulario.campo34}
                   onChange={manejarCambio}
                 />
@@ -742,8 +746,8 @@ const TablaExamen = () => {
                   <td>ACE Orientación:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo35"
+                  type='text'
+                  name='campo35'
                   value={datosFormulario.campo35}
                   onChange={manejarCambio}
                 />
@@ -754,8 +758,8 @@ const TablaExamen = () => {
                   <td>ACE Atención:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo36"
+                  type='text'
+                  name='campo36'
                   value={datosFormulario.campo36}
                   onChange={manejarCambio}
                 />
@@ -766,8 +770,8 @@ const TablaExamen = () => {
                   <td>ACE Memoria:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo37"
+                  type='text'
+                  name='campo37'
                   value={datosFormulario.campo37}
                   onChange={manejarCambio}
                 />
@@ -778,8 +782,8 @@ const TablaExamen = () => {
                   <td>ACE Fluidez:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo38"
+                  type='text'
+                  name='campo38'
                   value={datosFormulario.campo38}
                   onChange={manejarCambio}
                 />
@@ -790,8 +794,8 @@ const TablaExamen = () => {
                   <td>ACE Lenguaje:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo39"
+                  type='text'
+                  name='campo39'
                   value={datosFormulario.campo39}
                   onChange={manejarCambio}
                 />
@@ -802,8 +806,8 @@ const TablaExamen = () => {
                   <td>ACE Visoespaciales:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo40"
+                  type='text'
+                  name='campo40'
                   value={datosFormulario.campo40}
                   onChange={manejarCambio}
                 />
@@ -814,8 +818,8 @@ const TablaExamen = () => {
                   <td>ACE TOTAL:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo41"
+                  type='text'
+                  name='campo41'
                   value={datosFormulario.campo41}
                   onChange={manejarCambio}
                 />
@@ -826,8 +830,8 @@ const TablaExamen = () => {
                   <td>MMSE:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo42"
+                  type='text'
+                  name='campo42'
                   value={datosFormulario.campo42}
                   onChange={manejarCambio}
                 />
@@ -838,8 +842,8 @@ const TablaExamen = () => {
                   <td>5. ECOG:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo43"
+                  type='text'
+                  name='campo43'
                   value={datosFormulario.campo43}
                   onChange={manejarCambio}
                 />
@@ -850,8 +854,8 @@ const TablaExamen = () => {
                   <td>ECOG Memoria:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo44"
+                  type='text'
+                  name='campo44'
                   value={datosFormulario.campo44}
                   onChange={manejarCambio}
                 />
@@ -862,8 +866,8 @@ const TablaExamen = () => {
                   <td>ECOG Planificación:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo45"
+                  type='text'
+                  name='campo45'
                   value={datosFormulario.campo45}
                   onChange={manejarCambio}
                 />
@@ -874,8 +878,8 @@ const TablaExamen = () => {
                   <td>ECOG Lenguaje:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo46"
+                  type='text'
+                  name='campo46'
                   value={datosFormulario.campo46}
                   onChange={manejarCambio}
                 />
@@ -886,8 +890,8 @@ const TablaExamen = () => {
                   <td>ECOG Organización:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo47"
+                  type='text'
+                  name='campo47'
                   value={datosFormulario.campo47}
                   onChange={manejarCambio}
                 />
@@ -898,8 +902,8 @@ const TablaExamen = () => {
                   <td>ECOG Atención:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo48"
+                  type='text'
+                  name='campo48'
                   value={datosFormulario.campo48}
                   onChange={manejarCambio}
                 />
@@ -910,8 +914,8 @@ const TablaExamen = () => {
                   <td>ECOG Visuoespacial:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo49"
+                  type='text'
+                  name='campo49'
                   value={datosFormulario.campo49}
                   onChange={manejarCambio}
                 />
@@ -922,8 +926,8 @@ const TablaExamen = () => {
                   <td>ECOG TOTAL:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo50"
+                  type='text'
+                  name='campo50'
                   value={datosFormulario.campo50}
                   onChange={manejarCambio}
                 />
@@ -934,8 +938,8 @@ const TablaExamen = () => {
                   <td>6. ESCALA DEPRESIÓN GERIÁTRICA - YESAVAGE:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo51"
+                  type='text'
+                  name='campo51'
                   value={datosFormulario.campo51}
                   onChange={manejarCambio}
                 />
@@ -946,8 +950,8 @@ const TablaExamen = () => {
                   <td>7. ESCALA DE HACHINSKI:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo52"
+                  type='text'
+                  name='campo52'
                   value={datosFormulario.campo52}
                   onChange={manejarCambio}
                 />
@@ -958,8 +962,8 @@ const TablaExamen = () => {
                   <td>8. CERAD:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo53"
+                  type='text'
+                  name='campo53'
                   value={datosFormulario.campo53}
                   onChange={manejarCambio}
                 />
@@ -970,8 +974,8 @@ const TablaExamen = () => {
                   <td>DENOMINACION (Test de Boston):ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo54"
+                  type='text'
+                  name='campo54'
                   value={datosFormulario.campo54}
                   onChange={manejarCambio}
                 />
@@ -982,8 +986,8 @@ const TablaExamen = () => {
                   <td>Puntaje alta:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo55"
+                  type='text'
+                  name='campo55'
                   value={datosFormulario.campo55}
                   onChange={manejarCambio}
                 />
@@ -994,8 +998,8 @@ const TablaExamen = () => {
                   <td>Puntaje media:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo56"
+                  type='text'
+                  name='campo56'
                   value={datosFormulario.campo56}
                   onChange={manejarCambio}
                 />
@@ -1006,8 +1010,8 @@ const TablaExamen = () => {
                   <td>Puntaje baja:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo57"
+                  type='text'
+                  name='campo57'
                   value={datosFormulario.campo57}
                   onChange={manejarCambio}
                 />
@@ -1018,8 +1022,8 @@ const TablaExamen = () => {
                   <td>Puntaje total/15:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo58"
+                  type='text'
+                  name='campo58'
                   value={datosFormulario.campo58}
                   onChange={manejarCambio}
                 />
@@ -1030,8 +1034,8 @@ const TablaExamen = () => {
                   <td>MEMORIA DE UNA LISTA DE PALABRAS:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo59"
+                  type='text'
+                  name='campo59'
                   value={datosFormulario.campo59}
                   onChange={manejarCambio}
                 />
@@ -1042,8 +1046,8 @@ const TablaExamen = () => {
                   <td>Intento 1 totales:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo60"
+                  type='text'
+                  name='campo60'
                   value={datosFormulario.campo60}
                   onChange={manejarCambio}
                 />
@@ -1054,8 +1058,8 @@ const TablaExamen = () => {
                   <td>Intento 1 intrusiones:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo61"
+                  type='text'
+                  name='campo61'
                   value={datosFormulario.campo61}
                   onChange={manejarCambio}
                 />
@@ -1066,8 +1070,8 @@ const TablaExamen = () => {
                   <td>Intento 2 totales:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo62"
+                  type='text'
+                  name='campo62'
                   value={datosFormulario.campo62}
                   onChange={manejarCambio}
                 />
@@ -1078,8 +1082,8 @@ const TablaExamen = () => {
                   <td>Intento 2 intrusiones:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo63"
+                  type='text'
+                  name='campo63'
                   value={datosFormulario.campo63}
                   onChange={manejarCambio}
                 />
@@ -1090,8 +1094,8 @@ const TablaExamen = () => {
                   <td>Intento 3 totales:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo64"
+                  type='text'
+                  name='campo64'
                   value={datosFormulario.campo64}
                   onChange={manejarCambio}
                 />
@@ -1102,8 +1106,8 @@ const TablaExamen = () => {
                   <td>Intento 3 intrusiones:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo65"
+                  type='text'
+                  name='campo65'
                   value={datosFormulario.campo65}
                   onChange={manejarCambio}
                 />
@@ -1114,8 +1118,8 @@ const TablaExamen = () => {
                   <td>Total palabras:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo66"
+                  type='text'
+                  name='campo66'
                   value={datosFormulario.campo66}
                   onChange={manejarCambio}
                 />
@@ -1126,8 +1130,8 @@ const TablaExamen = () => {
                   <td>Total intrusiones:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo67"
+                  type='text'
+                  name='campo67'
                   value={datosFormulario.campo67}
                   onChange={manejarCambio}
                 />
@@ -1138,8 +1142,8 @@ const TablaExamen = () => {
                   <td>PRAXIAS CONSTRUCTIVAS:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo68"
+                  type='text'
+                  name='campo68'
                   value={datosFormulario.campo68}
                   onChange={manejarCambio}
                 />
@@ -1150,8 +1154,8 @@ const TablaExamen = () => {
                   <td>Círculo - Item 1:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo69"
+                  type='text'
+                  name='campo69'
                   value={datosFormulario.campo69}
                   onChange={manejarCambio}
                 />
@@ -1162,8 +1166,8 @@ const TablaExamen = () => {
                   <td>Rombo - Item 2:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo70"
+                  type='text'
+                  name='campo70'
                   value={datosFormulario.campo70}
                   onChange={manejarCambio}
                 />
@@ -1174,8 +1178,8 @@ const TablaExamen = () => {
                   <td>Rectángulos - Item 3:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo71"
+                  type='text'
+                  name='campo71'
                   value={datosFormulario.campo71}
                   onChange={manejarCambio}
                 />
@@ -1186,8 +1190,8 @@ const TablaExamen = () => {
                   <td>Cubo - Item 4:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo72"
+                  type='text'
+                  name='campo72'
                   value={datosFormulario.campo72}
                   onChange={manejarCambio}
                 />
@@ -1198,8 +1202,8 @@ const TablaExamen = () => {
                   <td>Total 11:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo73"
+                  type='text'
+                  name='campo73'
                   value={datosFormulario.campo73}
                   onChange={manejarCambio}
                 />
@@ -1210,8 +1214,8 @@ const TablaExamen = () => {
                   <td>RECUERDO DE UNA LISTA DE PALABRAS:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo74"
+                  type='text'
+                  name='campo74'
                   value={datosFormulario.campo74}
                   onChange={manejarCambio}
                 />
@@ -1222,8 +1226,8 @@ const TablaExamen = () => {
                   <td>Total 10:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo75"
+                  type='text'
+                  name='campo75'
                   value={datosFormulario.campo75}
                   onChange={manejarCambio}
                 />
@@ -1234,8 +1238,8 @@ const TablaExamen = () => {
                   <td>Total intrusiones:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo76"
+                  type='text'
+                  name='campo76'
                   value={datosFormulario.campo76}
                   onChange={manejarCambio}
                 />
@@ -1246,8 +1250,8 @@ const TablaExamen = () => {
                   <td>RECONOCIMIENTO DE UNA LISTA DE PALABRAS:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo77"
+                  type='text'
+                  name='campo77'
                   value={datosFormulario.campo77}
                   onChange={manejarCambio}
                 />
@@ -1258,8 +1262,8 @@ const TablaExamen = () => {
                   <td>Total SI correctos/10:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo78"
+                  type='text'
+                  name='campo78'
                   value={datosFormulario.campo78}
                   onChange={manejarCambio}
                 />
@@ -1270,8 +1274,8 @@ const TablaExamen = () => {
                   <td>Total NO correctos/10:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo79"
+                  type='text'
+                  name='campo79'
                   value={datosFormulario.campo79}
                   onChange={manejarCambio}
                 />
@@ -1282,8 +1286,8 @@ const TablaExamen = () => {
                   <td>EVOCACIÓN PRAXIAS CONSTRUCTIVAS:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo80"
+                  type='text'
+                  name='campo80'
                   value={datosFormulario.campo80}
                   onChange={manejarCambio}
                 />
@@ -1294,8 +1298,8 @@ const TablaExamen = () => {
                   <td>Círculo - Item 1:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo81"
+                  type='text'
+                  name='campo81'
                   value={datosFormulario.campo81}
                   onChange={manejarCambio}
                 />
@@ -1306,8 +1310,8 @@ const TablaExamen = () => {
                   <td>Rombo - Item 2:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo82"
+                  type='text'
+                  name='campo82'
                   value={datosFormulario.campo82}
                   onChange={manejarCambio}
                 />
@@ -1318,8 +1322,8 @@ const TablaExamen = () => {
                   <td>Rectángulos - Item 3:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo83"
+                  type='text'
+                  name='campo83'
                   value={datosFormulario.campo83}
                   onChange={manejarCambio}
                 />
@@ -1330,8 +1334,8 @@ const TablaExamen = () => {
                   <td>Cubo - Item 4:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo84"
+                  type='text'
+                  name='campo84'
                   value={datosFormulario.campo84}
                   onChange={manejarCambio}
                 />
@@ -1342,8 +1346,8 @@ const TablaExamen = () => {
                   <td>Total 11:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo85"
+                  type='text'
+                  name='campo85'
                   value={datosFormulario.campo85}
                   onChange={manejarCambio}
                 />
@@ -1354,8 +1358,8 @@ const TablaExamen = () => {
                   <td>TRAIL MAKING TEST (T.M.T) PARTE A:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo86"
+                  type='text'
+                  name='campo86'
                   value={datosFormulario.campo86}
                   onChange={manejarCambio}
                 />
@@ -1366,8 +1370,8 @@ const TablaExamen = () => {
                   <td>Aciertos /24:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo87"
+                  type='text'
+                  name='campo87'
                   value={datosFormulario.campo87}
                   onChange={manejarCambio}
                 />
@@ -1378,8 +1382,8 @@ const TablaExamen = () => {
                   <td>Errores:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo88"
+                  type='text'
+                  name='campo88'
                   value={datosFormulario.campo88}
                   onChange={manejarCambio}
                 />
@@ -1390,8 +1394,8 @@ const TablaExamen = () => {
                   <td>Tiempo en segundos:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo89"
+                  type='text'
+                  name='campo89'
                   value={datosFormulario.campo89}
                   onChange={manejarCambio}
                 />
@@ -1403,8 +1407,8 @@ const TablaExamen = () => {
                   <td>
 
                 <input
-                  type="text"
-                  name="campo90"
+                  type='text'
+                  name='campo90'
                   value={datosFormulario.campo90}
                   onChange={manejarCambio}
                 />
@@ -1415,8 +1419,8 @@ const TablaExamen = () => {
                   <td>TRAIL MAKING TEST (T.M.T) PARTE B:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo91"
+                  type='text'
+                  name='campo91'
                   value={datosFormulario.campo91}
                   onChange={manejarCambio}
                 />
@@ -1427,8 +1431,8 @@ const TablaExamen = () => {
                   <td>Aciertos /24:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo92"
+                  type='text'
+                  name='campo92'
                   value={datosFormulario.campo92}
                   onChange={manejarCambio}
                 />
@@ -1439,8 +1443,8 @@ const TablaExamen = () => {
                   <td>Errores:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo93"
+                  type='text'
+                  name='campo93'
                   value={datosFormulario.campo93}
                   onChange={manejarCambio}
                 />
@@ -1451,8 +1455,8 @@ const TablaExamen = () => {
                   <td>Tiempo en segundos:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo94"
+                  type='text'
+                  name='campo94'
                   value={datosFormulario.campo94}
                   onChange={manejarCambio}
                 />
@@ -1463,8 +1467,8 @@ const TablaExamen = () => {
                   <td>Ensayo a los 300’’:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo95"
+                  type='text'
+                  name='campo95'
                   value={datosFormulario.campo95}
                   onChange={manejarCambio}
                 />
@@ -1475,8 +1479,8 @@ const TablaExamen = () => {
                   <td>FIGURA COMPLEJA DE REY - OSTERRIETH - COPIA:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo96"
+                  type='text'
+                  name='campo96'
                   value={datosFormulario.campo96}
                   onChange={manejarCambio}
                 />
@@ -1487,8 +1491,8 @@ const TablaExamen = () => {
                   <td>Tiempo en segundos:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo97"
+                  type='text'
+                  name='campo97'
                   value={datosFormulario.campo97}
                   onChange={manejarCambio}
                 />
@@ -1499,8 +1503,8 @@ const TablaExamen = () => {
                   <td>Puntaje:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo98"
+                  type='text'
+                  name='campo98'
                   value={datosFormulario.campo98}
                   onChange={manejarCambio}
                 />
@@ -1511,8 +1515,8 @@ const TablaExamen = () => {
                   <td>FIGURA COMPLEJA DE REY - OSTERRIETH - EVOCACIÓN:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo99"
+                  type='text'
+                  name='campo99'
                   value={datosFormulario.campo99}
                   onChange={manejarCambio}
                 />
@@ -1523,8 +1527,8 @@ const TablaExamen = () => {
                   <td>Tiempo en segundos:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo100"
+                  type='text'
+                  name='campo100'
                   value={datosFormulario.campo100}
                   onChange={manejarCambio}
                 />
@@ -1535,8 +1539,8 @@ const TablaExamen = () => {
                   <td>Puntaje:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo101"
+                  type='text'
+                  name='campo101'
                   value={datosFormulario.campo101}
                   onChange={manejarCambio}
                 />
@@ -1547,8 +1551,8 @@ const TablaExamen = () => {
                   <td>FLUIDEZ VERBAL:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo102"
+                  type='text'
+                  name='campo102'
                   value={datosFormulario.campo102}
                   onChange={manejarCambio}
                 />
@@ -1559,8 +1563,8 @@ const TablaExamen = () => {
                   <td>Total F:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo103"
+                  type='text'
+                  name='campo103'
                   value={datosFormulario.campo103}
                   onChange={manejarCambio}
                 />
@@ -1571,8 +1575,8 @@ const TablaExamen = () => {
                   <td>Total A:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo104"
+                  type='text'
+                  name='campo104'
                   value={datosFormulario.campo104}
                   onChange={manejarCambio}
                 />
@@ -1583,8 +1587,8 @@ const TablaExamen = () => {
                   <td>Total S:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo105"
+                  type='text'
+                  name='campo105'
                   value={datosFormulario.campo105}
                   onChange={manejarCambio}
                 />
@@ -1595,8 +1599,8 @@ const TablaExamen = () => {
                   <td>Pérdida de categoría:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo106"
+                  type='text'
+                  name='campo106'
                   value={datosFormulario.campo106}
                   onChange={manejarCambio}
                 />
@@ -1607,8 +1611,8 @@ const TablaExamen = () => {
                   <td>Puntuación total:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo107"
+                  type='text'
+                  name='campo107'
                   value={datosFormulario.campo107}
                   onChange={manejarCambio}
                 />
@@ -1619,8 +1623,8 @@ const TablaExamen = () => {
                   <td>9. ESCALA DE TRASTORNOS DE MEMORIA:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo108"
+                  type='text'
+                  name='campo108'
                   value={datosFormulario.campo108}
                   onChange={manejarCambio}
                 />
@@ -1631,8 +1635,8 @@ const TablaExamen = () => {
                   <td>QF Total:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo109"
+                  type='text'
+                  name='campo109'
                   value={datosFormulario.campo109}
                   onChange={manejarCambio}
                 />
@@ -1643,8 +1647,8 @@ const TablaExamen = () => {
                   <td>QP Total:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo110"
+                  type='text'
+                  name='campo110'
                   value={datosFormulario.campo110}
                   onChange={manejarCambio}
                 />
@@ -1655,8 +1659,8 @@ const TablaExamen = () => {
                   <td>10. ESCALA GLOBAL DE DETERIORO:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo111"
+                  type='text'
+                  name='campo111'
                   value={datosFormulario.campo111}
                   onChange={manejarCambio}
                 />
@@ -1667,8 +1671,8 @@ const TablaExamen = () => {
                   <td>Puntaje:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo112"
+                  type='text'
+                  name='campo112'
                   value={datosFormulario.campo112}
                   onChange={manejarCambio}
                 />
@@ -1679,8 +1683,8 @@ const TablaExamen = () => {
                   <td>11. ESCALA DE BARTHEL DE AVD Y ALIMENTACIÓN:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo113"
+                  type='text'
+                  name='campo113'
                   value={datosFormulario.campo113}
                   onChange={manejarCambio}
                 />
@@ -1691,8 +1695,8 @@ const TablaExamen = () => {
                   <td>Puntaje /50:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo114"
+                  type='text'
+                  name='campo114'
                   value={datosFormulario.campo114}
                   onChange={manejarCambio}
                 />
@@ -1703,8 +1707,8 @@ const TablaExamen = () => {
                   <td>12. ESCALA DE LAWTON Y BRODY:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo115"
+                  type='text'
+                  name='campo115'
                   value={datosFormulario.campo115}
                   onChange={manejarCambio}
                 />
@@ -1715,8 +1719,8 @@ const TablaExamen = () => {
                   <td>Total /5 o Total /8:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo116"
+                  type='text'
+                  name='campo116'
                   value={datosFormulario.campo116}
                   onChange={manejarCambio}
                 />
@@ -1727,8 +1731,8 @@ const TablaExamen = () => {
                   <td>13. THE TECHONOLOGY - ACTIVITIES OF DAILY LIVING QUESTIONNAIRE (T-ADLQ):ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo117"
+                  type='text'
+                  name='campo117'
                   value={datosFormulario.campo117}
                   onChange={manejarCambio}
                 />
@@ -1739,8 +1743,8 @@ const TablaExamen = () => {
                   <td>Puntaje de deterioro funcional:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo118"
+                  type='text'
+                  name='campo118'
                   value={datosFormulario.campo118}
                   onChange={manejarCambio}
                 />
@@ -1751,8 +1755,8 @@ const TablaExamen = () => {
                   <td>14. FUNCIONES DETALLADAS DE LA VIDA DIARIA (FDVD):ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo119"
+                  type='text'
+                  name='campo119'
                   value={datosFormulario.campo119}
                   onChange={manejarCambio}
                 />
@@ -1763,8 +1767,8 @@ const TablaExamen = () => {
                   <td>Total funciones relacionales ( R ) (/52):ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo120"
+                  type='text'
+                  name='campo120'
                   value={datosFormulario.campo120}
                   onChange={manejarCambio}
                 />
@@ -1775,8 +1779,8 @@ const TablaExamen = () => {
                   <td>Puntaje de deterioro funcional ( C ) (/30):ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo121"
+                  type='text'
+                  name='campo121'
                   value={datosFormulario.campo121}
                   onChange={manejarCambio}
                 />
@@ -1787,8 +1791,8 @@ const TablaExamen = () => {
                   <td>15. INECO FRONTAL SCREENING (IFS):ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo122"
+                  type='text'
+                  name='campo122'
                   value={datosFormulario.campo122}
                   onChange={manejarCambio}
                 />
@@ -1799,8 +1803,8 @@ const TablaExamen = () => {
                   <td>Índice de Memoria de Trabajo (Dígitos atrás + corsi):ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo123"
+                  type='text'
+                  name='campo123'
                   value={datosFormulario.campo123}
                   onChange={manejarCambio}
                 />
@@ -1811,8 +1815,8 @@ const TablaExamen = () => {
                   <td>Puntaje total:ㅤ</td>
                   <td>
                 <input
-                  type="text"
-                  name="campo124"
+                  type='text'
+                  name='campo124'
                   value={datosFormulario.campo124}
                   onChange={manejarCambio}
                 />

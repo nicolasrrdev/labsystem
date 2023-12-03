@@ -31,31 +31,16 @@ public class ExamTableService {
     public String generateCreateTableQuery(String json) {
         JSONObject jsonObject = new JSONObject(json);
         String examName = jsonObject.getString("nombreExamen");
-
         String examName2 = "examen" + getNextExamNumber();
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("CREATE TABLE " + examName2 + " (id SERIAL PRIMARY KEY, paciente_id INTEGER REFERENCES pacientes(id), nombre_examen VARCHAR(50)");
-
         int i = 1;
         while (jsonObject.has("nombreCampo" + i)) {
             String fieldType = jsonObject.getString("tipoCampo" + i);
-
-/*            if (!"Texto".equals(fieldType) && !"Numérico".equals(fieldType)) {
-                throw new IllegalArgumentException("El tipo de campo '" + fieldType + "' no es válido. Debe ser 'Texto' o 'Numérico'.");
-            }*/
-
             if (!"Texto".equals(fieldType) && !"Numérico".equals(fieldType) && !"Fecha".equals(fieldType) && !"EnteroPositivo".equals(fieldType)) {
                 throw new IllegalArgumentException("El tipo de campo '" + fieldType + "' no es válido. Debe ser 'Texto', 'Numérico', 'Fecha' o 'EnteroPositivo'.");
             }
-
             queryBuilder.append(", " + ("campo" + i) + " VARCHAR(50)");
-
-/*            if ("Texto".equals(fieldType)) {
-                queryBuilder.append(", " + ("campo" + i + "_tipo") + " VARCHAR(255)");
-            } else if ("Numérico".equals(fieldType)) {
-                queryBuilder.append(", " + ("campo" + i + "_tipo") + " NUMERIC");
-            }*/
-
             if ("Texto".equals(fieldType)) {
                 queryBuilder.append(", " + ("campo" + i + "_tipo") + " VARCHAR(255)");
             } else if ("Numérico".equals(fieldType)) {
@@ -65,13 +50,10 @@ public class ExamTableService {
             } else if ("EnteroPositivo".equals(fieldType)) {
                 queryBuilder.append(", " + ("campo" + i + "_tipo") + " INTEGER CHECK (" + ("campo" + i + "_tipo") + " >= 0)");
             }
-
             i++;
         }
-        // queryBuilder.append(", fecha_registro timestamp default date_trunc('second', now()));");
         queryBuilder.append(", fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP)" +
                 ";");
-
         queryBuilder.append(" INSERT INTO " + examName2 + " (nombre_examen, ");
         int j = 1;
         while (jsonObject.has("nombreCampo" + j)) {
@@ -82,7 +64,6 @@ public class ExamTableService {
             }
         }
         queryBuilder.append(")");
-
         queryBuilder.append(" VALUES " + " ('" + examName + "'");
         int k = 1;
         while (jsonObject.has("nombreCampo" + k)) {
@@ -91,7 +72,6 @@ public class ExamTableService {
             k++;
         }
         queryBuilder.append(");");
-
         return queryBuilder.toString();
     }
 

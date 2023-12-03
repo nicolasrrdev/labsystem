@@ -20,7 +20,7 @@ public class EmailService {
         messageHelper.setFrom(fromEmail);
         messageHelper.setTo(to);
         messageHelper.setSubject("Labsystem - Restablecimiento de Contraseña");
-        messageHelper.setText("Hola " + username + ",<br><br>Haga clic en el siguiente enlace para restablecer su contraseña: <a href='" + resetLink + "'>Restablecer su contraseña</a>", true);
+        messageHelper.setText("Hola " + username + "<br><br>Haga clic en el siguiente enlace para restablecer su contraseña: <a href='" + resetLink + "'>Restablecer su contraseña</a>", true);
         javaMailSender.send(mimeMessage);
     }
 

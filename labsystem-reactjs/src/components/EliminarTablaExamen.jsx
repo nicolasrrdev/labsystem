@@ -56,32 +56,30 @@ const EliminarTablaExamen = () => {
   }
 
   const handleSubmit1 = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
       const response = await fetch(`${BASE_URL}/api/tabla_examen/por_paciente/${pacienteSeleccionado}`, {
         method: 'GET',
-      });
+      })
       // console.log(pacienteSeleccionado)
       if (response.ok) {
-        const data = await response.json();
-        // console.log('Datos recibidos:', data);
-        setTablaExamenData(data);
-        setSubmitted1(true);
-        setInitialPage(false);
+        const data = await response.json()
+        // console.log('Datos recibidos:', data)
+        setTablaExamenData(data)
+        setSubmitted1(true)
+        setInitialPage(false)
       } else if (response.status === 404) {
-        throw new Error('No se encontró el registro');
+        throw new Error('No se encontró el registro')
       } else {
-        throw new Error('Ha ocurrido un error inesperado');
+        throw new Error('Ha ocurrido un error inesperado')
       }
     } catch (error) {
       console.log(error)
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
   
-  
-
   const isButtonDisabled = pacienteSeleccionado === ''
   const handleReloadPage = () => {
     window.location.reload()
@@ -115,14 +113,13 @@ const EliminarTablaExamen = () => {
   }
 
   const handleSubmit2 = (e) => {
-    e.preventDefault();
+    e.preventDefault()
   
     if (!registroSeleccionado || !dataId) {
-      // Validación adicional, asegúrate de tener un registro seleccionado y un ID
-      return;
+      return
     }
   
-    setIsSubmitting(true);
+    setIsSubmitting(true)
   
     fetch(`${BASE_URL}/api/tabla_examen/${dataId}`, {
       method: 'DELETE',
@@ -132,31 +129,31 @@ const EliminarTablaExamen = () => {
     })
       .then((response) => {
         if (response.status === 404) {
-          throw new Error('No se encontró el registro');
+          throw new Error('No se encontró el registro')
         }
         if (response.status === 500) {
-          throw new Error('Ha ocurrido un error inesperado');
+          throw new Error('Ha ocurrido un error inesperado')
         }
       })
       .then(() => {
-        setSubmitted1(false);
-        setRegistroExitoso(true);
+        setSubmitted1(false)
+        setRegistroExitoso(true)
       })
       .catch((error) => {
         if (error.message === 'No se encontró el registro') {
-          setModalAMessage('No se encontró el registro');
+          setModalAMessage('No se encontró el registro')
         } else if (error.message === 'Ha ocurrido un error inesperado') {
-          setModalAMessage('Ha ocurrido un error inesperado');
+          setModalAMessage('Ha ocurrido un error inesperado')
         } else {
-          setModalAMessage('Error: No se pudo establecer conexión con el servidor.');
-          console.error(error);
+          setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+          console.error(error)
         }
-        setIsModalOpen(true);
+        setIsModalOpen(true)
       })
       .finally(() => {
-        setIsSubmitting(false);
-      });
-  };
+        setIsSubmitting(false)
+      })
+  }
 
   if (registroExitoso) {
     return (

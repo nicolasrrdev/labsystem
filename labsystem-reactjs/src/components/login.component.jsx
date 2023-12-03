@@ -15,7 +15,7 @@ const Login = () => {
     setLoading(true)
     AuthService.login(username, password)
       .then(() => {
-        navigate('/profile')
+        navigate('/Profile')
         window.location.reload()
       })
       .catch((error) => {
