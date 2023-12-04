@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import ModalAlert from './ModalAlert'
+import AuthService from '../services/auth.service'
 
 const EditarRegistro = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -33,9 +34,15 @@ const EditarRegistro = () => {
   }
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const currentUser = AuthService.getCurrentUser()
   
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes`)
+    fetch(`${BASE_URL}/pacientes`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setPacientes(data)
@@ -49,7 +56,11 @@ const EditarRegistro = () => {
   }, [BASE_URL])
 
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`)
+    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => setInfoPaciente(data))
       .catch((error) => {
@@ -64,7 +75,11 @@ const EditarRegistro = () => {
   const handleSubmit1 = (e) => {
     e.preventDefault()
     setIsSubmitting(true)
-    fetch(`${BASE_URL}/api/exam/${nombreTabla2}/paciente/${pacienteSeleccionado}`)
+    fetch(`${BASE_URL}/api/exam/${nombreTabla2}/paciente/${pacienteSeleccionado}`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => {
         if (response.status === 404) {
           return Promise.reject('No hay registros disponibles')
@@ -95,7 +110,11 @@ const EditarRegistro = () => {
   const isButtonDisabled2 = registroDate === ''
 
   useEffect(() => {
-    fetch(`${BASE_URL}/api/examen/nombreExamen`)
+    fetch(`${BASE_URL}/api/examen/nombreExamen`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then(response => response.json())
       .then(data => {
         setExamList(data.nombres_examenes)
@@ -114,7 +133,11 @@ const EditarRegistro = () => {
 
   useEffect(() => {
     if (nombreTabla2) {
-      fetch(`${BASE_URL}/api/examen/${nombreTabla2}/tiposCampos`)
+      fetch(`${BASE_URL}/api/examen/${nombreTabla2}/tiposCampos`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      })
         .then((response) => response.json())
         .catch((error) => {
           console.error(error)
@@ -124,7 +147,11 @@ const EditarRegistro = () => {
 
   useEffect(() => {
     if (nombreTabla2) {
-      fetch(`${BASE_URL}/api/exam/${nombreTabla2}`)
+      fetch(`${BASE_URL}/api/exam/${nombreTabla2}`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      })
         .then((response) => response.json())
         .catch((error) => {
           console.error(error)
@@ -134,7 +161,11 @@ const EditarRegistro = () => {
 
   useEffect(() => {
     if (nombreTabla2) {
-      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/numFields`)
+      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/numFields`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      })
         .then((response) => response.json())
         .catch((error) => {
           console.error(error)
@@ -146,9 +177,21 @@ const EditarRegistro = () => {
     e.preventDefault()
     setIsSubmitting(true)
     const requests = [
-      fetch(`${BASE_URL}/api/examen/${nombreTabla2}/tiposCampos`),
-      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/record/${idSeleccionado2}`),
-      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/record/1`),
+      fetch(`${BASE_URL}/api/examen/${nombreTabla2}/tiposCampos`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      }),
+      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/record/${idSeleccionado2}`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      }),
+      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/record/1`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      }),
     ]
     Promise.all(requests)
       .then((responses) => {
@@ -233,8 +276,6 @@ const EditarRegistro = () => {
               name={campoNombre}
               value={valor}
               onChange={handleInputChange}
-              min = {-999999999}
-              max = {999999999}
             />
           )
         } else if (tipo === 'date') {
@@ -285,12 +326,20 @@ const EditarRegistro = () => {
 
   const handleSubmit3 = (e) => {
     e.preventDefault()
+    const camposVacios = Object.values(inputs).some((valor) => valor === '')
+    if (camposVacios) {
+      // alert('Por favor, completa todos los campos antes de enviar el formulario')
+      setModalAMessage('Por favor, completa todos los campos antes de enviar el formulario')
+      setIsModalOpen(true)
+      return
+    }
     setIsSubmitting(true)
     console.log(inputs)
     fetch(`${BASE_URL}/api/exam/${nombreTabla2}/update/${idSeleccionado2}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentUser.accessToken}`,
       },
       body: JSON.stringify(inputs)
     })

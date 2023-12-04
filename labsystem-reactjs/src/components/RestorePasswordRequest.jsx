@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import axios from 'axios'
 
 const RestorePasswordRequest = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -20,31 +19,41 @@ const RestorePasswordRequest = () => {
   }
 
   const handleRequest = async () => {
+    if (!email.trim()) {
+      setMessage('Por favor, completa la entrada')
+      return
+    }
     setIsSubmitting(true)
     setMessage('Enviando...')
     setInputDisabled(true)
     try {
-      const response = await axios.post(
-        `${BASE_URL}/reset-password/request`,
-        { email },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      console.log('Respuesta del servidor:', response.data)
-      setMessage('Se ha enviado un correo para restaurar la contraseña.')
-      setInputDisabled(true)
+      const response = await fetch(`${BASE_URL}/reset-password/request`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error('Error en la solicitud:', errorData)
+        setMessage(errorData.error || 'Error desconocido')
+        setInputDisabled(false)
+      } else {
+        const data = await response.json()
+        console.log('Respuesta del servidor:', data)
+        setMessage('Se ha enviado un correo para restaurar la contraseña. Revisa tu correo')
+        setInputDisabled(true)
+      }
     } catch (error) {
-      console.error('Error en la solicitud:', error.response.data)
-      setMessage(error.response.data.error)
+      console.error('Error en la solicitud:', error.message || 'Error desconocido')
+      setMessage(error.message || 'Error al enviar la solicitud')
       setInputDisabled(false)
     } finally {
       setIsSubmitting(false)
     }
   }
-
+  
   return (
     <div>
       <center>
@@ -57,15 +66,22 @@ const RestorePasswordRequest = () => {
           onChange={handleEmailChange} 
           onKeyDown={handleKeyDown}
           disabled={inputDisabled}
+          required
+          id='email-input'
         />
       </label>
-      <br /> <button onClick={handleRequest} disabled={isSubmitting || message === 'Se ha enviado un correo para restaurar la contraseña.'}>
+      <br /> 
+      <button 
+        onClick={handleRequest} 
+        disabled={ isSubmitting || message === 'Se ha enviado un correo para restaurar la contraseña. Revisa tu correo' || message === 'Failed to fetch' }
+      >
         Solicitar Restablecimiento
       </button> <br /> <br /> 
       <p>{message}</p>
       </center>
     </div>
   )
+
 }
 
 export default RestorePasswordRequest

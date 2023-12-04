@@ -1,7 +1,5 @@
 package com.labsystem.repositories;
-
 import java.util.Optional;
-
 import com.labsystem.models.ERole;
 import com.labsystem.models.Role;
 import org.springframework.data.jpa.repository.JpaRepository;

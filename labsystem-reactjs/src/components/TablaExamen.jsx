@@ -23,8 +23,14 @@ const TablaExamen = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  const currentUser = AuthService.getCurrentUser()
+
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes`)
+    fetch(`${BASE_URL}/pacientes`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setPacientes(data)
@@ -44,7 +50,11 @@ const TablaExamen = () => {
   const handleSubmit1 = (e) => {
     e.preventDefault()
     setIsSubmitting(true)
-    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`)
+    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Hubo un error al obtener los datos')
@@ -243,7 +253,6 @@ const TablaExamen = () => {
     }))
   }
 
-  const currentUser = AuthService.getCurrentUser()
   const manejarSubmit = async (event) => {
     event.preventDefault()
     try {

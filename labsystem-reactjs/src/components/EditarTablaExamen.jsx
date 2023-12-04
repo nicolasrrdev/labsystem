@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import ModalAlert from './ModalAlert'
+import AuthService from '../services/auth.service'
 
 const EditarTablaExamen = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -14,6 +15,7 @@ const EditarTablaExamen = () => {
   const [registroSeleccionado, setRegistroSeleccionado] = useState()
   const [dataId, setDataId] = useState()
   const [inputValues, setInputValues] = useState()
+  const [fechaFormateada, setFechaFormateada] = useState('')
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalAMessage, setModalAMessage] = useState('')
@@ -27,6 +29,8 @@ const EditarTablaExamen = () => {
   }
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const currentUser = AuthService.getCurrentUser()
   
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -38,7 +42,11 @@ const EditarTablaExamen = () => {
 
   useEffect(() => {
     dataId &&
-      fetch(`${BASE_URL}/api/tabla_examen/${dataId}`)
+      fetch(`${BASE_URL}/api/tabla_examen/${dataId}`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      })
         .then((response) => {
           if (response.status === 404) {
             throw new Error('No se encontró el registro')
@@ -183,7 +191,11 @@ const EditarTablaExamen = () => {
   }, [BASE_URL, dataId])
   
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes`)
+    fetch(`${BASE_URL}/pacientes`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((response) => {
         setPacientes(response)
@@ -197,7 +209,11 @@ const EditarTablaExamen = () => {
   }, [BASE_URL])
 
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`)
+    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((response) => {
         setInfoPaciente(response)
@@ -205,7 +221,7 @@ const EditarTablaExamen = () => {
       .catch((error) => {
         console.error(error)
       })
-  }, [BASE_URL, pacienteSeleccionado])
+  }, [BASE_URL, pacienteSeleccionado, ])
 
   const handlePacienteSeleccionado = (e) => {
     setPacienteSeleccionado(e.target.value)
@@ -216,6 +232,9 @@ const EditarTablaExamen = () => {
     try {
       const response = await fetch(`${BASE_URL}/api/tabla_examen/por_paciente/${pacienteSeleccionado}`, {
         method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
       })
       // console.log(pacienteSeleccionado)
       if (response.ok) {
@@ -226,6 +245,9 @@ const EditarTablaExamen = () => {
         setInitialPage(false)
         // console.log(infoPaciente.nombres + ' ' + infoPaciente.apellidos)
         // console.log(infoPaciente.documento)
+        const partesFecha = infoPaciente.fechaNacimiento.split('-')
+        const fechaFormateada2 = `${partesFecha[2]}-${partesFecha[1]}-${partesFecha[0]}`
+        setFechaFormateada(fechaFormateada2)
       } else if (response.status === 404) {
         throw new Error('No se encontró el registro')
       } else {
@@ -286,7 +308,11 @@ const EditarTablaExamen = () => {
   const handleSubmit2 = (e) => {
     e.preventDefault()
     setIsSubmitting(true)
-    fetch(`${BASE_URL}/api/tabla_examen/${dataId}`)
+    fetch(`${BASE_URL}/api/tabla_examen/${dataId}`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => {
         if (response.status === 404) {
           throw new Error('No se encontró el registro')
@@ -450,6 +476,7 @@ const EditarTablaExamen = () => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentUser.accessToken}`,
       },
       body: JSON.stringify(requestData),
     })
@@ -487,9 +514,38 @@ const EditarTablaExamen = () => {
     )
   }
 
+  const mapaTipoDocumento = {
+    CEDULA_DE_CIUDADANIA: 'Cédula de Ciudadanía',
+    CEDULA_DE_EXTRANJERIA: 'Cédula de Extranjeria',
+    PASAPORTE: 'Pasaporte',
+    REGISTRO_CIVIL: 'Registro Civil',
+    TARJETA_DE_IDENTIDAD: 'Tarjeta de Identidad'
+  }
+  const mapaGenero = {
+    MASCULINO: 'Masculino',
+    FEMENINO: 'Femenino',
+    OTRO: 'Otro',
+  }
+
+  const fechaNacimiento = new Date(infoPaciente.fechaNacimiento)
+  const fechaActual = new Date()
+  let edad = fechaActual.getFullYear() - fechaNacimiento.getFullYear()
+  if (
+    fechaActual.getMonth() < fechaNacimiento.getMonth() ||
+    (fechaActual.getMonth() === fechaNacimiento.getMonth() &&
+      fechaActual.getDate() < fechaNacimiento.getDate())
+  ) {
+    edad--
+  }
+
   const downloadData = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/api/tabla_examen/${dataId}`)
+      const response = await fetch(`${BASE_URL}/api/tabla_examen/${dataId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      })
       if (!response.ok) {
         throw new Error('No se pudo obtener los datos')
       }
@@ -497,10 +553,10 @@ const EditarTablaExamen = () => {
       if (typeof data !== 'object' || Array.isArray(data)) {
         throw new Error('Los datos no son válidos para la descarga')
       }
-      let csvContent = 'Nombre;Documento;1. FCSRT;Total identificación;FCRST Recuerdo libre ensayo 1;FCRST Recuerdo facilitado ensayo 1;FCRST Recuerdo libre ensayo 2;FCRST Recuerdo facilitado ensayo 2;FCRST Recuerdo libre ensayo 3;FCRST Recuerdo facilitado ensayo 3;FCRST - RECUERDO DIFERIDO Recuerdo libre;FCRST - RECUERDO DIFERIDO Recuerdo facilitado;FCRST LIBRE TOTAL (0-48);FCRST RECUERDO FACILITADO TOTAL (0-48);FCRST RECUERDO DIFERIDO LIBRE (0-16);FCRST RECUERDO DIFERIDO FACILITADO (0-16);2. TEST VISIÓN DE COLORES - DVORINE;Número de errores;3. TEST DE MEMORIA DE TRABAJO VISUAL PARA FORMAS COLORES Y COMBINACIONES;Percepción;Correctas;Porcentaje correctas;Tiempo total;Forma;2 formas - Correctas;2 formas - Porcentaje correctas;3 formas - Correctas;3 formas - Porcentaje correctas;Tiempo total;Binding;2 Bindings - Correctas;2 Bindings - Porcentaje correctas;3 Bindings - Correctas;3 Bindings - Porcentaje correctas;Tiempo total en segundos;4. ACER;ACE Orientación;ACE Atención;ACE Memoria;ACE Fluidez;ACE Lenguaje;ACE Visoespaciales;ACE TOTAL;MMSE;5. ECOG;ECOG Memoria;ECOG Planificación;ECOG Lenguaje;ECOG Organización;ECOG Atención;ECOG Visuoespacial;ECOG TOTAL;6. ESCALA DEPRESIÓN GERIÁTRICA - YESAVAGE;7. ESCALA DE HACHINSKI;8. CERAD;DENOMINACION (Test de Boston);Puntaje alta;Puntaje media;Puntaje baja;Puntaje total/15;MEMORIA DE UNA LISTA DE PALABRAS;Intento 1 totales;Intento 1 intrusiones;Intento 2 totales;Intento 2 intrusiones;Intento 3 totales;Intento 3 intrusiones;Total palabras;Total intrusiones;PRAXIAS CONSTRUCTIVAS;Círculo - Item 1;Rombo - Item 2;Rectángulos - Item 3;Cubo - Item 4;Total 11;RECUERDO DE UNA LISTA DE PALABRAS;Total 10;Total intrusiones;RECONOCIMIENTO DE UNA LISTA DE PALABRAS;Total SI correctos/10;Total NO correctos/10;EVOCACIÓN PRAXIAS CONSTRUCTIVAS;Círculo - Item 1;Rombo - Item 2;Rectángulos - Item 3;Cubo - Item 4;Total 11;TRAIL MAKING TEST (T.M.T) PARTE A;Aciertos /24;Errores;Tiempo en segundos;Ensayo a los 300’’;TRAIL MAKING TEST (T.M.T) PARTE B;Aciertos /24;Errores;Tiempo en segundos;Ensayo a los 300’’;FIGURA COMPLEJA DE REY - OSTERRIETH - COPIA;Tiempo en segundos;Puntaje;FIGURA COMPLEJA DE REY - OSTERRIETH - EVOCACIÓN;Tiempo en segundos;Puntaje;FLUIDEZ VERBAL;Total F;Total A;Total S;Pérdida de categoría;Puntuación total;9. ESCALA DE TRASTORNOS DE MEMORIA;QF Total;QP Total;10. ESCALA GLOBAL DE DETERIORO;Puntaje;11. ESCALA DE BARTHEL DE AVD Y ALIMENTACIÓN;Puntaje /50;12. ESCALA DE LAWTON Y BRODY;Total /5 o Total /8;13. THE TECHONOLOGY - ACTIVITIES OF DAILY LIVING QUESTIONNAIRE (T-ADLQ);Puntaje de deterioro funcional;14. FUNCIONES DETALLADAS DE LA VIDA DIARIA (FDVD);Total funciones relacionales ( R ) (/52);Puntaje de deterioro funcional ( C ) (/30);15. INECO FRONTAL SCREENING (IFS);Índice de Memoria de Trabajo (Dígitos atrás + corsi);Puntaje total\n';
+      let csvContent = 'Nombre;Tipo Documento;Documento;Fecha de nacimiento;Edad;Email;Género;1. FCSRT;Total identificación;FCRST Recuerdo libre ensayo 1;FCRST Recuerdo facilitado ensayo 1;FCRST Recuerdo libre ensayo 2;FCRST Recuerdo facilitado ensayo 2;FCRST Recuerdo libre ensayo 3;FCRST Recuerdo facilitado ensayo 3;FCRST - RECUERDO DIFERIDO Recuerdo libre;FCRST - RECUERDO DIFERIDO Recuerdo facilitado;FCRST LIBRE TOTAL (0-48);FCRST RECUERDO FACILITADO TOTAL (0-48);FCRST RECUERDO DIFERIDO LIBRE (0-16);FCRST RECUERDO DIFERIDO FACILITADO (0-16);2. TEST VISIÓN DE COLORES - DVORINE;Número de errores;3. TEST DE MEMORIA DE TRABAJO VISUAL PARA FORMAS COLORES Y COMBINACIONES;Percepción;Correctas;Porcentaje correctas;Tiempo total;Forma;2 formas - Correctas;2 formas - Porcentaje correctas;3 formas - Correctas;3 formas - Porcentaje correctas;Tiempo total;Binding;2 Bindings - Correctas;2 Bindings - Porcentaje correctas;3 Bindings - Correctas;3 Bindings - Porcentaje correctas;Tiempo total en segundos;4. ACER;ACE Orientación;ACE Atención;ACE Memoria;ACE Fluidez;ACE Lenguaje;ACE Visoespaciales;ACE TOTAL;MMSE;5. ECOG;ECOG Memoria;ECOG Planificación;ECOG Lenguaje;ECOG Organización;ECOG Atención;ECOG Visuoespacial;ECOG TOTAL;6. ESCALA DEPRESIÓN GERIÁTRICA - YESAVAGE;7. ESCALA DE HACHINSKI;8. CERAD;DENOMINACION (Test de Boston);Puntaje alta;Puntaje media;Puntaje baja;Puntaje total/15;MEMORIA DE UNA LISTA DE PALABRAS;Intento 1 totales;Intento 1 intrusiones;Intento 2 totales;Intento 2 intrusiones;Intento 3 totales;Intento 3 intrusiones;Total palabras;Total intrusiones;PRAXIAS CONSTRUCTIVAS;Círculo - Item 1;Rombo - Item 2;Rectángulos - Item 3;Cubo - Item 4;Total 11;RECUERDO DE UNA LISTA DE PALABRAS;Total 10;Total intrusiones;RECONOCIMIENTO DE UNA LISTA DE PALABRAS;Total SI correctos/10;Total NO correctos/10;EVOCACIÓN PRAXIAS CONSTRUCTIVAS;Círculo - Item 1;Rombo - Item 2;Rectángulos - Item 3;Cubo - Item 4;Total 11;TRAIL MAKING TEST (T.M.T) PARTE A;Aciertos /24;Errores;Tiempo en segundos;Ensayo a los 300’’;TRAIL MAKING TEST (T.M.T) PARTE B;Aciertos /24;Errores;Tiempo en segundos;Ensayo a los 300’’;FIGURA COMPLEJA DE REY - OSTERRIETH - COPIA;Tiempo en segundos;Puntaje;FIGURA COMPLEJA DE REY - OSTERRIETH - EVOCACIÓN;Tiempo en segundos;Puntaje;FLUIDEZ VERBAL;Total F;Total A;Total S;Pérdida de categoría;Puntuación total;9. ESCALA DE TRASTORNOS DE MEMORIA;QF Total;QP Total;10. ESCALA GLOBAL DE DETERIORO;Puntaje;11. ESCALA DE BARTHEL DE AVD Y ALIMENTACIÓN;Puntaje /50;12. ESCALA DE LAWTON Y BRODY;Total /5 o Total /8;13. THE TECHONOLOGY - ACTIVITIES OF DAILY LIVING QUESTIONNAIRE (T-ADLQ);Puntaje de deterioro funcional;14. FUNCIONES DETALLADAS DE LA VIDA DIARIA (FDVD);Total funciones relacionales ( R ) (/52);Puntaje de deterioro funcional ( C ) (/30);15. INECO FRONTAL SCREENING (IFS);Índice de Memoria de Trabajo (Dígitos atrás + corsi);Puntaje total\n';
       // console.log(infoPaciente.nombres + ' ' + infoPaciente.apellidos)
       // console.log(infoPaciente.documento)
-      const csvRow = `${infoPaciente.nombres + ' ' + infoPaciente.apellidos};${infoPaciente.documento};${data.campo1 || ''};${data.campo2 || ''};${data.campo3 || ''};${data.campo4 || ''};${data.campo5 || ''};${data.campo6 || ''};${data.campo7 || ''};${data.campo8 || ''};${data.campo9 || ''};${data.campo10 || ''};${data.campo11 || ''};${data.campo12 || ''};${data.campo13 || ''};${data.campo14 || ''};${data.campo15 || ''};${data.campo16 || ''};${data.campo17 || ''};${data.campo18 || ''};${data.campo19 || ''};${data.campo20 || ''};${data.campo21 || ''};${data.campo22 || ''};${data.campo23 || ''};${data.campo24 || ''};${data.campo25 || ''};${data.campo26 || ''};${data.campo27 || ''};${data.campo28 || ''};${data.campo29 || ''};${data.campo30 || ''};${data.campo31 || ''};${data.campo32 || ''};${data.campo33 || ''};${data.campo34 || ''};${data.campo35 || ''};${data.campo36 || ''};${data.campo37 || ''};${data.campo38 || ''};${data.campo39 || ''};${data.campo40 || ''};${data.campo41 || ''};${data.campo42 || ''};${data.campo43 || ''};${data.campo44 || ''};${data.campo45 || ''};${data.campo46 || ''};${data.campo47 || ''};${data.campo48 || ''};${data.campo49 || ''};${data.campo50 || ''};${data.campo51 || ''};${data.campo52 || ''};${data.campo53 || ''};${data.campo54 || ''};${data.campo55 || ''};${data.campo56 || ''};${data.campo57 || ''};${data.campo58 || ''};${data.campo59 || ''};${data.campo60 || ''};${data.campo61 || ''};${data.campo62 || ''};${data.campo63 || ''};${data.campo64 || ''};${data.campo65 || ''};${data.campo66 || ''};${data.campo67 || ''};${data.campo68 || ''};${data.campo69 || ''};${data.campo70 || ''};${data.campo71 || ''};${data.campo72 || ''};${data.campo73 || ''};${data.campo74 || ''};${data.campo75 || ''};${data.campo76 || ''};${data.campo77 || ''};${data.campo78 || ''};${data.campo79 || ''};${data.campo80 || ''};${data.campo81 || ''};${data.campo82 || ''};${data.campo83 || ''};${data.campo84 || ''};${data.campo85 || ''};${data.campo86 || ''};${data.campo87 || ''};${data.campo88 || ''};${data.campo89 || ''};${data.campo90 || ''};${data.campo91 || ''};${data.campo92 || ''};${data.campo93 || ''};${data.campo94 || ''};${data.campo95 || ''};${data.campo96 || ''};${data.campo97 || ''};${data.campo98 || ''};${data.campo99 || ''};${data.campo100 || ''};${data.campo101 || ''};${data.campo102 || ''};${data.campo103 || ''};${data.campo104 || ''};${data.campo105 || ''};${data.campo106 || ''};${data.campo107 || ''};${data.campo108 || ''};${data.campo109 || ''};${data.campo110 || ''};${data.campo111 || ''};${data.campo112 || ''};${data.campo113 || ''};${data.campo114 || ''};${data.campo115 || ''};${data.campo116 || ''};${data.campo117 || ''};${data.campo118 || ''};${data.campo119 || ''};${data.campo120 || ''};${data.campo121 || ''};${data.campo122 || ''};${data.campo123 || ''};${data.campo124 || ''}`
+      const csvRow = `${infoPaciente.nombres + ' ' + infoPaciente.apellidos};${mapaTipoDocumento[infoPaciente.tipoDocumento]};${infoPaciente.documento};${fechaFormateada};${edad};${infoPaciente.email};${mapaGenero[infoPaciente.genero]};${data.campo1 || ''};${data.campo2 || ''};${data.campo3 || ''};${data.campo4 || ''};${data.campo5 || ''};${data.campo6 || ''};${data.campo7 || ''};${data.campo8 || ''};${data.campo9 || ''};${data.campo10 || ''};${data.campo11 || ''};${data.campo12 || ''};${data.campo13 || ''};${data.campo14 || ''};${data.campo15 || ''};${data.campo16 || ''};${data.campo17 || ''};${data.campo18 || ''};${data.campo19 || ''};${data.campo20 || ''};${data.campo21 || ''};${data.campo22 || ''};${data.campo23 || ''};${data.campo24 || ''};${data.campo25 || ''};${data.campo26 || ''};${data.campo27 || ''};${data.campo28 || ''};${data.campo29 || ''};${data.campo30 || ''};${data.campo31 || ''};${data.campo32 || ''};${data.campo33 || ''};${data.campo34 || ''};${data.campo35 || ''};${data.campo36 || ''};${data.campo37 || ''};${data.campo38 || ''};${data.campo39 || ''};${data.campo40 || ''};${data.campo41 || ''};${data.campo42 || ''};${data.campo43 || ''};${data.campo44 || ''};${data.campo45 || ''};${data.campo46 || ''};${data.campo47 || ''};${data.campo48 || ''};${data.campo49 || ''};${data.campo50 || ''};${data.campo51 || ''};${data.campo52 || ''};${data.campo53 || ''};${data.campo54 || ''};${data.campo55 || ''};${data.campo56 || ''};${data.campo57 || ''};${data.campo58 || ''};${data.campo59 || ''};${data.campo60 || ''};${data.campo61 || ''};${data.campo62 || ''};${data.campo63 || ''};${data.campo64 || ''};${data.campo65 || ''};${data.campo66 || ''};${data.campo67 || ''};${data.campo68 || ''};${data.campo69 || ''};${data.campo70 || ''};${data.campo71 || ''};${data.campo72 || ''};${data.campo73 || ''};${data.campo74 || ''};${data.campo75 || ''};${data.campo76 || ''};${data.campo77 || ''};${data.campo78 || ''};${data.campo79 || ''};${data.campo80 || ''};${data.campo81 || ''};${data.campo82 || ''};${data.campo83 || ''};${data.campo84 || ''};${data.campo85 || ''};${data.campo86 || ''};${data.campo87 || ''};${data.campo88 || ''};${data.campo89 || ''};${data.campo90 || ''};${data.campo91 || ''};${data.campo92 || ''};${data.campo93 || ''};${data.campo94 || ''};${data.campo95 || ''};${data.campo96 || ''};${data.campo97 || ''};${data.campo98 || ''};${data.campo99 || ''};${data.campo100 || ''};${data.campo101 || ''};${data.campo102 || ''};${data.campo103 || ''};${data.campo104 || ''};${data.campo105 || ''};${data.campo106 || ''};${data.campo107 || ''};${data.campo108 || ''};${data.campo109 || ''};${data.campo110 || ''};${data.campo111 || ''};${data.campo112 || ''};${data.campo113 || ''};${data.campo114 || ''};${data.campo115 || ''};${data.campo116 || ''};${data.campo117 || ''};${data.campo118 || ''};${data.campo119 || ''};${data.campo120 || ''};${data.campo121 || ''};${data.campo122 || ''};${data.campo123 || ''};${data.campo124 || ''}`
       csvContent += csvRow
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
       const link = document.createElement('a')

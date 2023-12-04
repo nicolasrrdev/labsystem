@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import ModalAlert from './ModalAlert'
+import AuthService from '../services/auth.service'
 
 const CrearExamen = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -22,6 +23,8 @@ const CrearExamen = () => {
   }
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const currentUser = AuthService.getCurrentUser()
 
   const handleSubmit1 = (e) => {
     e.preventDefault()
@@ -56,7 +59,8 @@ const CrearExamen = () => {
     fetch(`${BASE_URL}/api/generateTable`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentUser.accessToken}`,
       },
       body: JSON.stringify(data)
     })

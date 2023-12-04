@@ -6,8 +6,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +15,7 @@ import java.util.TreeMap;
 import java.util.HashMap;
 
 @RestController
+@PreAuthorize("hasRole('ADMIN') or hasRole('EVALUADOR')")
 @RequestMapping("/api")
 public class ExamTableController {
 

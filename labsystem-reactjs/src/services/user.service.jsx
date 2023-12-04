@@ -10,8 +10,16 @@ class UserService {
     return fetch(`${API_URL_TEST}user`, { headers: authHeader() })
   }
 
-  getModeratorBoard() {
-    return fetch(`${API_URL_TEST}mod`, { headers: authHeader() })
+  // getModeratorBoard() {
+  //   return fetch(`${API_URL_TEST}mod`, { headers: authHeader() })
+  // }
+
+  // getAnalistaBoard() {
+  //   return fetch(`${API_URL_TEST}analista`, { headers: authHeader() })
+  // }
+
+  getEvaluadorBoard() {
+    return fetch(`${API_URL_TEST}evaluador`, { headers: authHeader() })
   }
 
   getAdminBoard() {

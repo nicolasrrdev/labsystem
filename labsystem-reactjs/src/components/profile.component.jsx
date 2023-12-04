@@ -74,8 +74,12 @@ export default class Profile extends Component {
     switch (role) {
       case 'ROLE_ADMIN':
         return 'Administrador'
-      case 'ROLE_MODERATOR':
-        return 'Moderador'
+      // case 'ROLE_MODERATOR':
+      //   return 'Moderador'
+      case 'ROLE_EVALUADOR':
+        return 'Evaluador'
+      // case 'ROLE_ANALISTA':
+      //   return 'Analista'
       case 'ROLE_USER':
         return 'Usuario'
       default:

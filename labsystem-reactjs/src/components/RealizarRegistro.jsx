@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import ModalAlert from './ModalAlert'
+import AuthService from '../services/auth.service'
 
 const RealizarRegistro = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -28,9 +29,15 @@ const RealizarRegistro = () => {
   }
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const currentUser = AuthService.getCurrentUser()
   
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes`)
+    fetch(`${BASE_URL}/pacientes`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setPacientes(data)
@@ -44,7 +51,11 @@ const RealizarRegistro = () => {
   }, [BASE_URL])
 
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`)
+    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => setInfoPaciente(data))
       .catch((error) => {
@@ -59,7 +70,11 @@ const RealizarRegistro = () => {
   const handleSubmit1 = (e) => {
     e.preventDefault()
     setIsSubmitting(true)
-    fetch(`${BASE_URL}/pacientes`)
+    fetch(`${BASE_URL}/pacientes`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => {
         if (response.ok) {
           setSubmitted(true)
@@ -77,7 +92,11 @@ const RealizarRegistro = () => {
   const isButtonDisabled = pacienteSeleccionado === ''
 
   useEffect(() => {
-    fetch(`${BASE_URL}/api/examen/nombreExamen`)
+    fetch(`${BASE_URL}/api/examen/nombreExamen`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then(response => response.json())
       .then(data => {
         setExamList(data.nombres_examenes)
@@ -96,7 +115,11 @@ const RealizarRegistro = () => {
 
   useEffect(() => {
     if (nombreTabla2) {
-      fetch(`${BASE_URL}/api/examen/${nombreTabla2}/tiposCampos`)
+      fetch(`${BASE_URL}/api/examen/${nombreTabla2}/tiposCampos`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      })
         .then((response) => response.json())
         .then((data) => setTiposCampos(data))
         .catch((error) => {
@@ -107,7 +130,11 @@ const RealizarRegistro = () => {
 
   useEffect(() => {
     if (nombreTabla2) {
-      fetch(`${BASE_URL}/api/exam/${nombreTabla2}`)
+      fetch(`${BASE_URL}/api/exam/${nombreTabla2}`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      })
         .then((response) => response.json())
         .then((data) => setNombreCampos(data))
         .catch((error) => {
@@ -118,7 +145,11 @@ const RealizarRegistro = () => {
 
   useEffect(() => {
     if (nombreTabla2) {
-      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/numFields`)
+      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/numFields`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      })
         .then((response) => response.json())
         .then((data) => setNumeroCampos(data))
         .catch((error) => {
@@ -160,6 +191,7 @@ const RealizarRegistro = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentUser.accessToken}`,
       },
       body: JSON.stringify(dataToSend)
     })

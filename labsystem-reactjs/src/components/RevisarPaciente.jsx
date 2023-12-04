@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import ModalAlert from './ModalAlert'
+import AuthService from '../services/auth.service'
 
 const RevisarPaciente = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -22,8 +23,14 @@ const RevisarPaciente = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  const currentUser = AuthService.getCurrentUser()
+
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes`)
+    fetch(`${BASE_URL}/pacientes`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setPacientes(data)
@@ -37,7 +44,11 @@ const RevisarPaciente = () => {
   }, [BASE_URL])
 
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`)
+    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setInfoPaciente(data)
@@ -54,7 +65,11 @@ const RevisarPaciente = () => {
   const handleSubmit1 = (e) => {
     e.preventDefault()
     setIsSubmitting(true)
-    fetch(`${BASE_URL}/pacientes`)
+    fetch(`${BASE_URL}/pacientes`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => {
         if (response.status === 404) {
           throw new Error("Cannot read properties of undefined (reading 'split')")
@@ -86,9 +101,7 @@ const RevisarPaciente = () => {
 
   const fechaNacimiento = new Date(infoPaciente.fechaNacimiento)
   const fechaActual = new Date()
-
   let edad = fechaActual.getFullYear() - fechaNacimiento.getFullYear()
-
   if (
     fechaActual.getMonth() < fechaNacimiento.getMonth() ||
     (fechaActual.getMonth() === fechaNacimiento.getMonth() &&

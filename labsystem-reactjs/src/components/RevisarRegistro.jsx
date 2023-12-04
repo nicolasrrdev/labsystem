@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import ModalAlert from './ModalAlert'
+import AuthService from '../services/auth.service'
 
 const RevisarRegistros = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -33,8 +34,14 @@ const RevisarRegistros = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  const currentUser = AuthService.getCurrentUser()
+
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes`)
+    fetch(`${BASE_URL}/pacientes`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setPacientes(data)
@@ -48,7 +55,11 @@ const RevisarRegistros = () => {
   }, [BASE_URL])
 
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`)
+    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => setInfoPaciente(data))
       .catch((error) => {
@@ -63,7 +74,11 @@ const RevisarRegistros = () => {
   const handleSubmit1 = (e) => {
     e.preventDefault()
     setIsSubmitting(true)
-    fetch(`${BASE_URL}/api/exam/${nombreTabla2}/paciente/${pacienteSeleccionado}`)
+    fetch(`${BASE_URL}/api/exam/${nombreTabla2}/paciente/${pacienteSeleccionado}`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => {
         if (response.status === 404) {
           return Promise.reject('No hay registros disponibles')
@@ -94,7 +109,11 @@ const RevisarRegistros = () => {
   const isButtonDisabled2 = registroDate === ''
 
   useEffect(() => {
-    fetch(`${BASE_URL}/api/examen/nombreExamen`)
+    fetch(`${BASE_URL}/api/examen/nombreExamen`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then(response => response.json())
       .then(data => {
         setExamList(data.nombres_examenes)
@@ -113,7 +132,11 @@ const RevisarRegistros = () => {
 
   useEffect(() => {
     if (nombreTabla2) {
-      fetch(`${BASE_URL}/api/examen/${nombreTabla2}/tiposCampos`)
+      fetch(`${BASE_URL}/api/examen/${nombreTabla2}/tiposCampos`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      })
         .then((response) => response.json())
         .catch((error) => {
           console.error(error)
@@ -123,7 +146,11 @@ const RevisarRegistros = () => {
 
   useEffect(() => {
     if (nombreTabla2) {
-      fetch(`${BASE_URL}/api/exam/${nombreTabla2}`)
+      fetch(`${BASE_URL}/api/exam/${nombreTabla2}`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      })
         .then((response) => response.json())
         .catch((error) => {
           console.error(error)
@@ -133,7 +160,11 @@ const RevisarRegistros = () => {
 
   useEffect(() => {
     if (nombreTabla2) {
-      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/numFields`)
+      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/numFields`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      })
         .then((response) => response.json())
         .catch((error) => {
           console.error(error)
@@ -145,9 +176,21 @@ const RevisarRegistros = () => {
     e.preventDefault()
     setIsSubmitting(true)
     const requests = [
-      fetch(`${BASE_URL}/api/examen/${nombreTabla2}/tiposCampos`),
-      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/record/${idSeleccionado2}`),
-      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/record/1`),
+      fetch(`${BASE_URL}/api/examen/${nombreTabla2}/tiposCampos`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      }),
+      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/record/${idSeleccionado2}`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      }),
+      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/record/1`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
+      }),
     ]
     Promise.all(requests)
       .then((responses) => {

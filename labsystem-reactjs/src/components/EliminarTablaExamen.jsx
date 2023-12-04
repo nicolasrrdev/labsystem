@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import ModalAlert from './ModalAlert'
+import AuthService from '../services/auth.service'
 
 const EliminarTablaExamen = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -25,9 +26,15 @@ const EliminarTablaExamen = () => {
   }
   
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const currentUser = AuthService.getCurrentUser()
   
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes`)
+    fetch(`${BASE_URL}/pacientes`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((response) => {
         setPacientes(response)
@@ -38,10 +45,14 @@ const EliminarTablaExamen = () => {
         setIsModalOpen(true)
         console.error(error)
       })
-  }, [BASE_URL])
+  }, [BASE_URL, ])
 
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`)
+    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((response) => {
         setInfoPaciente(response)
@@ -49,7 +60,7 @@ const EliminarTablaExamen = () => {
       .catch((error) => {
         console.error(error)
       })
-  }, [BASE_URL, pacienteSeleccionado])
+  }, [BASE_URL, pacienteSeleccionado, ])
 
   const handlePacienteSeleccionado = (e) => {
     setPacienteSeleccionado(e.target.value)
@@ -60,6 +71,9 @@ const EliminarTablaExamen = () => {
     try {
       const response = await fetch(`${BASE_URL}/api/tabla_examen/por_paciente/${pacienteSeleccionado}`, {
         method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${currentUser.accessToken}`,
+        },
       })
       // console.log(pacienteSeleccionado)
       if (response.ok) {
@@ -125,6 +139,7 @@ const EliminarTablaExamen = () => {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentUser.accessToken}`,
       },
     })
       .then((response) => {

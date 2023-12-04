@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import ModalAlert from './ModalAlert'
+import AuthService from '../services/auth.service'
 
 const EditarPacientes = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -29,8 +30,14 @@ const EditarPacientes = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  const currentUser = AuthService.getCurrentUser()
+
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes`)
+    fetch(`${BASE_URL}/pacientes`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setPacientes(data)
@@ -44,7 +51,11 @@ const EditarPacientes = () => {
   }, [BASE_URL])
 
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`)
+    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setNombres(data.nombres)
@@ -121,6 +132,7 @@ const EditarPacientes = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentUser.accessToken}`,
       },
       body: JSON.stringify(updatedData),
     })

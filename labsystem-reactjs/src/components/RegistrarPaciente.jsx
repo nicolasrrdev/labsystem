@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import ModalAlert from './ModalAlert'
+import AuthService from '../services/auth.service'
 
 const RegistrarPaciente = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -29,6 +30,8 @@ const RegistrarPaciente = () => {
 
   const [registroExitoso, setRegistroExitoso] = useState(false)
 
+  const currentUser = AuthService.getCurrentUser()
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -55,6 +58,7 @@ const RegistrarPaciente = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentUser.accessToken}`,
       },
       body: JSON.stringify(formData),
     })

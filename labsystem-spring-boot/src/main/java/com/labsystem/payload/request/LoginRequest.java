@@ -1,5 +1,4 @@
 package com.labsystem.payload.request;
-
 import jakarta.validation.constraints.NotBlank;
 
 public class LoginRequest {
