@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import ModalAlert from './ModalAlert'
 import AuthService from '../services/auth.service'
+import ModalAlert from './ModalAlert'
 
 const RegistrarPaciente = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -201,7 +201,7 @@ const RegistrarPaciente = () => {
 
         <br />
         
-        <button type='submit' disabled={isSubmitting}>Enviar</button>
+        <button type='submit' disabled={isSubmitting}>Enviar</button> <br /> <br />
       </form>
     </center>
     </div>

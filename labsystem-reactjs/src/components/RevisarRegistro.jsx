@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
-import ModalAlert from './ModalAlert'
+import { useEffect, useRef, useState } from 'react'
 import AuthService from '../services/auth.service'
+import ModalAlert from './ModalAlert'
 
 const RevisarRegistros = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
@@ -39,34 +39,40 @@ const RevisarRegistros = () => {
   const accessTokenRef = useRef(currentUser.accessToken)
 
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes`, {
-      headers: {
-        'Authorization': `Bearer ${accessTokenRef.current}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/pacientes`, {
+          headers: {
+            'Authorization': `Bearer ${accessTokenRef.current}`,
+          },
+        })
+        const data = await response.json()
         setPacientes(data)
         setFilteredPacientes(data)
-      })
-      .catch((error) => {
-        setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+      } catch (error) {
+        setModalAMessage('Error: No se pudo establecer conexión con el servidor')
         setIsModalOpen(true)
         console.error(error)
-      })
+      }
+    }
+    fetchData()
   }, [BASE_URL, accessTokenRef])
 
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
-      headers: {
-        'Authorization': `Bearer ${accessTokenRef.current}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => setInfoPaciente(data))
-      .catch((error) => {
-        console.error(error)
+    if (pacienteSeleccionado) {
+      fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
+        headers: {
+          'Authorization': `Bearer ${accessTokenRef.current}`,
+        },
       })
+        .then((response) => response.json())
+        .then((data) => {
+          setInfoPaciente(data)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }
   }, [BASE_URL, pacienteSeleccionado, accessTokenRef])
 
   const handlePacienteSeleccionado = (e) => {
