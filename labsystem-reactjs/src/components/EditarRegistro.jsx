@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import ModalAlert from './ModalAlert'
 import AuthService from '../services/auth.service'
 
@@ -36,11 +36,13 @@ const EditarRegistro = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const currentUser = AuthService.getCurrentUser()
+
+  const accessTokenRef = useRef(currentUser.accessToken)
   
   useEffect(() => {
     fetch(`${BASE_URL}/pacientes`, {
       headers: {
-        'Authorization': `Bearer ${currentUser.accessToken}`,
+        'Authorization': `Bearer ${accessTokenRef.current}`,
       },
     })
       .then((response) => response.json())
@@ -53,12 +55,12 @@ const EditarRegistro = () => {
         setIsModalOpen(true)
         console.error(error)
       })
-  }, [BASE_URL])
+  }, [BASE_URL, accessTokenRef])
 
   useEffect(() => {
     fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
       headers: {
-        'Authorization': `Bearer ${currentUser.accessToken}`,
+        'Authorization': `Bearer ${accessTokenRef.current}`,
       },
     })
       .then((response) => response.json())
@@ -66,7 +68,7 @@ const EditarRegistro = () => {
       .catch((error) => {
         console.error(error)
       })
-  }, [BASE_URL, pacienteSeleccionado])
+  }, [BASE_URL, pacienteSeleccionado, accessTokenRef])
 
   const handlePacienteSeleccionado = (e) => {
     setPacienteSeleccionado(e.target.value)
@@ -112,7 +114,7 @@ const EditarRegistro = () => {
   useEffect(() => {
     fetch(`${BASE_URL}/api/examen/nombreExamen`, {
       headers: {
-        'Authorization': `Bearer ${currentUser.accessToken}`,
+        'Authorization': `Bearer ${accessTokenRef.current}`,
       },
     })
       .then(response => response.json())
@@ -123,7 +125,7 @@ const EditarRegistro = () => {
       .catch((error) => {
         console.error(error)
       })
-  }, [BASE_URL])
+  }, [BASE_URL, accessTokenRef])
 
   const handleExamSelection = (e) => {
     const selectedIndex = e.target.selectedIndex
@@ -135,7 +137,7 @@ const EditarRegistro = () => {
     if (nombreTabla2) {
       fetch(`${BASE_URL}/api/examen/${nombreTabla2}/tiposCampos`, {
         headers: {
-          'Authorization': `Bearer ${currentUser.accessToken}`,
+          'Authorization': `Bearer ${accessTokenRef.current}`,
         },
       })
         .then((response) => response.json())
@@ -143,13 +145,13 @@ const EditarRegistro = () => {
           console.error(error)
         })
     }
-  }, [BASE_URL, nombreTabla2])
+  }, [BASE_URL, nombreTabla2, accessTokenRef])
 
   useEffect(() => {
     if (nombreTabla2) {
       fetch(`${BASE_URL}/api/exam/${nombreTabla2}`, {
         headers: {
-          'Authorization': `Bearer ${currentUser.accessToken}`,
+          'Authorization': `Bearer ${accessTokenRef.current}`,
         },
       })
         .then((response) => response.json())
@@ -157,13 +159,13 @@ const EditarRegistro = () => {
           console.error(error)
         })
     }
-  }, [BASE_URL, nombreTabla2])
+  }, [BASE_URL, nombreTabla2, accessTokenRef])
 
   useEffect(() => {
     if (nombreTabla2) {
       fetch(`${BASE_URL}/api/exam/${nombreTabla2}/numFields`, {
         headers: {
-          'Authorization': `Bearer ${currentUser.accessToken}`,
+          'Authorization': `Bearer ${accessTokenRef.current}`,
         },
       })
         .then((response) => response.json())
@@ -171,7 +173,7 @@ const EditarRegistro = () => {
           console.error(error)
         })
     }
-  }, [BASE_URL, nombreTabla2])
+  }, [BASE_URL, nombreTabla2, accessTokenRef])
 
   const handleSubmit2 = (e) => {
     e.preventDefault()
@@ -232,17 +234,16 @@ const EditarRegistro = () => {
   const handleSearchChange = (e) => {
     const newSearchTerm = e.target.value
     setSearchTerm(newSearchTerm)
-
-    if (newSearchTerm === '') {
-      setFilteredPacientes(pacientes)
-    } else {
-      const filtered = pacientes.filter((paciente) =>
-        `${paciente.nombres} ${paciente.apellidos}`.toLowerCase().includes(newSearchTerm.toLowerCase())
-      )
+    if (Array.isArray(pacientes)) {
+      const filtered = newSearchTerm === ''
+        ? pacientes
+        : pacientes.filter((paciente) =>
+            `${paciente.nombres} ${paciente.apellidos}`.toLowerCase().includes(newSearchTerm.toLowerCase())
+          )
       setFilteredPacientes(filtered)
     }
   }
-
+  
   const handleRegistroSeleccionado = (e) => {
     setRegistroDate(e.target.value)
     const idSeleccionado = e.target.selectedOptions[0].getAttribute('data-id')
@@ -334,7 +335,7 @@ const EditarRegistro = () => {
       return
     }
     setIsSubmitting(true)
-    console.log(inputs)
+    // console.log(inputs)
     fetch(`${BASE_URL}/api/exam/${nombreTabla2}/update/${idSeleccionado2}`, {
       method: 'POST',
       headers: {
@@ -388,17 +389,22 @@ const EditarRegistro = () => {
                   onChange={handleExamSelection}
                   required
                 >
-                  <option value=''>Seleccione un examen</option>
-                  {examList.map((examen, index) => (
-                    <option key={index} value={examen}>
-                      {examen}
-                    </option>
-                  ))}
+                  {examList && examList.length > 0 ? (
+                    <>
+                      <option value=''>Seleccione un examen</option>
+                      {examList.map((examen, index) => (
+                        <option key={index} value={examen}>
+                          {examen}
+                        </option>
+                      ))}
+                    </>
+                  ) : (
+                    <option value='' disabled>No hay exámenes disponibles</option>
+                  )}
                 </select>
               </div>
               <div>
                 <br />
-                
                 Seleccione un paciente:ㅤ
                 <input
                   name='buscarPaciente'
@@ -407,17 +413,19 @@ const EditarRegistro = () => {
                   value={searchTerm}
                   onChange={handleSearchChange}
                 />
-                <select name='seleccionePaciente' value={pacienteSeleccionado} onChange={handlePacienteSeleccionado}>
+                <select name='paciente' value={pacienteSeleccionado} onChange={handlePacienteSeleccionado}>
                   <option value=''>Seleccione un paciente</option>
-                  {filteredPacientes
-                    .sort((a, b) => a.nombres.localeCompare(b.nombres))
-                    .map((paciente) => (
-                      <option key={paciente.id} value={paciente.id}>
-                        {paciente.nombres} {paciente.apellidos}
-                      </option>
-                  ))}
+                  {filteredPacientes && filteredPacientes.length > 0
+                    ? filteredPacientes
+                        .sort((a, b) => a.nombres.localeCompare(b.nombres))
+                        .map((paciente) => (
+                          <option key={paciente.id} value={paciente.id}>
+                            {paciente.nombres} {paciente.apellidos}
+                          </option>
+                        ))
+                    : <option value='' disabled>No hay pacientes disponibles</option>
+                  }
                 </select>
-
               </div>
               <br />
               <button type='submit' disabled={isButtonDisabled || isSubmitting}>

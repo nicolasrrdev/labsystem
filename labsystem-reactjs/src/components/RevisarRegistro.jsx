@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import ModalAlert from './ModalAlert'
 import AuthService from '../services/auth.service'
 
@@ -36,10 +36,12 @@ const RevisarRegistros = () => {
 
   const currentUser = AuthService.getCurrentUser()
 
+  const accessTokenRef = useRef(currentUser.accessToken)
+
   useEffect(() => {
     fetch(`${BASE_URL}/pacientes`, {
       headers: {
-        'Authorization': `Bearer ${currentUser.accessToken}`,
+        'Authorization': `Bearer ${accessTokenRef.current}`,
       },
     })
       .then((response) => response.json())
@@ -52,12 +54,12 @@ const RevisarRegistros = () => {
         setIsModalOpen(true)
         console.error(error)
       })
-  }, [BASE_URL])
+  }, [BASE_URL, accessTokenRef])
 
   useEffect(() => {
     fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
       headers: {
-        'Authorization': `Bearer ${currentUser.accessToken}`,
+        'Authorization': `Bearer ${accessTokenRef.current}`,
       },
     })
       .then((response) => response.json())
@@ -65,7 +67,7 @@ const RevisarRegistros = () => {
       .catch((error) => {
         console.error(error)
       })
-  }, [BASE_URL, pacienteSeleccionado])
+  }, [BASE_URL, pacienteSeleccionado, accessTokenRef])
 
   const handlePacienteSeleccionado = (e) => {
     setPacienteSeleccionado(e.target.value)
@@ -111,7 +113,7 @@ const RevisarRegistros = () => {
   useEffect(() => {
     fetch(`${BASE_URL}/api/examen/nombreExamen`, {
       headers: {
-        'Authorization': `Bearer ${currentUser.accessToken}`,
+        'Authorization': `Bearer ${accessTokenRef.current}`,
       },
     })
       .then(response => response.json())
@@ -122,7 +124,7 @@ const RevisarRegistros = () => {
       .catch((error) => {
         console.error(error)
       })
-  }, [BASE_URL])
+  }, [BASE_URL, accessTokenRef])
 
   const handleExamSelection = (e) => {
     const selectedIndex = e.target.selectedIndex
@@ -134,7 +136,7 @@ const RevisarRegistros = () => {
     if (nombreTabla2) {
       fetch(`${BASE_URL}/api/examen/${nombreTabla2}/tiposCampos`, {
         headers: {
-          'Authorization': `Bearer ${currentUser.accessToken}`,
+          'Authorization': `Bearer ${accessTokenRef.current}`,
         },
       })
         .then((response) => response.json())
@@ -142,13 +144,13 @@ const RevisarRegistros = () => {
           console.error(error)
         })
     }
-  }, [BASE_URL, nombreTabla2])
+  }, [BASE_URL, nombreTabla2, accessTokenRef])
 
   useEffect(() => {
     if (nombreTabla2) {
       fetch(`${BASE_URL}/api/exam/${nombreTabla2}`, {
         headers: {
-          'Authorization': `Bearer ${currentUser.accessToken}`,
+          'Authorization': `Bearer ${accessTokenRef.current}`,
         },
       })
         .then((response) => response.json())
@@ -156,13 +158,13 @@ const RevisarRegistros = () => {
           console.error(error)
         })
     }
-  }, [BASE_URL, nombreTabla2])
+  }, [BASE_URL, nombreTabla2, accessTokenRef])
 
   useEffect(() => {
     if (nombreTabla2) {
       fetch(`${BASE_URL}/api/exam/${nombreTabla2}/numFields`, {
         headers: {
-          'Authorization': `Bearer ${currentUser.accessToken}`,
+          'Authorization': `Bearer ${accessTokenRef.current}`,
         },
       })
         .then((response) => response.json())
@@ -170,7 +172,7 @@ const RevisarRegistros = () => {
           console.error(error)
         })
     }
-  }, [BASE_URL, nombreTabla2])
+  }, [BASE_URL, nombreTabla2, accessTokenRef])
 
   const handleSubmit2 = (e) => {
     e.preventDefault()
@@ -225,13 +227,12 @@ const RevisarRegistros = () => {
   const handleSearchChange = (e) => {
     const newSearchTerm = e.target.value
     setSearchTerm(newSearchTerm)
-
-    if (newSearchTerm === '') {
-      setFilteredPacientes(pacientes)
-    } else {
-      const filtered = pacientes.filter((paciente) =>
-        `${paciente.nombres} ${paciente.apellidos}`.toLowerCase().includes(newSearchTerm.toLowerCase())
-      )
+    if (Array.isArray(pacientes)) {
+      const filtered = newSearchTerm === ''
+        ? pacientes
+        : pacientes.filter((paciente) =>
+            `${paciente.nombres} ${paciente.apellidos}`.toLowerCase().includes(newSearchTerm.toLowerCase())
+          )
       setFilteredPacientes(filtered)
     }
   }
@@ -276,7 +277,7 @@ const RevisarRegistros = () => {
             <h2>Revisar Registro</h2>
             <form onSubmit={handleSubmit1}>
               <div>
-                <label htmlFor='tableName'>Seleccione un examen:ㅤ</label>
+              <label htmlFor='tableName'>Seleccione un examen:ㅤ</label>
                 <select
                   id='tableName'
                   name='tableName'
@@ -284,36 +285,43 @@ const RevisarRegistros = () => {
                   onChange={handleExamSelection}
                   required
                 >
-                  <option value=''>Seleccione un examen</option>
-                  {examList.map((examen, index) => (
-                    <option key={index} value={examen}>
-                      {examen}
-                    </option>
-                  ))}
+                  {examList && examList.length > 0 ? (
+                    <>
+                      <option value=''>Seleccione un examen</option>
+                      {examList.map((examen, index) => (
+                        <option key={index} value={examen}>
+                          {examen}
+                        </option>
+                      ))}
+                    </>
+                  ) : (
+                    <option value='' disabled>No hay exámenes disponibles</option>
+                  )}
                 </select>
               </div>
               <div>
                 <br />
-                
                 Seleccione un paciente:ㅤ
                 <input
+                  name='buscarPaciente'
                   type='text'
-                  name='pacOpc'
                   placeholder='Buscar paciente'
                   value={searchTerm}
                   onChange={handleSearchChange}
                 />
-                <select value={pacienteSeleccionado} name='pacSel' onChange={handlePacienteSeleccionado}>
+                <select name='paciente' value={pacienteSeleccionado} onChange={handlePacienteSeleccionado}>
                   <option value=''>Seleccione un paciente</option>
-                  {filteredPacientes
-                    .sort((a, b) => a.nombres.localeCompare(b.nombres))
-                    .map((paciente) => (
-                      <option key={paciente.id} value={paciente.id}>
-                        {paciente.nombres} {paciente.apellidos}
-                      </option>
-                  ))}
+                  {filteredPacientes && filteredPacientes.length > 0
+                    ? filteredPacientes
+                        .sort((a, b) => a.nombres.localeCompare(b.nombres))
+                        .map((paciente) => (
+                          <option key={paciente.id} value={paciente.id}>
+                            {paciente.nombres} {paciente.apellidos}
+                          </option>
+                        ))
+                    : <option value='' disabled>No hay pacientes disponibles</option>
+                  }
                 </select>
-
               </div>
               <br />
               <button type='submit' disabled={isButtonDisabled || isSubmitting}>

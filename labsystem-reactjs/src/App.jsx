@@ -30,7 +30,6 @@ function formatLocationPathname(pathname) {
 }
 
 const App = () => {
-
   const location = useLocation()
   const formattedLocationPathname = formatLocationPathname(location.pathname.substring(1)) || 'Inicio'
   const [isMenuOpen, setIsMenuOpen] = useState(false)

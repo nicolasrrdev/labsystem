@@ -1,5 +1,4 @@
 package com.labsystem.models;
-
 import jakarta.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

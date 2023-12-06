@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import ModalAlert from './ModalAlert'
 import AuthService from '../services/auth.service'
 
@@ -25,23 +25,27 @@ const TablaExamen = () => {
 
   const currentUser = AuthService.getCurrentUser()
 
+  const accessTokenRef = useRef(currentUser.accessToken)
+
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes`, {
-      headers: {
-        'Authorization': `Bearer ${currentUser.accessToken}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/pacientes`, {
+          headers: {
+            'Authorization': `Bearer ${accessTokenRef.current}`,
+          },
+        })
+        const data = await response.json()
         setPacientes(data)
         setFilteredPacientes(data)
-      })
-      .catch((error) => {
+      } catch (error) {
         setModalAMessage('Error: No se pudo establecer conexión con el servidor')
         setIsModalOpen(true)
         console.error(error)
-      })
-  }, [BASE_URL])
+      }
+    }
+    fetchData()
+  }, [BASE_URL, accessTokenRef])
 
   const handlePacienteSeleccionado = (e) => {
     setPacienteSeleccionado(e.target.value)
@@ -94,12 +98,12 @@ const TablaExamen = () => {
   const handleSearchChange = (e) => {
     const newSearchTerm = e.target.value
     setSearchTerm(newSearchTerm)
-    if (newSearchTerm === '') {
-      setFilteredPacientes(pacientes)
-    } else {
-      const filtered = pacientes.filter((paciente) =>
-        `${paciente.nombres} ${paciente.apellidos}`.toLowerCase().includes(newSearchTerm.toLowerCase())
-      )
+    if (Array.isArray(pacientes)) {
+      const filtered = newSearchTerm === ''
+        ? pacientes
+        : pacientes.filter((paciente) =>
+          `${paciente.nombres} ${paciente.apellidos}`.toLowerCase().includes(newSearchTerm.toLowerCase())
+        )
       setFilteredPacientes(filtered)
     }
   }
@@ -119,6 +123,7 @@ const TablaExamen = () => {
 
   const [datosFormulario, setDatosFormulario] = useState({
     pacienteId: '',
+    fechaRegistro: '',
     campo1: '',
     campo2: '',
     campo3: '',
@@ -264,7 +269,7 @@ const TablaExamen = () => {
           'Authorization': `Bearer ${currentUser.accessToken}`,
         },
         body: JSON.stringify(datosFormulario),
-      })      
+      })
       if (response.ok) {
         console.log('Registro insertado con éxito')
         setRegistroExitoso(true)
@@ -278,6 +283,13 @@ const TablaExamen = () => {
       console.error('Error de red:', error)
     }
   }
+
+  const [parteSeleccionada, setParteSeleccionada] = useState('parte1')
+  const handleParteClick = (parte) => {
+    setParteSeleccionada(parte)
+  }
+
+  const maxDate = new Date().toISOString().split('T')[0]
 
   if (registroExitoso) {
     return (
@@ -315,15 +327,18 @@ const TablaExamen = () => {
                   value={searchTerm}
                   onChange={handleSearchChange}
                 />
-                <select name='seleccionarPaciente' value={pacienteSeleccionado} onChange={handlePacienteSeleccionado}>
+                <select name='paciente' value={pacienteSeleccionado} onChange={handlePacienteSeleccionado}>
                   <option value=''>Seleccione un paciente</option>
-                  {filteredPacientes
-                    .sort((a, b) => a.nombres.localeCompare(b.nombres))
-                    .map((paciente) => (
-                      <option key={paciente.id} value={paciente.id}>
-                        {paciente.nombres} {paciente.apellidos}
-                      </option>
-                  ))}
+                  {filteredPacientes && filteredPacientes.length > 0
+                    ? filteredPacientes
+                      .sort((a, b) => a.nombres.localeCompare(b.nombres))
+                      .map((paciente) => (
+                        <option key={paciente.id} value={paciente.id}>
+                          {paciente.nombres} {paciente.apellidos}
+                        </option>
+                      ))
+                    : <option value='' disabled>No hay pacientes disponibles</option>
+                  }
                 </select>
               </div>
               <br />
@@ -338,1503 +353,1550 @@ const TablaExamen = () => {
             <h2>Tabla de Datos y Exámenes</h2>
             <p><b>Paciente: </b>{infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
             <button className='boton-scroll-bottom' onClick={scrollToBottom}>Ir al final</button> <br /> <br />
+
+            <div>
+              <button
+                style={{ marginRight: '10px' }}
+                onClick={() => handleParteClick('parte1')}
+                className={parteSeleccionada === 'parte1' ? 'selected' : ''}
+              >Parte 1
+              </button>
+              <button
+                style={{ marginRight: '10px' }}
+                onClick={() => handleParteClick('parte2')}
+                className={parteSeleccionada === 'parte2' ? 'selected' : ''}
+              >Parte 2
+              </button>
+              <button
+                style={{ marginRight: '10px' }}
+                onClick={() => handleParteClick('parte3')}
+                className={parteSeleccionada === 'parte3' ? 'selected' : ''}
+              >Parte 3
+              </button>
+            </div>
+            <br />
+
             <form>
 
-            <table>
-              <tbody>
-
-              <tr>
-                  <td>1. FCSRT:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo1'
-                  value={datosFormulario.campo1}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Total identificación:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo2'
-                  value={datosFormulario.campo2}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>FCRST Recuerdo libre ensayo 1:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo3'
-                  value={datosFormulario.campo3}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>FCRST Recuerdo facilitado ensayo 1:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo4'
-                  value={datosFormulario.campo4}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>FCRST Recuerdo libre ensayo 2:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo5'
-                  value={datosFormulario.campo5}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>FCRST Recuerdo facilitado ensayo 2:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo6'
-                  value={datosFormulario.campo6}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>FCRST Recuerdo libre ensayo 3:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo7'
-                  value={datosFormulario.campo7}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>FCRST Recuerdo facilitado ensayo 3:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo8'
-                  value={datosFormulario.campo8}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>FCRST - RECUERDO DIFERIDO Recuerdo libre:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo9'
-                  value={datosFormulario.campo9}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>FCRST - RECUERDO DIFERIDO Recuerdo facilitado:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo10'
-                  value={datosFormulario.campo10}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>FCRST LIBRE TOTAL (0-48):ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo11'
-                  value={datosFormulario.campo11}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>FCRST RECUERDO FACILITADO TOTAL (0-48):ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo12'
-                  value={datosFormulario.campo12}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>FCRST RECUERDO DIFERIDO LIBRE (0-16):ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo13'
-                  value={datosFormulario.campo13}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>FCRST RECUERDO DIFERIDO FACILITADO (0-16):ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo14'
-                  value={datosFormulario.campo14}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>2. TEST VISIÓN DE COLORES - DVORINE:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo15'
-                  value={datosFormulario.campo15}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Número de errores:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo16'
-                  value={datosFormulario.campo16}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>3. TEST DE MEMORIA DE TRABAJO VISUAL PARA FORMAS COLORES Y COMBINACIONES:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo17'
-                  value={datosFormulario.campo17}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Percepción:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo18'
-                  value={datosFormulario.campo18}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Correctas:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo19'
-                  value={datosFormulario.campo19}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Porcentaje correctas:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo20'
-                  value={datosFormulario.campo20}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Tiempo total:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo21'
-                  value={datosFormulario.campo21}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Forma:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo22'
-                  value={datosFormulario.campo22}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>2 formas - Correctas:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo23'
-                  value={datosFormulario.campo23}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>2 formas - Porcentaje correctas:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo24'
-                  value={datosFormulario.campo24}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>3 formas - Correctas:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo25'
-                  value={datosFormulario.campo25}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>3 formas - Porcentaje correctas:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo26'
-                  value={datosFormulario.campo26}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Tiempo total:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo27'
-                  value={datosFormulario.campo27}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Binding:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo28'
-                  value={datosFormulario.campo28}
-                  onChange={manejarCambio}
-                />
-             </td>
-            </tr>
-
-              <tr>
-                  <td>2 Bindings - Correctas:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo29'
-                  value={datosFormulario.campo29}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>2 Bindings - Porcentaje correctas:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo30'
-                  value={datosFormulario.campo30}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>3 Bindings - Correctas:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo31'
-                  value={datosFormulario.campo31}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>3 Bindings - Porcentaje correctas:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo32'
-                  value={datosFormulario.campo32}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Tiempo total en segundos:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo33'
-                  value={datosFormulario.campo33}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>4. ACER:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo34'
-                  value={datosFormulario.campo34}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>ACE Orientación:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo35'
-                  value={datosFormulario.campo35}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>ACE Atención:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo36'
-                  value={datosFormulario.campo36}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>ACE Memoria:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo37'
-                  value={datosFormulario.campo37}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>ACE Fluidez:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo38'
-                  value={datosFormulario.campo38}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>ACE Lenguaje:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo39'
-                  value={datosFormulario.campo39}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>ACE Visoespaciales:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo40'
-                  value={datosFormulario.campo40}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>ACE TOTAL:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo41'
-                  value={datosFormulario.campo41}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>MMSE:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo42'
-                  value={datosFormulario.campo42}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>5. ECOG:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo43'
-                  value={datosFormulario.campo43}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>ECOG Memoria:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo44'
-                  value={datosFormulario.campo44}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>ECOG Planificación:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo45'
-                  value={datosFormulario.campo45}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>ECOG Lenguaje:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo46'
-                  value={datosFormulario.campo46}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>ECOG Organización:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo47'
-                  value={datosFormulario.campo47}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>ECOG Atención:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo48'
-                  value={datosFormulario.campo48}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>ECOG Visuoespacial:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo49'
-                  value={datosFormulario.campo49}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>ECOG TOTAL:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo50'
-                  value={datosFormulario.campo50}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>6. ESCALA DEPRESIÓN GERIÁTRICA - YESAVAGE:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo51'
-                  value={datosFormulario.campo51}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>7. ESCALA DE HACHINSKI:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo52'
-                  value={datosFormulario.campo52}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>8. CERAD:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo53'
-                  value={datosFormulario.campo53}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>DENOMINACION (Test de Boston):ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo54'
-                  value={datosFormulario.campo54}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Puntaje alta:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo55'
-                  value={datosFormulario.campo55}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Puntaje media:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo56'
-                  value={datosFormulario.campo56}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Puntaje baja:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo57'
-                  value={datosFormulario.campo57}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Puntaje total/15:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo58'
-                  value={datosFormulario.campo58}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>MEMORIA DE UNA LISTA DE PALABRAS:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo59'
-                  value={datosFormulario.campo59}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Intento 1 totales:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo60'
-                  value={datosFormulario.campo60}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Intento 1 intrusiones:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo61'
-                  value={datosFormulario.campo61}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-              <tr>
-                  <td>Intento 2 totales:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo62'
-                  value={datosFormulario.campo62}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Intento 2 intrusiones:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo63'
-                  value={datosFormulario.campo63}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Intento 3 totales:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo64'
-                  value={datosFormulario.campo64}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Intento 3 intrusiones:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo65'
-                  value={datosFormulario.campo65}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Total palabras:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo66'
-                  value={datosFormulario.campo66}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Total intrusiones:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo67'
-                  value={datosFormulario.campo67}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>PRAXIAS CONSTRUCTIVAS:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo68'
-                  value={datosFormulario.campo68}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Círculo - Item 1:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo69'
-                  value={datosFormulario.campo69}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Rombo - Item 2:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo70'
-                  value={datosFormulario.campo70}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-              
-            <tr>
-                  <td>Rectángulos - Item 3:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo71'
-                  value={datosFormulario.campo71}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Cubo - Item 4:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo72'
-                  value={datosFormulario.campo72}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Total 11:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo73'
-                  value={datosFormulario.campo73}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>RECUERDO DE UNA LISTA DE PALABRAS:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo74'
-                  value={datosFormulario.campo74}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Total 10:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo75'
-                  value={datosFormulario.campo75}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Total intrusiones:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo76'
-                  value={datosFormulario.campo76}
-                  onChange={manejarCambio}
-                />
-             </td>
-            </tr>
-
-            <tr>
-                  <td>RECONOCIMIENTO DE UNA LISTA DE PALABRAS:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo77'
-                  value={datosFormulario.campo77}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Total SI correctos/10:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo78'
-                  value={datosFormulario.campo78}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Total NO correctos/10:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo79'
-                  value={datosFormulario.campo79}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>EVOCACIÓN PRAXIAS CONSTRUCTIVAS:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo80'
-                  value={datosFormulario.campo80}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Círculo - Item 1:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo81'
-                  value={datosFormulario.campo81}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Rombo - Item 2:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo82'
-                  value={datosFormulario.campo82}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Rectángulos - Item 3:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo83'
-                  value={datosFormulario.campo83}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Cubo - Item 4:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo84'
-                  value={datosFormulario.campo84}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Total 11:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo85'
-                  value={datosFormulario.campo85}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>TRAIL MAKING TEST (T.M.T) PARTE A:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo86'
-                  value={datosFormulario.campo86}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Aciertos /24:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo87'
-                  value={datosFormulario.campo87}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Errores:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo88'
-                  value={datosFormulario.campo88}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Tiempo en segundos:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo89'
-                  value={datosFormulario.campo89}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Ensayo a los 300’’:ㅤ</td>
-                  <td>
-
-                <input
-                  type='text'
-                  name='campo90'
-                  value={datosFormulario.campo90}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-                <tr>
-                  <td>TRAIL MAKING TEST (T.M.T) PARTE B:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo91'
-                  value={datosFormulario.campo91}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-               
-            <tr>
-                  <td>Aciertos /24:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo92'
-                  value={datosFormulario.campo92}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Errores:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo93'
-                  value={datosFormulario.campo93}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Tiempo en segundos:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo94'
-                  value={datosFormulario.campo94}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Ensayo a los 300’’:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo95'
-                  value={datosFormulario.campo95}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>FIGURA COMPLEJA DE REY - OSTERRIETH - COPIA:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo96'
-                  value={datosFormulario.campo96}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Tiempo en segundos:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo97'
-                  value={datosFormulario.campo97}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Puntaje:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo98'
-                  value={datosFormulario.campo98}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>FIGURA COMPLEJA DE REY - OSTERRIETH - EVOCACIÓN:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo99'
-                  value={datosFormulario.campo99}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Tiempo en segundos:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo100'
-                  value={datosFormulario.campo100}
-                  onChange={manejarCambio}
-                />
-              </td>
-            </tr>
-
-            <tr>
-                  <td>Puntaje:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo101'
-                  value={datosFormulario.campo101}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>FLUIDEZ VERBAL:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo102'
-                  value={datosFormulario.campo102}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Total F:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo103'
-                  value={datosFormulario.campo103}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Total A:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo104'
-                  value={datosFormulario.campo104}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-                <tr>
-                  <td>Total S:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo105'
-                  value={datosFormulario.campo105}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Pérdida de categoría:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo106'
-                  value={datosFormulario.campo106}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Puntuación total:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo107'
-                  value={datosFormulario.campo107}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>9. ESCALA DE TRASTORNOS DE MEMORIA:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo108'
-                  value={datosFormulario.campo108}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>QF Total:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo109'
-                  value={datosFormulario.campo109}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>QP Total:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo110'
-                  value={datosFormulario.campo110}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>10. ESCALA GLOBAL DE DETERIORO:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo111'
-                  value={datosFormulario.campo111}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Puntaje:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo112'
-                  value={datosFormulario.campo112}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>11. ESCALA DE BARTHEL DE AVD Y ALIMENTACIÓN:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo113'
-                  value={datosFormulario.campo113}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Puntaje /50:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo114'
-                  value={datosFormulario.campo114}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>12. ESCALA DE LAWTON Y BRODY:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo115'
-                  value={datosFormulario.campo115}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Total /5 o Total /8:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo116'
-                  value={datosFormulario.campo116}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>13. THE TECHONOLOGY - ACTIVITIES OF DAILY LIVING QUESTIONNAIRE (T-ADLQ):ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo117'
-                  value={datosFormulario.campo117}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Puntaje de deterioro funcional:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo118'
-                  value={datosFormulario.campo118}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>14. FUNCIONES DETALLADAS DE LA VIDA DIARIA (FDVD):ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo119'
-                  value={datosFormulario.campo119}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Total funciones relacionales ( R ) (/52):ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo120'
-                  value={datosFormulario.campo120}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Puntaje de deterioro funcional ( C ) (/30):ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo121'
-                  value={datosFormulario.campo121}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-            
-            <tr>
-                  <td>15. INECO FRONTAL SCREENING (IFS):ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo122'
-                  value={datosFormulario.campo122}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Índice de Memoria de Trabajo (Dígitos atrás + corsi):ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo123'
-                  value={datosFormulario.campo123}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-            <tr>
-                  <td>Puntaje total:ㅤ</td>
-                  <td>
-                <input
-                  type='text'
-                  name='campo124'
-                  value={datosFormulario.campo124}
-                  onChange={manejarCambio}
-                />
-            </td>
-            </tr>
-
-
-              </tbody>
-            </table>
+              <table>
+                <tbody>
+
+                  {parteSeleccionada === 'parte1' && (
+                    <>
+                      <tr>
+                        <td>Fecha de registro:ㅤ</td>
+                        <td>
+                          <input
+                            type='date'
+                            name='fechaRegistro'
+                            value={datosFormulario.fechaRegistro}
+                            onChange={manejarCambio}
+                            min='2000-01-01'
+                            max={maxDate}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(1) 1. FCSRT:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo1'
+                            value={datosFormulario.campo1}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(2) Total identificación:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo2'
+                            value={datosFormulario.campo2}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(3) FCRST Recuerdo libre ensayo 1:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo3'
+                            value={datosFormulario.campo3}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(4) FCRST Recuerdo facilitado ensayo 1:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo4'
+                            value={datosFormulario.campo4}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(5) FCRST Recuerdo libre ensayo 2:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo5'
+                            value={datosFormulario.campo5}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(6) FCRST Recuerdo facilitado ensayo 2:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo6'
+                            value={datosFormulario.campo6}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(7) FCRST Recuerdo libre ensayo 3:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo7'
+                            value={datosFormulario.campo7}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(8) FCRST Recuerdo facilitado ensayo 3:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo8'
+                            value={datosFormulario.campo8}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(9) FCRST - RECUERDO DIFERIDO Recuerdo libre:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo9'
+                            value={datosFormulario.campo9}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(10) FCRST - RECUERDO DIFERIDO Recuerdo facilitado:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo10'
+                            value={datosFormulario.campo10}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(11) FCRST LIBRE TOTAL (0-48):ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo11'
+                            value={datosFormulario.campo11}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(12) FCRST RECUERDO FACILITADO TOTAL (0-48):ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo12'
+                            value={datosFormulario.campo12}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(13) FCRST RECUERDO DIFERIDO LIBRE (0-16):ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo13'
+                            value={datosFormulario.campo13}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(14) FCRST RECUERDO DIFERIDO FACILITADO (0-16):ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo14'
+                            value={datosFormulario.campo14}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(15) 2. TEST VISIÓN DE COLORES - DVORINE:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo15'
+                            value={datosFormulario.campo15}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(16) Número de errores:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo16'
+                            value={datosFormulario.campo16}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(17) 3. TEST DE MEMORIA DE TRABAJO VISUAL PARA FORMAS COLORES Y COMBINACIONES:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo17'
+                            value={datosFormulario.campo17}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(18) Percepción:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo18'
+                            value={datosFormulario.campo18}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(19) Correctas:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo19'
+                            value={datosFormulario.campo19}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(20) Porcentaje correctas:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo20'
+                            value={datosFormulario.campo20}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(21) Tiempo total:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo21'
+                            value={datosFormulario.campo21}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(22) Forma:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo22'
+                            value={datosFormulario.campo22}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(23) 2 formas - Correctas:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo23'
+                            value={datosFormulario.campo23}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(24) 2 formas - Porcentaje correctas:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo24'
+                            value={datosFormulario.campo24}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(25) 3 formas - Correctas:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo25'
+                            value={datosFormulario.campo25}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(26) 3 formas - Porcentaje correctas:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo26'
+                            value={datosFormulario.campo26}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(27) Tiempo total:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo27'
+                            value={datosFormulario.campo27}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(28) Binding:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo28'
+                            value={datosFormulario.campo28}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(29) 2 Bindings - Correctas:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo29'
+                            value={datosFormulario.campo29}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(30) 2 Bindings - Porcentaje correctas:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo30'
+                            value={datosFormulario.campo30}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(31) 3 Bindings - Correctas:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo31'
+                            value={datosFormulario.campo31}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(32) 3 Bindings - Porcentaje correctas:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo32'
+                            value={datosFormulario.campo32}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(33) Tiempo total en segundos:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo33'
+                            value={datosFormulario.campo33}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(34) 4. ACER:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo34'
+                            value={datosFormulario.campo34}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(35) ACE Orientación:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo35'
+                            value={datosFormulario.campo35}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(36) ACE Atención:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo36'
+                            value={datosFormulario.campo36}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(37) ACE Memoria:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo37'
+                            value={datosFormulario.campo37}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(38) ACE Fluidez:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo38'
+                            value={datosFormulario.campo38}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(39) ACE Lenguaje:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo39'
+                            value={datosFormulario.campo39}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(40) ACE Visoespaciales:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo40'
+                            value={datosFormulario.campo40}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(41) ACE TOTAL:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo41'
+                            value={datosFormulario.campo41}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(42) MMSE:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo42'
+                            value={datosFormulario.campo42}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(43) 5. ECOG:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo43'
+                            value={datosFormulario.campo43}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(44) ECOG Memoria:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo44'
+                            value={datosFormulario.campo44}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(45) ECOG Planificación:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo45'
+                            value={datosFormulario.campo45}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(46) ECOG Lenguaje:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo46'
+                            value={datosFormulario.campo46}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(47) ECOG Organización:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo47'
+                            value={datosFormulario.campo47}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(48) ECOG Atención:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo48'
+                            value={datosFormulario.campo48}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(49) ECOG Visuoespacial:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo49'
+                            value={datosFormulario.campo49}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(50) ECOG TOTAL:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo50'
+                            value={datosFormulario.campo50}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(51) 6. ESCALA DEPRESIÓN GERIÁTRICA - YESAVAGE:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo51'
+                            value={datosFormulario.campo51}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(52) 7. ESCALA DE HACHINSKI:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo52'
+                            value={datosFormulario.campo52}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+                    </>
+                  )}
+
+                  {parteSeleccionada === 'parte2' && (
+                    <>
+                      <tr>
+                        <td>(53) 8. CERAD:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo53'
+                            value={datosFormulario.campo53}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(54) DENOMINACION (Test de Boston):ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo54'
+                            value={datosFormulario.campo54}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(55) Puntaje alta:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo55'
+                            value={datosFormulario.campo55}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(56) Puntaje media:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo56'
+                            value={datosFormulario.campo56}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(57) Puntaje baja:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo57'
+                            value={datosFormulario.campo57}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(58) Puntaje total/15:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo58'
+                            value={datosFormulario.campo58}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(59) MEMORIA DE UNA LISTA DE PALABRAS:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo59'
+                            value={datosFormulario.campo59}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(60) Intento 1 totales:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo60'
+                            value={datosFormulario.campo60}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(61) Intento 1 intrusiones:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo61'
+                            value={datosFormulario.campo61}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(62) Intento 2 totales:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo62'
+                            value={datosFormulario.campo62}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(63) Intento 2 intrusiones:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo63'
+                            value={datosFormulario.campo63}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(64) Intento 3 totales:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo64'
+                            value={datosFormulario.campo64}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(65) Intento 3 intrusiones:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo65'
+                            value={datosFormulario.campo65}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(66) Total palabras:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo66'
+                            value={datosFormulario.campo66}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(67) Total intrusiones:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo67'
+                            value={datosFormulario.campo67}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(68) PRAXIAS CONSTRUCTIVAS:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo68'
+                            value={datosFormulario.campo68}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(69) Círculo - Item 1:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo69'
+                            value={datosFormulario.campo69}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(70) Rombo - Item 2:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo70'
+                            value={datosFormulario.campo70}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(71) Rectángulos - Item 3:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo71'
+                            value={datosFormulario.campo71}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(72) Cubo - Item 4:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo72'
+                            value={datosFormulario.campo72}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(73) Total 11:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo73'
+                            value={datosFormulario.campo73}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(74) RECUERDO DE UNA LISTA DE PALABRAS:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo74'
+                            value={datosFormulario.campo74}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(75) Total 10:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo75'
+                            value={datosFormulario.campo75}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(76) Total intrusiones:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo76'
+                            value={datosFormulario.campo76}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(77) RECONOCIMIENTO DE UNA LISTA DE PALABRAS:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo77'
+                            value={datosFormulario.campo77}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(78) Total SI correctos/10:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo78'
+                            value={datosFormulario.campo78}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(79) Total NO correctos/10:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo79'
+                            value={datosFormulario.campo79}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(80) EVOCACIÓN PRAXIAS CONSTRUCTIVAS:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo80'
+                            value={datosFormulario.campo80}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(81) Círculo - Item 1:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo81'
+                            value={datosFormulario.campo81}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(82) Rombo - Item 2:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo82'
+                            value={datosFormulario.campo82}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(83) Rectángulos - Item 3:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo83'
+                            value={datosFormulario.campo83}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(84) Cubo - Item 4:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo84'
+                            value={datosFormulario.campo84}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(85) Total 11:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo85'
+                            value={datosFormulario.campo85}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(86) TRAIL MAKING TEST (T.M.T) PARTE A:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo86'
+                            value={datosFormulario.campo86}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(87) Aciertos /24:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo87'
+                            value={datosFormulario.campo87}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(88) Errores:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo88'
+                            value={datosFormulario.campo88}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(89) Tiempo en segundos:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo89'
+                            value={datosFormulario.campo89}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(90) Ensayo a los 300’’:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo90'
+                            value={datosFormulario.campo90}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(91) TRAIL MAKING TEST (T.M.T) PARTE B:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo91'
+                            value={datosFormulario.campo91}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(92) Aciertos /24:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo92'
+                            value={datosFormulario.campo92}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(93) Errores:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo93'
+                            value={datosFormulario.campo93}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(94) Tiempo en segundos:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo94'
+                            value={datosFormulario.campo94}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(95) Ensayo a los 300’’:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo95'
+                            value={datosFormulario.campo95}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(96) FIGURA COMPLEJA DE REY - OSTERRIETH - COPIA:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo96'
+                            value={datosFormulario.campo96}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(97) Tiempo en segundos:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo97'
+                            value={datosFormulario.campo97}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(98) Puntaje:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo98'
+                            value={datosFormulario.campo98}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(99) FIGURA COMPLEJA DE REY - OSTERRIETH - EVOCACIÓN:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo99'
+                            value={datosFormulario.campo99}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(100) Tiempo en segundos:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo100'
+                            value={datosFormulario.campo100}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(101) Puntaje:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo101'
+                            value={datosFormulario.campo101}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(102) FLUIDEZ VERBAL:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo102'
+                            value={datosFormulario.campo102}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(103) Total F:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo103'
+                            value={datosFormulario.campo103}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(104) Total A:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo104'
+                            value={datosFormulario.campo104}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(105) Total S:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo105'
+                            value={datosFormulario.campo105}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(106) Pérdida de categoría:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo106'
+                            value={datosFormulario.campo106}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(107) Puntuación total:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo107'
+                            value={datosFormulario.campo107}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+                    </>
+                  )}
+
+                  {parteSeleccionada === 'parte3' && (
+                    <>
+                      <tr>
+                        <td>(108) 9. ESCALA DE TRASTORNOS DE MEMORIA:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo108'
+                            value={datosFormulario.campo108}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(109) QF Total:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo109'
+                            value={datosFormulario.campo109}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(110) QP Total:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo110'
+                            value={datosFormulario.campo110}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(111) 10. ESCALA GLOBAL DE DETERIORO:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo111'
+                            value={datosFormulario.campo111}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(112) Puntaje:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo112'
+                            value={datosFormulario.campo112}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(113) 11. ESCALA DE BARTHEL DE AVD Y ALIMENTACIÓN:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo113'
+                            value={datosFormulario.campo113}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(114) Puntaje /50:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo114'
+                            value={datosFormulario.campo114}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(115) 12. ESCALA DE LAWTON Y BRODY:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo115'
+                            value={datosFormulario.campo115}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(116) Total /5 o Total /8:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo116'
+                            value={datosFormulario.campo116}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(117) 13. THE TECHONOLOGY - ACTIVITIES OF DAILY LIVING QUESTIONNAIRE (T-ADLQ):ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo117'
+                            value={datosFormulario.campo117}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(118) Puntaje de deterioro funcional:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo118'
+                            value={datosFormulario.campo118}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(119) 14. FUNCIONES DETALLADAS DE LA VIDA DIARIA (FDVD):ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo119'
+                            value={datosFormulario.campo119}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(120) Total funciones relacionales ( R ) (/52):ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo120'
+                            value={datosFormulario.campo120}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(121) Puntaje de deterioro funcional ( C ) (/30):ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo121'
+                            value={datosFormulario.campo121}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(122) 15. INECO FRONTAL SCREENING (IFS):ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo122'
+                            value={datosFormulario.campo122}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(123) Índice de Memoria de Trabajo (Dígitos atrás + corsi):ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo123'
+                            value={datosFormulario.campo123}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>(124) Puntaje total:ㅤ</td>
+                        <td>
+                          <input
+                            type='text'
+                            name='campo124'
+                            value={datosFormulario.campo124}
+                            onChange={manejarCambio}
+                          />
+                        </td>
+                      </tr>
+                    </>
+                  )}
+
+                </tbody>
+              </table>
 
               <br /> <button onClick={manejarSubmit}>Realizar Registro</button>
 

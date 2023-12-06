@@ -39,9 +39,9 @@ public class ResetPasswordController {
         // 1 min
         // Date expirationDate = new Date(System.currentTimeMillis() + 60 * 1000);
         // 2 min
-        Date expirationDate = new Date(System.currentTimeMillis() + 2 * 60 * 1000);
+        // Date expirationDate = new Date(System.currentTimeMillis() + 2 * 60 * 1000);
         // 10 min
-        // Date expirationDate = new Date(System.currentTimeMillis() + 600000);
+        Date expirationDate = new Date(System.currentTimeMillis() + 600000);
         user.setResetToken(resetToken);
         user.setResetTokenExpiration(expirationDate);
         userRepository.save(user);

@@ -20,9 +20,13 @@ const BoardAdmin = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        const sortedUsers = data.sort((a, b) => a[0] - b[0])
-        setUsers(sortedUsers)
-        setFilteredUsers(sortedUsers)
+        if (data && Array.isArray(data)) {
+          const sortedUsers = data.sort((a, b) => a[0] - b[0])
+          setUsers(sortedUsers)
+          setFilteredUsers(sortedUsers)
+        } else {
+          console.error('No autorizado')
+        }
       })
       .catch((error) => console.error('Error:', error))
   }, [currentUser])

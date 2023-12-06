@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import ModalAlert from './ModalAlert'
 import AuthService from '../services/auth.service'
 
@@ -28,11 +28,13 @@ const EliminarTablaExamen = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const currentUser = AuthService.getCurrentUser()
+
+  const accessTokenRef = useRef(currentUser.accessToken)
   
   useEffect(() => {
     fetch(`${BASE_URL}/pacientes`, {
       headers: {
-        'Authorization': `Bearer ${currentUser.accessToken}`,
+        'Authorization': `Bearer ${accessTokenRef.current}`,
       },
     })
       .then((response) => response.json())
@@ -45,12 +47,12 @@ const EliminarTablaExamen = () => {
         setIsModalOpen(true)
         console.error(error)
       })
-  }, [BASE_URL, ])
+  }, [BASE_URL, accessTokenRef])
 
   useEffect(() => {
     fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
       headers: {
-        'Authorization': `Bearer ${currentUser.accessToken}`,
+        'Authorization': `Bearer ${accessTokenRef.current}`,
       },
     })
       .then((response) => response.json())
@@ -60,7 +62,7 @@ const EliminarTablaExamen = () => {
       .catch((error) => {
         console.error(error)
       })
-  }, [BASE_URL, pacienteSeleccionado, ])
+  }, [BASE_URL, pacienteSeleccionado, accessTokenRef])
 
   const handlePacienteSeleccionado = (e) => {
     setPacienteSeleccionado(e.target.value)
@@ -104,12 +106,12 @@ const EliminarTablaExamen = () => {
   const handleSearchChange = (e) => {
     const newSearchTerm = e.target.value
     setSearchTerm(newSearchTerm)
-    if (newSearchTerm === '') {
-      setFilteredPacientes(pacientes)
-    } else {
-      const filtered = pacientes.filter((paciente) =>
-        `${paciente.nombres} ${paciente.apellidos}`.toLowerCase().includes(newSearchTerm.toLowerCase())
-      )
+    if (Array.isArray(pacientes)) {
+      const filtered = newSearchTerm === ''
+        ? pacientes
+        : pacientes.filter((paciente) =>
+            `${paciente.nombres} ${paciente.apellidos}`.toLowerCase().includes(newSearchTerm.toLowerCase())
+          )
       setFilteredPacientes(filtered)
     }
   }
@@ -206,15 +208,18 @@ const EliminarTablaExamen = () => {
                   value={searchTerm}
                   onChange={handleSearchChange}
                 />
-                <select name='seleccionarPaciente' value={pacienteSeleccionado} onChange={handlePacienteSeleccionado}>
+                <select name='paciente' value={pacienteSeleccionado} onChange={handlePacienteSeleccionado}>
                   <option value=''>Seleccione un paciente</option>
-                  {filteredPacientes
-                    .sort((a, b) => a.nombres.localeCompare(b.nombres))
-                    .map((paciente) => (
-                      <option key={paciente.id} value={paciente.id}>
-                        {paciente.nombres} {paciente.apellidos}
-                      </option>
-                  ))}
+                  {filteredPacientes && filteredPacientes.length > 0
+                    ? filteredPacientes
+                        .sort((a, b) => a.nombres.localeCompare(b.nombres))
+                        .map((paciente) => (
+                          <option key={paciente.id} value={paciente.id}>
+                            {paciente.nombres} {paciente.apellidos}
+                          </option>
+                        ))
+                    : <option value='' disabled>No hay pacientes disponibles</option>
+                  }
                 </select>
               </div>
               <br />

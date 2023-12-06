@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import ModalAlert from './ModalAlert'
 import AuthService from '../services/auth.service'
 
@@ -25,39 +25,45 @@ const RevisarPaciente = () => {
 
   const currentUser = AuthService.getCurrentUser()
 
+  const accessTokenRef = useRef(currentUser.accessToken)
+
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes`, {
-      headers: {
-        'Authorization': `Bearer ${currentUser.accessToken}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/pacientes`, {
+          headers: {
+            'Authorization': `Bearer ${accessTokenRef.current}`,
+          },
+        })
+        const data = await response.json()
         setPacientes(data)
         setFilteredPacientes(data)
-      })
-      .catch((error) => {
-        setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+      } catch (error) {
+        setModalAMessage('Error: No se pudo establecer conexión con el servidor')
         setIsModalOpen(true)
         console.error(error)
-      })
-  }, [BASE_URL])
+      }
+    }
+    fetchData()
+  }, [BASE_URL, accessTokenRef])
 
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
-      headers: {
-        'Authorization': `Bearer ${currentUser.accessToken}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setInfoPaciente(data)
+    if (pacienteSeleccionado) {
+      fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
+        headers: {
+          'Authorization': `Bearer ${accessTokenRef.current}`,
+        },
       })
-      .catch((error) => {
-        console.error(error)
-      })
-  }, [BASE_URL, pacienteSeleccionado])
-
+        .then((response) => response.json())
+        .then((data) => {
+          setInfoPaciente(data)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }
+  }, [BASE_URL, pacienteSeleccionado, accessTokenRef])
+  
   const handlePacienteSeleccionado = (e) => {
     setPacienteSeleccionado(e.target.value)
   }
@@ -83,7 +89,7 @@ const RevisarPaciente = () => {
         if (error.message === "Cannot read properties of undefined (reading 'split')") {
           setModalAMessage('Hubo en error al obtener la información de este paciente')
         } else {
-          setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+          setModalAMessage('Error: No se pudo establecer conexión con el servidor')
         }
         setIsModalOpen(true)
         console.error(error)
@@ -115,13 +121,12 @@ const RevisarPaciente = () => {
   const handleSearchChange = (e) => {
     const newSearchTerm = e.target.value
     setSearchTerm(newSearchTerm)
-
-    if (newSearchTerm === '') {
-      setFilteredPacientes(pacientes)
-    } else {
-      const filtered = pacientes.filter((paciente) =>
-        `${paciente.nombres} ${paciente.apellidos}`.toLowerCase().includes(newSearchTerm.toLowerCase())
-      )
+    if (Array.isArray(pacientes)) {
+      const filtered = newSearchTerm === ''
+        ? pacientes
+        : pacientes.filter((paciente) =>
+            `${paciente.nombres} ${paciente.apellidos}`.toLowerCase().includes(newSearchTerm.toLowerCase())
+          )
       setFilteredPacientes(filtered)
     }
   }
@@ -164,13 +169,16 @@ const RevisarPaciente = () => {
                 />
                 <select name='paciente' value={pacienteSeleccionado} onChange={handlePacienteSeleccionado}>
                   <option value=''>Seleccione un paciente</option>
-                  {filteredPacientes
-                    .sort((a, b) => a.nombres.localeCompare(b.nombres))
-                    .map((paciente) => (
-                      <option key={paciente.id} value={paciente.id}>
-                        {paciente.nombres} {paciente.apellidos}
-                      </option>
-                  ))}
+                  {filteredPacientes && filteredPacientes.length > 0
+                    ? filteredPacientes
+                        .sort((a, b) => a.nombres.localeCompare(b.nombres))
+                        .map((paciente) => (
+                          <option key={paciente.id} value={paciente.id}>
+                            {paciente.nombres} {paciente.apellidos}
+                          </option>
+                        ))
+                    : <option value='' disabled>No hay pacientes disponibles</option>
+                  }
                 </select>
               </div>
               <br />
@@ -194,7 +202,7 @@ const RevisarPaciente = () => {
                 <p>Fecha de nacimiento: {fechaFormateada}</p>
                 <p>Edad: {edad}</p>
                 <p>Email: {infoPaciente.email}</p>
-                <p>Género: {mapaGenero[infoPaciente.genero]}</p> 
+                <p>Género: {mapaGenero[infoPaciente.genero]}</p>
               </div>
               <br />
             <button className='btnVolv' onClick={handleReload}>Volver</button> <br /> <br />

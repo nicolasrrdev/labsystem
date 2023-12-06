@@ -1,7 +1,8 @@
 package com.labsystem.models;
-
 import jakarta.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "tablaExamen")
 public class TablaExamen {
@@ -10,6 +11,8 @@ public class TablaExamen {
     private Integer id;
     @Column(name = "paciente_id")
     private Integer pacienteId;
+    @Column(name = "fecha_registro")
+    private LocalDate fechaRegistro;
     @Column(name = "campo1")
     private String campo1;
     @Column(name = "campo2")
@@ -262,10 +265,11 @@ public class TablaExamen {
     private Timestamp timestampColumn;
     public TablaExamen() {
     }
-    public TablaExamen(Integer pacienteId,
+    public TablaExamen(Integer pacienteId, LocalDate fechaRegistro,
                        String campo1, String campo2, String campo3, String campo4, String campo5, String campo6, String campo7, String campo8, String campo9, String campo10, String campo11, String campo12, String campo13, String campo14, String campo15, String campo16, String campo17, String campo18, String campo19, String campo20, String campo21, String campo22, String campo23, String campo24, String campo25, String campo26, String campo27, String campo28, String campo29, String campo30, String campo31, String campo32, String campo33, String campo34, String campo35, String campo36, String campo37, String campo38, String campo39, String campo40, String campo41, String campo42, String campo43, String campo44, String campo45, String campo46, String campo47, String campo48, String campo49, String campo50, String campo51, String campo52, String campo53, String campo54, String campo55, String campo56, String campo57, String campo58, String campo59, String campo60, String campo61, String campo62, String campo63, String campo64, String campo65, String campo66, String campo67, String campo68, String campo69, String campo70, String campo71, String campo72, String campo73, String campo74, String campo75, String campo76, String campo77, String campo78, String campo79, String campo80, String campo81, String campo82, String campo83, String campo84, String campo85, String campo86, String campo87, String campo88, String campo89, String campo90, String campo91, String campo92, String campo93, String campo94, String campo95, String campo96, String campo97, String campo98, String campo99, String campo100, String campo101, String campo102, String campo103, String campo104, String campo105, String campo106, String campo107, String campo108, String campo109, String campo110, String campo111, String campo112, String campo113, String campo114, String campo115, String campo116, String campo117, String campo118, String campo119, String campo120, String campo121, String campo122, String campo123, String campo124,
                        Timestamp timestampColumn) {
         this.pacienteId = pacienteId;
+        this.fechaRegistro = fechaRegistro;
         this.campo1 = campo1;
         this.campo2 = campo2;
         this.campo3 = campo3;
@@ -404,6 +408,8 @@ public class TablaExamen {
     public void setPacienteId(Integer pacienteId) {
         this.pacienteId = pacienteId;
     }
+    public LocalDate getFechaRegistro() { return fechaRegistro; }
+    public void setFechaRegistro(LocalDate fechaRegistro) { this.fechaRegistro = fechaRegistro; }
     public String getCampo1() {
         return campo1;
     }
@@ -664,7 +670,6 @@ public class TablaExamen {
     public void setCampo123(String campo123) { this.campo123 = campo123; }
     public String getCampo124() { return campo124; }
     public void setCampo124(String campo124) { this.campo124 = campo124; }
-
     public Timestamp getTimestampColumn() { return timestampColumn; }
     public void setTimestampColumn(Timestamp timestampColumn) { this.timestampColumn = timestampColumn; }
 }

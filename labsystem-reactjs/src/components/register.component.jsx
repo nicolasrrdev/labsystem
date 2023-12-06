@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { isEmail } from 'validator'
 import AuthService from '../services/auth.service'
 

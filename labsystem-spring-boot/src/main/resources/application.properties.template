@@ -4,7 +4,7 @@ spring.datasource.password =
 
 spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation = true
 spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
-
+spring.jpa.open-in-view = false
 spring.jpa.hibernate.ddl-auto = update
 
 app.jwtSecret =
@@ -17,7 +17,3 @@ spring.mail.password =
 spring.mail.properties.mail.smtp.auth = true
 spring.mail.properties.mail.smtp.starttls.enable = true
 reset.link.base.url =
-
-
-
-spring.jpa.open-in-view = false

@@ -1,5 +1,4 @@
 package com.labsystem.services;
-
 import com.labsystem.models.TablaExamen;
 import com.labsystem.repositories.TablaExamenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.List;
 import java.sql.Timestamp;
+
 @Service
 public class TablaExamenService {
     @Autowired
@@ -18,7 +18,7 @@ public class TablaExamenService {
         Optional<TablaExamen> optionalTablaExamen = tablaExamenRepository.findById(id);
         if (optionalTablaExamen.isPresent()) {
             TablaExamen registroExistente = optionalTablaExamen.get();
-
+            registroExistente.setFechaRegistro(tablaExamen.getFechaRegistro());
             registroExistente.setCampo1(tablaExamen.getCampo1());
             registroExistente.setCampo2(tablaExamen.getCampo2());
             registroExistente.setCampo3(tablaExamen.getCampo3());
@@ -143,7 +143,6 @@ public class TablaExamenService {
             registroExistente.setCampo122(tablaExamen.getCampo122());
             registroExistente.setCampo123(tablaExamen.getCampo123());
             registroExistente.setCampo124(tablaExamen.getCampo124());
-
             registroExistente.setTimestampColumn(new Timestamp(System.currentTimeMillis()));
             return tablaExamenRepository.save(registroExistente);
         } else {

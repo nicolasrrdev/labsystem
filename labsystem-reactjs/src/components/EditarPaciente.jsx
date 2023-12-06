@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import ModalAlert from './ModalAlert'
 import AuthService from '../services/auth.service'
 
@@ -32,44 +32,50 @@ const EditarPacientes = () => {
 
   const currentUser = AuthService.getCurrentUser()
 
-  useEffect(() => {
-    fetch(`${BASE_URL}/pacientes`, {
-      headers: {
-        'Authorization': `Bearer ${currentUser.accessToken}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setPacientes(data)
-        setFilteredPacientes(data)
-      })
-      .catch((error) => {
-        setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
-        setIsModalOpen(true)
-        console.error(error)
-      })
-  }, [BASE_URL])
+  const accessTokenRef = useRef(currentUser.accessToken)
 
   useEffect(() => {
-    fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
-      headers: {
-        'Authorization': `Bearer ${currentUser.accessToken}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setNombres(data.nombres)
-        setApellidos(data.apellidos)
-        setTipoDocumento(data.tipoDocumento)
-        setDocumento(data.documento)
-        setEmail(data.email)
-        setFechaNacimiento(data.fechaNacimiento)
-        setGenero(data.genero)
-    })
-    .catch((error) => {
-      console.error(error)
-    })
-  }, [BASE_URL, pacienteSeleccionado])
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/pacientes`, {
+          headers: {
+            'Authorization': `Bearer ${accessTokenRef.current}`,
+          },
+        })
+        const data = await response.json()
+        setPacientes(data)
+        setFilteredPacientes(data)
+      } catch (error) {
+        setModalAMessage('Error: No se pudo establecer conexión con el servidor')
+        setIsModalOpen(true)
+        console.error(error)
+      }
+    }
+    fetchData()
+  }, [BASE_URL, accessTokenRef])
+
+  useEffect(() => {
+    if (pacienteSeleccionado) {
+      fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
+        headers: {
+          'Authorization': `Bearer ${accessTokenRef.current}`,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setNombres(data.nombres)
+          setApellidos(data.apellidos)
+          setTipoDocumento(data.tipoDocumento)
+          setDocumento(data.documento)
+          setEmail(data.email)
+          setFechaNacimiento(data.fechaNacimiento)
+          setGenero(data.genero)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    }
+  }, [BASE_URL, pacienteSeleccionado, accessTokenRef])
 
   const handlePacienteSeleccionado = (e) => {
     setPacienteSeleccionado(e.target.value)
@@ -94,12 +100,12 @@ const EditarPacientes = () => {
   const handleSearchChange = (e) => {
     const newSearchTerm = e.target.value
     setSearchTerm(newSearchTerm)
-    if (newSearchTerm === '') {
-      setFilteredPacientes(pacientes)
-    } else {
-      const filtered = pacientes.filter((paciente) =>
-        `${paciente.nombres} ${paciente.apellidos}`.toLowerCase().includes(newSearchTerm.toLowerCase())
-      )
+    if (Array.isArray(pacientes)) {
+      const filtered = newSearchTerm === ''
+        ? pacientes
+        : pacientes.filter((paciente) =>
+            `${paciente.nombres} ${paciente.apellidos}`.toLowerCase().includes(newSearchTerm.toLowerCase())
+          )
       setFilteredPacientes(filtered)
     }
   }
@@ -200,13 +206,16 @@ const EditarPacientes = () => {
                 />
                 <select name='paciente' value={pacienteSeleccionado} onChange={handlePacienteSeleccionado}>
                   <option value=''>Seleccione un paciente</option>
-                  {filteredPacientes
-                    .sort((a, b) => a.nombres.localeCompare(b.nombres))
-                    .map((paciente) => (
-                      <option key={paciente.id} value={paciente.id}>
-                        {paciente.nombres} {paciente.apellidos}
-                      </option>
-                  ))}
+                  {filteredPacientes && filteredPacientes.length > 0
+                    ? filteredPacientes
+                        .sort((a, b) => a.nombres.localeCompare(b.nombres))
+                        .map((paciente) => (
+                          <option key={paciente.id} value={paciente.id}>
+                            {paciente.nombres} {paciente.apellidos}
+                          </option>
+                        ))
+                    : <option value='' disabled>No hay pacientes disponibles</option>
+                  }
                 </select>
               </div>
               <br />

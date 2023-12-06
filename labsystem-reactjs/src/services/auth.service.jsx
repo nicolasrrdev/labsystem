@@ -48,7 +48,17 @@ class AuthService {
   }  
 
   getCurrentUser() {
-    return JSON.parse(localStorage.getItem('user'))
+    try {
+      const userData = localStorage.getItem('user')
+      if (!userData) {
+        return null
+      }
+      const user = JSON.parse(userData)
+      return user
+    } catch (error) {
+      console.error('Wrong JSON format')
+      return null
+    }
   }
 }
 
