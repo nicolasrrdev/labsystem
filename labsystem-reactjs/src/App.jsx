@@ -320,94 +320,92 @@ const App = () => {
 
         </div>
 
-        <div>
-          <Routes>
+        <Routes>
 
-            <Route path='*' element={<Navigate to='/Home' />} />
-            <Route path='/' element={<Home />} />
-            <Route path='/Home' element={<Home />} />
-            <Route path='/Profile' element={<Profile />} />
+          <Route path='*' element={<Navigate to='/Home' />} />
+          <Route path='/' element={<Home />} />
+          <Route path='/Home' element={<Home />} />
+          <Route path='/Profile' element={<Profile />} />
 
-            {currentUser ? (
-              <>
-                <Route path='/Login' element={<Navigate to='/Home' />} />
-                <Route path='/Register' element={<Navigate to='/Home' />} />
-              </>
-            ) : (
-              <>
-                <Route path='/Login' element={<Login />} />
-                <Route path='/Register' element={<Register />} />
-              </>
-            )}
+          {currentUser ? (
+            <>
+              <Route path='/Login' element={<Navigate to='/Home' />} />
+              <Route path='/Register' element={<Navigate to='/Home' />} />
+            </>
+          ) : (
+            <>
+              <Route path='/Login' element={<Login />} />
+              <Route path='/Register' element={<Register />} />
+            </>
+          )}
 
-            {!currentUser && (
-              <Route path='/Restore' element={<RestorePasswordRequest />} />
-            )}
-            {currentUser && (
-              <Route path='/Restore' element={<Navigate to='/Home' />} />
-            )}
+          {!currentUser && (
+            <Route path='/Restore' element={<RestorePasswordRequest />} />
+          )}
+          {currentUser && (
+            <Route path='/Restore' element={<Navigate to='/Home' />} />
+          )}
 
-            {!currentUser && (
-              <Route path='/reset-password' element={<ResetPasswordForm />} />
-            )}
-            {currentUser && (
-              <Route path='/reset-password' element={<Navigate to='/Home' />} />
-            )}
+          {!currentUser && (
+            <Route path='/reset-password' element={<ResetPasswordForm />} />
+          )}
+          {currentUser && (
+            <Route path='/reset-password' element={<Navigate to='/Home' />} />
+          )}
 
-            {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
-              <Route path='/Admin' element={<BoardAdmin />} />
-            )}
+          {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
+            <Route path='/Admin' element={<BoardAdmin />} />
+          )}
 
-            {/* {user && user.roles && user.roles.includes('ROLE_MODERATOR') &&(
-              <Route path='/Mod' element={<BoardModerator />} />
-            )} */}
+          {/* {user && user.roles && user.roles.includes('ROLE_MODERATOR') &&(
+            <Route path='/Mod' element={<BoardModerator />} />
+          )} */}
 
-            {/* {user && user.roles && user.roles.includes('ROLE_USER') &&(
-              <Route path='/User' element={<BoardUser />} />
-            )} */}
+          {/* {user && user.roles && user.roles.includes('ROLE_USER') &&(
+            <Route path='/User' element={<BoardUser />} />
+          )} */}
 
-            {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-              <Route path='/RegistrarPaciente' element={<RegistrarPaciente />} />
-            )}
+          {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
+            <Route path='/RegistrarPaciente' element={<RegistrarPaciente />} />
+          )}
 
-            {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-              <Route path='/RevisarPaciente' element={<RevisarPaciente />} />
-            )}
+          {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
+            <Route path='/RevisarPaciente' element={<RevisarPaciente />} />
+          )}
 
-            {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-              <Route path='/EditarPaciente' element={<EditarPaciente />} />
-            )}
+          {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
+            <Route path='/EditarPaciente' element={<EditarPaciente />} />
+          )}
 
-            {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-              <Route path='/CrearExamen' element={<CrearExamen />} />
-            )}
+          {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
+            <Route path='/CrearExamen' element={<CrearExamen />} />
+          )}
 
-            {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-              <Route path='/RealizarRegistro' element={<RealizarRegistro />} />
-            )}
+          {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
+            <Route path='/RealizarRegistro' element={<RealizarRegistro />} />
+          )}
 
-            {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-              <Route path='/RevisarRegistro' element={<RevisarRegistro />} />
-            )}
+          {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
+            <Route path='/RevisarRegistro' element={<RevisarRegistro />} />
+          )}
 
-            {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-              <Route path='/EditarRegistro' element={<EditarRegistro />} />
-            )}
+          {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
+            <Route path='/EditarRegistro' element={<EditarRegistro />} />
+          )}
 
-            {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-              <Route path='/TablaExamen' element={<TablaExamen />} />
-            )}
+          {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
+            <Route path='/TablaExamen' element={<TablaExamen />} />
+          )}
 
-            {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-              <Route path='/EditarTablaExamen' element={<EditarTablaExamen />} />
-            )}
+          {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
+            <Route path='/EditarTablaExamen' element={<EditarTablaExamen />} />
+          )}
 
-            {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
-              <Route path='/EliminarTablaExamen' element={<EliminarTablaExamen />} />
-            )}
+          {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
+            <Route path='/EliminarTablaExamen' element={<EliminarTablaExamen />} />
+          )}
 
-          </Routes>
-        </div>
+        </Routes>
 
         </div>
       </HelmetProvider>

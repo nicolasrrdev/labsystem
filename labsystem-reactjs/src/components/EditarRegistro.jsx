@@ -451,7 +451,7 @@ const EditarRegistro = () => {
             <p>Registros en: {tableName}</p>
             <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
             
-            <label htmlFor='registroDate'>Seleccione un registro:ㅤ</label>
+            <label htmlFor='registroDate'>Seleccione un registro:ㅤ</label> <br />
             <select
               id='registroDate'
               name='registroDate'

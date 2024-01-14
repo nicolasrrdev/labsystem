@@ -19,13 +19,13 @@
 
 3. Create the `application.properties` file in the `resources` package and fill it in according to `application.properties.template`.
 
-4. Make sure you have Java 17 installed. Afterward, run the Spring Boot project:
+4. Make sure you have Java 21 installed. Then, run the Spring Boot project:
 
     ```bash
     mvn spring-boot:run
     ```
 
-5. Navigate to the React app by using Node 18:
+5. Using Node 21, navigate to the React app directory and install the Node Modules:
 
     ```bash
     cd ..
