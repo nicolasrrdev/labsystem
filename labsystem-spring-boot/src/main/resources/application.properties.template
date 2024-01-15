@@ -19,3 +19,4 @@ spring.mail.properties.mail.smtp.starttls.enable = true
 reset.link.base.url =
 
 server.port = 8081
+
