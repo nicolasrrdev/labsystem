@@ -1912,4 +1912,3 @@ const TablaExamen = () => {
 }
 
 export default TablaExamen
-
