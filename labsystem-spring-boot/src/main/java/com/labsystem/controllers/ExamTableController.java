@@ -184,7 +184,7 @@ public class ExamTableController {
         return new ResponseEntity<>(pacienteRegistros, HttpStatus.OK);
     }
 
-    @PostMapping("/exam/{tableName}/update/{id}")
+    @PutMapping("/exam/{tableName}/update/{id}")
     public ResponseEntity<Object> updateRecord(@PathVariable String tableName, @PathVariable int id, @RequestBody String json) {
         if (!isTableExists(tableName)) {
             JSONObject errorJson = new JSONObject();

@@ -154,7 +154,7 @@ public class PacienteController {
         }
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Paciente>> actualizarPaciente(@PathVariable Integer id, @RequestBody @Valid Paciente pacienteDatosActualizados) {
         Optional<Paciente> pacienteOptional = pacienteRepository.findById(id);
         if (pacienteOptional.isPresent()) {

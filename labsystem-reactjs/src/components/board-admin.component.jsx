@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import AuthService from '../services/auth.service'
 
 const BoardAdmin = () => {
+  const API_URL_USERS = import.meta.env.VITE_API_URL_USERS
   const [users, setUsers] = useState([])
   const [selectedUser, setSelectedUser] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
@@ -17,7 +18,7 @@ const BoardAdmin = () => {
 
   useEffect(() => {
     if (!hasError) {
-      fetch('http://localhost:8080/api/users/id-email-role', {
+      fetch(`${API_URL_USERS}id-email-role`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${currentUser.accessToken}`,
@@ -39,7 +40,7 @@ const BoardAdmin = () => {
           setHasError(true)
         })
     }
-  }, [currentUser, hasError])
+  }, [API_URL_USERS, currentUser, hasError])
 
   useEffect(() => {
     if (searchTerm === '') {
@@ -62,7 +63,7 @@ const BoardAdmin = () => {
     const userId = selectedUserInfo[0]
     const roleId = selectedRole
     setIsSubmitting(true)
-    fetch(`http://localhost:8080/api/users/${userId}/roles/${roleId}`, {
+    fetch(`${API_URL_USERS}${userId}/roles/${roleId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

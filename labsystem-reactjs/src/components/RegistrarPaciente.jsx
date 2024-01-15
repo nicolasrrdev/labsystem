@@ -170,7 +170,7 @@ const RegistrarPaciente = () => {
         <div>
           Correo electrónico:ㅤ
           <input
-            type='text'
+            type='email'
             name='email'
             value={formData.email}
             onChange={handleChange}

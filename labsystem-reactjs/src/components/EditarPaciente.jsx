@@ -135,7 +135,7 @@ const EditarPacientes = () => {
       return
     }
     fetch(`${BASE_URL}/pacientes/${pacienteSeleccionado}`, {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${currentUser.accessToken}`,
@@ -275,7 +275,7 @@ const EditarPacientes = () => {
             /> <br /> <br />
             Correo electrónico:ㅤ
             <input
-              type='text'
+              type='email'
               name='email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}

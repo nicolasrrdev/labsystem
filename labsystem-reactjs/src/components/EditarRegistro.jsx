@@ -343,7 +343,7 @@ const EditarRegistro = () => {
     setIsSubmitting(true)
     // console.log(inputs)
     fetch(`${BASE_URL}/api/exam/${nombreTabla2}/update/${idSeleccionado2}`, {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${currentUser.accessToken}`,
