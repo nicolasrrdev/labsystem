@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import AuthService from '../services/auth.service'
 import ModalAlert from './ModalAlert'
 
-const EditarRegistro = () => {
+const EliminarRegistro = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL
   const [tableName, setTableName] = useState('')
   const [examList, setExamList] = useState([])
@@ -17,14 +17,6 @@ const EditarRegistro = () => {
   const [registroDate, setRegistroDate] = useState('')
   const [idSeleccionado2, setIdSeleccionado2] = useState('')
   const [registroExitoso2, setRegistroExitoso2] = useState(false)
-  const [campoTipos, setCampoTipos] = useState({})
-  const [inputs, setInputs] = useState({})
-  const [campoData, setCampoData] = useState({})
-  const [registroExitoso3, setRegistroExitoso3] = useState(false)
-
-  const [fechaFormateada, setFechaFormateada] = useState('')
-  const [titlesArray, setTitlesArray] = useState([])
-  const [inputsArray, setInputsArray] = useState([])
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalAMessage, setModalAMessage] = useState('')
@@ -102,9 +94,6 @@ const EditarRegistro = () => {
         setJsonData(response)
         setRegistroExitoso(true)
         setSubmitted(true)
-        const partesFecha = infoPaciente.fechaNacimiento.split('-')
-        const fechaFormateada2 = `${partesFecha[2]}-${partesFecha[1]}-${partesFecha[0]}`
-        setFechaFormateada(fechaFormateada2)
       })
       .catch((error) => {
         if (error === 'No hay registros disponibles') {
@@ -191,52 +180,25 @@ const EditarRegistro = () => {
   const handleSubmit2 = (e) => {
     e.preventDefault()
     setIsSubmitting(true)
-    const requests = [
-      fetch(`${BASE_URL}/api/examen/${nombreTabla2}/tiposCampos`, {
-        headers: {
-          'Authorization': `Bearer ${currentUser.accessToken}`,
-        },
-      }),
-      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/record/${idSeleccionado2}`, {
-        headers: {
-          'Authorization': `Bearer ${currentUser.accessToken}`,
-        },
-      }),
-      fetch(`${BASE_URL}/api/exam/${nombreTabla2}/record/1`, {
-        headers: {
-          'Authorization': `Bearer ${currentUser.accessToken}`,
-        },
-      }),
-    ]
-    Promise.all(requests)
-      .then((responses) => {
-        return Promise.all(responses.map(response => {
-          if (response.status === 404) {
-            throw new Error('Hubo en error al obtener este registro')
-          }
-          return response.json()
-        }))
-      })
-      .then(([campoTiposResponse, inputsResponse, campoDataResponse]) => {
-        setCampoTipos(campoTiposResponse)
-        setInputs(inputsResponse)
-        setCampoData(campoDataResponse)
+    fetch(`${BASE_URL}/api/exam/${nombreTabla2}/delete/${idSeleccionado2}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentUser.accessToken}`,
+      }
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Hubo un error al enviar los datos')
+        }
         setRegistroExitoso(false)
         setRegistroExitoso2(true)
-        const titlesArray2 = Object.keys(campoDataResponse)
-          .filter(key => key.startsWith('campo') && !key.endsWith('_tipo'))
-          .map(key => campoDataResponse[key])
-        setTitlesArray(titlesArray2)
-        const inputsArray2 = Object.keys(inputsResponse)
-          .filter(key => key.endsWith('_tipo'))
-          .map(key => inputsResponse[key])
-        setInputsArray(inputsArray2)
       })
       .catch((error) => {
-        if (error.message === 'Hubo en error al obtener este registro') {
-          setModalAMessage('Hubo en error al obtener este registro')
-        } else {
+        if (error.message === 'Failed to fetch') {
           setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
+        } else {
+          setModalAMessage(error.message)
         }
         setIsModalOpen(true)
         console.error(error)
@@ -270,156 +232,6 @@ const EditarRegistro = () => {
     const idSeleccionado = e.target.selectedOptions[0].getAttribute('data-id')
     setIdSeleccionado2(idSeleccionado)
   }
-
-  const renderCamposDinamicos = () => {
-    const campos = []
-    for (const key in campoTipos) {
-        if (campoTipos[key] !== undefined) {
-        const tipo = campoTipos[key]
-        const campoNombre = key
-        const valor = inputs[campoNombre] || ''
-        let inputComponent
-        if (tipo === 'character varying') {
-          inputComponent = (
-            <input
-              type='text'
-              id={campoNombre}
-              name={campoNombre}
-              value={valor}
-              onChange={handleInputChange}
-              maxLength = {255}
-            />
-          )
-        } else if (tipo === 'numeric') {
-          inputComponent = (
-            <input
-              type='number'
-              id={campoNombre}
-              name={campoNombre}
-              value={valor}
-              onChange={handleInputChange}
-            />
-          )
-        } else if (tipo === 'date') {
-          inputComponent = (
-            <input
-              type='date'
-              id={campoNombre}
-              name={campoNombre}
-              value={valor}
-              onChange={handleInputChange}
-              min='1900-01-01'
-            />
-          )
-        } else if (tipo === 'integer') {
-          inputComponent = (
-            <input
-              type='number'
-              id={campoNombre}
-              name={campoNombre}
-              value={valor}
-              onChange={handleInputChange}
-              min={0}
-              step={1}
-              max={999999999}
-            />
-          )
-        }
-        campos.push(
-          <div key={campoNombre} >
-            <label htmlFor={campoNombre} style={{ marginRight: '15px' }}>
-              {campoData[campoNombre.split('_tipo')[0]] || campoNombre}
-            </label>
-            {inputComponent}
-          </div>
-        )        
-      }
-    }
-    return campos
-  }
-  
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setInputs((prevInputs) => ({
-      ...prevInputs,
-      [name]: value,
-    }))
-  }
-
-  const handleSubmit3 = (e) => {
-    e.preventDefault()
-    const camposVacios = Object.values(inputs).some((valor) => valor === '')
-    if (camposVacios) {
-      setModalAMessage('Por favor, completa todos los campos antes de enviar el formulario')
-      setIsModalOpen(true)
-      return
-    }
-    setIsSubmitting(true)
-    fetch(`${BASE_URL}/api/exam/${nombreTabla2}/update/${idSeleccionado2}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${currentUser.accessToken}`,
-      },
-      body: JSON.stringify(inputs)
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Hubo un error al enviar los datos')
-        }
-        setRegistroExitoso2(false)
-        setRegistroExitoso3(true)
-      })
-      .catch((error) => {
-        if (error.message === 'Failed to fetch') {
-          setModalAMessage('Error: No se pudo establecer conexión con el servidor.')
-        } else {
-          setModalAMessage(error.message)
-        }
-        setIsModalOpen(true)
-        console.error(error)
-      })
-      .finally(() => {
-        setIsSubmitting(false)
-      })
-  }
-
-  const mapaTipoDocumento = {
-    CEDULA_DE_CIUDADANIA: 'Cédula de Ciudadanía',
-    CEDULA_DE_EXTRANJERIA: 'Cédula de Extranjeria',
-    PASAPORTE: 'Pasaporte',
-    REGISTRO_CIVIL: 'Registro Civil',
-    TARJETA_DE_IDENTIDAD: 'Tarjeta de Identidad'
-  }
-  const mapaGenero = {
-    MASCULINO: 'Masculino',
-    FEMENINO: 'Femenino',
-    OTRO: 'Otro',
-  }
-
-  const fechaNacimiento = new Date(infoPaciente.fechaNacimiento)
-  const fechaActual = new Date()
-  let edad = fechaActual.getFullYear() - fechaNacimiento.getFullYear()
-  if (
-    fechaActual.getMonth() < fechaNacimiento.getMonth() ||
-    (fechaActual.getMonth() === fechaNacimiento.getMonth() &&
-      fechaActual.getDate() < fechaNacimiento.getDate())
-  ) {
-    edad--
-  }
-
-  const downloadCSV = () => {
-    const pacienteInfo = `${infoPaciente.nombres + ' ' + infoPaciente.apellidos};${mapaTipoDocumento[infoPaciente.tipoDocumento]};${infoPaciente.documento};${fechaFormateada};${edad};${infoPaciente.email};${mapaGenero[infoPaciente.genero]};`
-    const csvContent = `Nombre;Tipo Documento;Documento;Fecha de nacimiento;Edad;Email;Género;${titlesArray.join(';')}\n${pacienteInfo}${inputsArray.join(';')};`
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const link = document.createElement('a')
-    link.href = window.URL.createObjectURL(blob)
-    link.setAttribute('download', 'datos.csv')
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    window.URL.revokeObjectURL(link.href)
-  }
   
   return (
     <div>
@@ -434,7 +246,7 @@ const EditarRegistro = () => {
         <center>
           <div>
             <br />
-            <h2>Editar Registro</h2>
+            <h2>Eliminar Registro</h2>
             <form onSubmit={handleSubmit1}>
               <div>
                 <label htmlFor='tableName'>Seleccione un examen:ㅤ</label>
@@ -496,7 +308,7 @@ const EditarRegistro = () => {
         <form onSubmit={handleSubmit2}>
         <div>
           <br />
-          <h2>Editar Registro</h2>
+          <h2>Eliminar Registro</h2>
           <div>
             <p>Registros en: {tableName}</p>
             <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
@@ -527,7 +339,7 @@ const EditarRegistro = () => {
         </div>
         <br />
           <button type='submit' disabled={isButtonDisabled2 || isSubmitting}>
-            Continuar
+            Eliminar Registro
           </button>
         </form>
         <br /> <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
@@ -535,37 +347,43 @@ const EditarRegistro = () => {
       )}
       {registroExitoso2 && (
         <center>
-        <form onSubmit={handleSubmit3}>
           <div>
             <br />
-            <h2>Editar Registro</h2>
-            <div>
-              <p>Registros en: {tableName}</p>
-              <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
-              {renderCamposDinamicos()}
-            </div>
+            <h3>Registro eliminado con éxito.</h3>
+            <br />
+            <button onClick={handleReloadPage}>Eliminar otro registro</button>
           </div>
-          <br /> <button type='submit' disabled={isButtonDisabled2 || isSubmitting}>
-            Editar Registro
-          </button>
-        </form>
-        <h6>{`*Para una correcta visualización de los datos en Excel: Data -> Get Data -> From File -> From Text/CSV -> Abrir el archivo File Origin: UTF-8 Delimiter: Semicolon -> Load`}</h6>
-        <button className='downloadData' onClick={downloadCSV}>Descargar Datos</button> <br /> <br />
-        <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
         </center>
+        // <center>
+        // <form onSubmit={handleSubmit3}>
+        //   <div>
+        //     <br />
+        //     <h2>Eliminar Registro</h2>
+        //     <div>
+        //       <p>Registros en: {tableName}</p>
+        //       <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
+        //       {renderCamposDinamicos()}
+        //     </div>
+        //   </div>
+        //   <br /> <button type='submit' disabled={isButtonDisabled2 || isSubmitting}>
+        //     Eliminar Registro
+        //   </button>
+        // </form>
+        // <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
+        // </center>
       )}
-      {registroExitoso3 && (
+      {/* {registroExitoso3 && (
           <center>
             <div>
               <br />
-              <h3>Registro actualizado con éxito.</h3>
+              <h3>Registro eliminado con éxito.</h3>
               <br />
-              <button onClick={handleReloadPage}>Editar otro registro</button>
+              <button onClick={handleReloadPage}>Eliminar otro registro</button>
             </div>
           </center>
-      )}
+      )} */}
     </div>
   )
 }
 
-export default EditarRegistro
+export default EliminarRegistro

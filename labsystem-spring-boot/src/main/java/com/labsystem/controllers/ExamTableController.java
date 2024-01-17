@@ -226,6 +226,30 @@ public class ExamTableController {
         return new ResponseEntity<>(responseJson.toMap(), HttpStatus.OK);
     }
 
+    @DeleteMapping("/exam/{tableName}/delete/{id}")
+    public ResponseEntity<Object> deleteRecord(@PathVariable String tableName, @PathVariable int id) {
+        if (!isTableExists(tableName)) {
+            JSONObject errorJson = new JSONObject();
+            errorJson.put("error", "Tabla no encontrada");
+            return new ResponseEntity<>(errorJson.toMap(), HttpStatus.NOT_FOUND);
+        }
+        if (id == 1) {
+            JSONObject errorJson = new JSONObject();
+            errorJson.put("error", "No se permite eliminar registros con id 1");
+            return new ResponseEntity<>(errorJson.toMap(), HttpStatus.BAD_REQUEST);
+        }
+        String deleteQuery = "DELETE FROM " + tableName + " WHERE id = ?";
+        int deletedRows = jdbcTemplate.update(deleteQuery, id);
+        if (deletedRows == 0) {
+            JSONObject errorJson = new JSONObject();
+            errorJson.put("error", "Registro no encontrado con id " + id);
+            return new ResponseEntity<>(errorJson.toMap(), HttpStatus.NOT_FOUND);
+        }
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("message", "Registro eliminado con éxito");
+        return new ResponseEntity<>(responseJson.toMap(), HttpStatus.OK);
+    }
+
     @GetMapping("/exam/{tableName}/record/{id}")
     public ResponseEntity<Object> getRecordById(@PathVariable String tableName, @PathVariable int id) {
         if (!isTableExists(tableName)) {

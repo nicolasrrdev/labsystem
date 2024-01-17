@@ -20,6 +20,7 @@ import RegistrarPaciente from './components/RegistrarPaciente'
 import RevisarPaciente from './components/RevisarPaciente'
 import EditarPaciente from './components/EditarPaciente'
 import EditarRegistro from './components/EditarRegistro'
+import EliminarRegistro from './components/EliminarRegistro'
 import RevisarRegistro from './components/RevisarRegistro'
 import TablaExamen from './components/TablaExamen'
 import EditarTablaExamen from './components/EditarTablaExamen'
@@ -254,6 +255,13 @@ const App = () => {
           )}
           {showAdminBoard && (
             <li>
+              <Link to='/EliminarRegistro' onClick={() => handleLinkClick('/EliminarRegistro')}>
+                Eliminar Registro
+              </Link>
+            </li>
+          )}
+          {showAdminBoard && (
+            <li>
               <Link to='/TablaExamen' onClick={() => handleLinkClick('/TablaExamen')}>
                 Tabla Examen
               </Link>
@@ -391,6 +399,10 @@ const App = () => {
 
           {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
             <Route path='/EditarRegistro' element={<EditarRegistro />} />
+          )}
+
+          {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
+            <Route path='/EliminarRegistro' element={<EliminarRegistro />} />
           )}
 
           {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
