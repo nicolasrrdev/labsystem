@@ -312,7 +312,6 @@ const EliminarRegistro = () => {
           <div>
             <p>Registros en: {tableName}</p>
             <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
-            
             <label htmlFor='registroDate'>Seleccione un registro:ㅤ</label> <br />
             <select
               id='registroDate'
@@ -354,34 +353,7 @@ const EliminarRegistro = () => {
             <button onClick={handleReloadPage}>Eliminar otro registro</button>
           </div>
         </center>
-        // <center>
-        // <form onSubmit={handleSubmit3}>
-        //   <div>
-        //     <br />
-        //     <h2>Eliminar Registro</h2>
-        //     <div>
-        //       <p>Registros en: {tableName}</p>
-        //       <p>Paciente: {infoPaciente.nombres + ' ' + infoPaciente.apellidos}</p>
-        //       {renderCamposDinamicos()}
-        //     </div>
-        //   </div>
-        //   <br /> <button type='submit' disabled={isButtonDisabled2 || isSubmitting}>
-        //     Eliminar Registro
-        //   </button>
-        // </form>
-        // <button className='btnVolv' onClick={handleReloadPage}>Volver</button> <br /> <br />
-        // </center>
       )}
-      {/* {registroExitoso3 && (
-          <center>
-            <div>
-              <br />
-              <h3>Registro eliminado con éxito.</h3>
-              <br />
-              <button onClick={handleReloadPage}>Eliminar otro registro</button>
-            </div>
-          </center>
-      )} */}
     </div>
   )
 }
