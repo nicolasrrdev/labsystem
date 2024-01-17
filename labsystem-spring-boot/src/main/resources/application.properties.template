@@ -1,21 +1,25 @@
-spring.datasource.url =
-spring.datasource.username =
-spring.datasource.password =
+spring.datasource.url = jdbc:postgresql://localhost:5432/labsystem
+spring.datasource.username = 
+spring.datasource.password = 
 
 spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation = true
 spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
 spring.jpa.open-in-view = false
 spring.jpa.hibernate.ddl-auto = update
 
-app.jwtSecret =
-app.jwtExpirationMs =
+# The JWT secret is a secure string that ensures the integrity and authenticity of the tokens
+app.jwtSecret = 
+# Defines the expiration time of JWTs in milliseconds. Example: 86400000 to 24 hours duration
+app.jwtExpirationMs = 
 
 spring.mail.host = smtp.gmail.com
 spring.mail.port = 587
-spring.mail.username =
-spring.mail.password =
+# The spring.mail.username is the Gmail direction
+spring.mail.username = 
+# For the spring.mail.password check this video https://www.youtube.com/watch?v=OJxShAGAvLM (1:05)
+spring.mail.password = 
 spring.mail.properties.mail.smtp.auth = true
 spring.mail.properties.mail.smtp.starttls.enable = true
-reset.link.base.url =
+reset.link.base.url = 
 
 server.port = 8081

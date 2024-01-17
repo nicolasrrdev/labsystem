@@ -60,7 +60,7 @@ public class AuthController {
         .ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
   }
 
-  @PostMapping("/signup")
+/*  @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
     if (userRepository.existsByUsername(signUpRequest.getUsername())) {
       return ResponseEntity.badRequest().body(new MessageResponse("Error: El Username ya se encuentra registrado"));
@@ -89,16 +89,16 @@ public class AuthController {
                   .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
           roles.add(evaluadorRole);
           break;
-/*        case "mod":
+*//*        case "mod":
           Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
               .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
           roles.add(modRole);
-          break;*/
-/*        case "analista":
+          break;*//*
+*//*        case "analista":
           Role analistaRole = roleRepository.findByName(ERole.ROLE_ANALISTA)
                   .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
           roles.add(analistaRole);
-          break;*/
+          break;*//*
         default:
           Role userRole = roleRepository.findByName(ERole.ROLE_USER)
               .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -106,6 +106,25 @@ public class AuthController {
         }
       });
     }
+    user.setRoles(roles);
+    userRepository.save(user);
+    return ResponseEntity.ok(new MessageResponse("Registro realizado con éxito. Ya puedes iniciar sesión"));
+  }*/
+
+  @PostMapping("/signup")
+  public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+      return ResponseEntity.badRequest().body(new MessageResponse("Error: El Nombre de usuario ya se encuentra registrado"));
+    }
+    if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+      return ResponseEntity.badRequest().body(new MessageResponse("Error: El Email ya se encuentra registrado"));
+    }
+    User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
+            encoder.encode(signUpRequest.getPassword()));
+    Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+    Set<Role> roles = new HashSet<>();
+    roles.add(userRole);
     user.setRoles(roles);
     userRepository.save(user);
     return ResponseEntity.ok(new MessageResponse("Registro realizado con éxito. Ya puedes iniciar sesión"));
