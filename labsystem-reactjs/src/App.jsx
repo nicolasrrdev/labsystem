@@ -112,6 +112,7 @@ const App = () => {
           <Helmet>
             <title>{formattedLocationPathname} - Labsystem</title>
           </Helmet>
+          
       
         <div className={`menu-ham ${isMenuOpen ? 'abierto' : ''} ${hasOverflow ? 'overflow' : ''}`} onClick={toggleMenu}>
           <div className='FaBars-container'>
@@ -119,7 +120,7 @@ const App = () => {
           </div>
 
           <li>
-            <Link to='/Home' onClick={() => handleLinkClick('/Home')}>
+            <Link to='/labsystem/Home' onClick={() => handleLinkClick('/labsystem/Home')}>
               Inicio
             </Link>
           </li>
@@ -142,63 +143,63 @@ const App = () => {
 
           {showEvaluadorBoard && (
             <li>
-              <Link to='/RegistrarPaciente' onClick={() => handleLinkClick('/RegistrarPaciente')}>
+              <Link to='/labsystem/RegistrarPaciente' onClick={() => handleLinkClick('/labsystem/RegistrarPaciente')}>
                 Registrar Paciente
               </Link>
             </li>
           )}
           {showEvaluadorBoard && (
             <li>
-              <Link to='/RevisarPaciente' onClick={() => handleLinkClick('/RevisarPaciente')}>
+              <Link to='/labsystem/RevisarPaciente' onClick={() => handleLinkClick('/labsystem/RevisarPaciente')}>
                 Revisar Paciente
               </Link>
             </li>
           )}
           {showEvaluadorBoard && (
             <li>
-              <Link to='/EditarPaciente' onClick={() => handleLinkClick('/EditarPaciente')}>
+              <Link to='/labsystem/EditarPaciente' onClick={() => handleLinkClick('/labsystem/EditarPaciente')}>
                 Editar Paciente
               </Link>
             </li>
           )}
           {showEvaluadorBoard && (
             <li>
-              <Link to='/CrearExamen' onClick={() => handleLinkClick('/CrearExamen')}>
+              <Link to='/labsystem/CrearExamen' onClick={() => handleLinkClick('/labsystem/CrearExamen')}>
                 Crear Examen
               </Link>
             </li>
           )}
           {showEvaluadorBoard && (
             <li>
-              <Link to='/RealizarRegistro' onClick={() => handleLinkClick('/RealizarRegistro')}>
+              <Link to='/labsystem/RealizarRegistro' onClick={() => handleLinkClick('/labsystem/RealizarRegistro')}>
                 Realizar Registro
               </Link>
             </li>
           )}
           {showEvaluadorBoard && (
             <li>
-              <Link to='/RevisarRegistro' onClick={() => handleLinkClick('/RevisarRegistro')}>
+              <Link to='/labsystem/RevisarRegistro' onClick={() => handleLinkClick('/labsystem/RevisarRegistro')}>
                 Revisar Registro
               </Link>
             </li>
           )}
           {showEvaluadorBoard && (
             <li>
-              <Link to='/EditarRegistro' onClick={() => handleLinkClick('/EditarRegistro')}>
+              <Link to='/labsystem/EditarRegistro' onClick={() => handleLinkClick('/labsystem/EditarRegistro')}>
                 Editar Registro
               </Link>
             </li>
           )}
           {showEvaluadorBoard && (
             <li>
-              <Link to='/TablaExamen' onClick={() => handleLinkClick('/TablaExamen')}>
+              <Link to='/labsystem/TablaExamen' onClick={() => handleLinkClick('/labsystem/TablaExamen')}>
                 Tabla Examen
               </Link>
             </li>
           )}
           {showEvaluadorBoard && (
             <li>
-              <Link to='/EditarTablaExamen' onClick={() => handleLinkClick('/EditarTablaExamen')}>
+              <Link to='/labsystem/EditarTablaExamen' onClick={() => handleLinkClick('/labsystem/EditarTablaExamen')}>
                 Editar Tabla Examen
               </Link>
             </li>
@@ -206,84 +207,84 @@ const App = () => {
 
           {showAdminBoard && (
             <li>
-              <Link to='/RegistrarPaciente' onClick={() => handleLinkClick('/RegistrarPaciente')}>
+              <Link to='/labsystem/RegistrarPaciente' onClick={() => handleLinkClick('/labsystem/RegistrarPaciente')}>
                 Registrar Paciente
               </Link>
             </li>
           )}
           {showAdminBoard && (
             <li>
-              <Link to='/RevisarPaciente' onClick={() => handleLinkClick('/RevisarPaciente')}>
+              <Link to='/labsystem/RevisarPaciente' onClick={() => handleLinkClick('/labsystem/RevisarPaciente')}>
                 Revisar Paciente
               </Link>
             </li>
           )}
           {showAdminBoard && (
             <li>
-              <Link to='/EditarPaciente' onClick={() => handleLinkClick('/EditarPaciente')}>
+              <Link to='/labsystem/EditarPaciente' onClick={() => handleLinkClick('/labsystem/EditarPaciente')}>
                 Editar Paciente
               </Link>
             </li>
           )}
           {showAdminBoard && (
             <li>
-              <Link to='/CrearExamen' onClick={() => handleLinkClick('/CrearExamen')}>
+              <Link to='/labsystem/CrearExamen' onClick={() => handleLinkClick('/labsystem/CrearExamen')}>
                 Crear Examen
               </Link>
             </li>
           )}
           {showAdminBoard && (
             <li>
-              <Link to='/RealizarRegistro' onClick={() => handleLinkClick('/RealizarRegistro')}>
+              <Link to='/labsystem/RealizarRegistro' onClick={() => handleLinkClick('/labsystem/RealizarRegistro')}>
                 Realizar Registro
               </Link>
             </li>
           )}
           {showAdminBoard && (
             <li>
-              <Link to='/RevisarRegistro' onClick={() => handleLinkClick('/RevisarRegistro')}>
+              <Link to='/labsystem/RevisarRegistro' onClick={() => handleLinkClick('/labsystem/RevisarRegistro')}>
                 Revisar Registro
               </Link>
             </li>
           )}
           {showAdminBoard && (
             <li>
-              <Link to='/EditarRegistro' onClick={() => handleLinkClick('/EditarRegistro')}>
+              <Link to='/labsystem/EditarRegistro' onClick={() => handleLinkClick('/labsystem/EditarRegistro')}>
                 Editar Registro
               </Link>
             </li>
           )}
           {showAdminBoard && (
             <li>
-              <Link to='/EliminarRegistro' onClick={() => handleLinkClick('/EliminarRegistro')}>
+              <Link to='/labsystem/EliminarRegistro' onClick={() => handleLinkClick('/labsystem/EliminarRegistro')}>
                 Eliminar Registro
               </Link>
             </li>
           )}
           {showAdminBoard && (
             <li>
-              <Link to='/TablaExamen' onClick={() => handleLinkClick('/TablaExamen')}>
+              <Link to='/labsystem/TablaExamen' onClick={() => handleLinkClick('/labsystem/TablaExamen')}>
                 Tabla Examen
               </Link>
             </li>
           )}
           {showAdminBoard && (
             <li>
-              <Link to='/EditarTablaExamen' onClick={() => handleLinkClick('/EditarTablaExamen')}>
+              <Link to='/labsystem/EditarTablaExamen' onClick={() => handleLinkClick('/labsystem/EditarTablaExamen')}>
                 Editar Tabla Examen
               </Link>
             </li>
           )}
           {showAdminBoard && (
             <li>
-              <Link to='/EliminarTablaExamen' onClick={() => handleLinkClick('/EliminarTablaExamen')}>
+              <Link to='/labsystem/EliminarTablaExamen' onClick={() => handleLinkClick('/labsystem/EliminarTablaExamen')}>
                 Eliminar Tabla Examen
               </Link>
             </li>
           )}
           {showAdminBoard && (
             <li>
-              <Link to='/Admin' onClick={() => handleLinkClick('/Admin')}>
+              <Link to='/labsystem/Admin' onClick={() => handleLinkClick('/labsystem/Admin')}>
                 Panel de Administrador
               </Link>
             </li>
@@ -291,7 +292,7 @@ const App = () => {
 
           {!currentUser && (
               <li>
-                <Link to='/Restore' onClick={() => handleLinkClick('/Restore')}>
+                <Link to='/labsystem/Restore' onClick={() => handleLinkClick('/labsystem/Restore')}>
                   Restablecer Contraseña
                 </Link>
               </li>
@@ -300,13 +301,13 @@ const App = () => {
           {currentUser ? (
             <>
               <li>
-                <Link to='/Profile' onClick={() => handleLinkClick('/Profile')}>
+                <Link to='/labsystem/Profile' onClick={() => handleLinkClick('/labsystem/Profile')}>
                   {/* {currentUser.username} */}
                   Perfil
                 </Link>
               </li>
               <li>
-                <a href='/Login' onClick={() => AuthService.logout()}>
+                <a href='/labsystem/Login' onClick={(e) => { handleLinkClick('/labsystem/Login'); AuthService.logout(); window.location.reload(); e.preventDefault(); }}>
                   Salir
                 </a>
               </li>
@@ -314,12 +315,12 @@ const App = () => {
           ) : (
             <>
               <li>
-                <Link to='/Login' onClick={() => handleLinkClick('/Login')}>
+                <Link to='/labsystem/Login' onClick={() => handleLinkClick('/labsystem/Login')}>
                   Ingresar
                 </Link>
               </li>
               <li>
-                <Link to='/Register' onClick={() => handleLinkClick('/Register')}>
+                <Link to='/labsystem/Register' onClick={() => handleLinkClick('/labsystem/Register')}>
                   Registrarse
                 </Link>
               </li>
@@ -330,39 +331,39 @@ const App = () => {
 
         <Routes>
 
-          <Route path='*' element={<Navigate to='/Home' />} />
-          <Route path='/' element={<Home />} />
-          <Route path='/Home' element={<Home />} />
-          <Route path='/Profile' element={<Profile />} />
+          <Route path='*' element={<Navigate to='/labsystem/Home' />} />
+          {/* <Route path='/labsystem/' element={<Home />} /> */}
+          <Route path='/labsystem/Home' element={<Home />} />
+          <Route path='/labsystem/Profile' element={<Profile />} />
 
           {currentUser ? (
             <>
-              <Route path='/Login' element={<Navigate to='/Home' />} />
-              <Route path='/Register' element={<Navigate to='/Home' />} />
+              <Route path='/labsystem/Login' element={<Navigate to='/labsystem/Home' />} />
+              <Route path='/labsystem/Register' element={<Navigate to='/labsystem/Home' />} />
             </>
           ) : (
             <>
-              <Route path='/Login' element={<Login />} />
-              <Route path='/Register' element={<Register />} />
+              <Route path='/labsystem/Login' element={<Login />} />
+              <Route path='/labsystem/Register' element={<Register />} />
             </>
           )}
 
           {!currentUser && (
-            <Route path='/Restore' element={<RestorePasswordRequest />} />
+            <Route path='/labsystem/Restore' element={<RestorePasswordRequest />} />
           )}
           {currentUser && (
-            <Route path='/Restore' element={<Navigate to='/Home' />} />
+            <Route path='/labsystem/Restore' element={<Navigate to='/labsystem/Home' />} />
           )}
 
           {!currentUser && (
-            <Route path='/reset-password' element={<ResetPasswordForm />} />
+            <Route path='/labsystem/reset-password' element={<ResetPasswordForm />} />
           )}
           {currentUser && (
-            <Route path='/reset-password' element={<Navigate to='/Home' />} />
+            <Route path='/labsystem/reset-password' element={<Navigate to='/labsystem/Home' />} />
           )}
 
           {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
-            <Route path='/Admin' element={<BoardAdmin />} />
+            <Route path='/labsystem/Admin' element={<BoardAdmin />} />
           )}
 
           {/* {user && user.roles && user.roles.includes('ROLE_MODERATOR') &&(
@@ -374,47 +375,47 @@ const App = () => {
           )} */}
 
           {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-            <Route path='/RegistrarPaciente' element={<RegistrarPaciente />} />
+            <Route path='/labsystem/RegistrarPaciente' element={<RegistrarPaciente />} />
           )}
 
           {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-            <Route path='/RevisarPaciente' element={<RevisarPaciente />} />
+            <Route path='/labsystem/RevisarPaciente' element={<RevisarPaciente />} />
           )}
 
           {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-            <Route path='/EditarPaciente' element={<EditarPaciente />} />
+            <Route path='/labsystem/EditarPaciente' element={<EditarPaciente />} />
           )}
 
           {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-            <Route path='/CrearExamen' element={<CrearExamen />} />
+            <Route path='/labsystem/CrearExamen' element={<CrearExamen />} />
           )}
 
           {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-            <Route path='/RealizarRegistro' element={<RealizarRegistro />} />
+            <Route path='/labsystem/RealizarRegistro' element={<RealizarRegistro />} />
           )}
 
           {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-            <Route path='/RevisarRegistro' element={<RevisarRegistro />} />
+            <Route path='/labsystem/RevisarRegistro' element={<RevisarRegistro />} />
           )}
 
           {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-            <Route path='/EditarRegistro' element={<EditarRegistro />} />
+            <Route path='/labsystem/EditarRegistro' element={<EditarRegistro />} />
           )}
 
           {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
-            <Route path='/EliminarRegistro' element={<EliminarRegistro />} />
+            <Route path='/labsystem/EliminarRegistro' element={<EliminarRegistro />} />
           )}
 
           {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-            <Route path='/TablaExamen' element={<TablaExamen />} />
+            <Route path='/labsystem/TablaExamen' element={<TablaExamen />} />
           )}
 
           {user && user.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_EVALUADOR')) &&(
-            <Route path='/EditarTablaExamen' element={<EditarTablaExamen />} />
+            <Route path='/labsystem/EditarTablaExamen' element={<EditarTablaExamen />} />
           )}
 
           {user && user.roles && user.roles.includes('ROLE_ADMIN') &&(
-            <Route path='/EliminarTablaExamen' element={<EliminarTablaExamen />} />
+            <Route path='/labsystem/EliminarTablaExamen' element={<EliminarTablaExamen />} />
           )}
 
         </Routes>

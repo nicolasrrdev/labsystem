@@ -15,7 +15,7 @@ const Login = () => {
     setLoading(true)
     AuthService.login(username, password)
       .then(() => {
-        navigate('/Profile')
+        navigate('/labsystem/Profile')
         window.location.reload()
       })
       .catch((error) => {

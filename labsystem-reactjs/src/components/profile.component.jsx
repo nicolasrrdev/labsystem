@@ -14,7 +14,7 @@ export default class Profile extends Component {
 
   componentDidMount() {
     const currentUser = AuthService.getCurrentUser()
-    if (!currentUser) this.setState({ redirect: '/Home' })
+    if (!currentUser) this.setState({ redirect: '/labsystem/Home' })
     this.setState({ currentUser: currentUser, userReady: true })
   }
 
